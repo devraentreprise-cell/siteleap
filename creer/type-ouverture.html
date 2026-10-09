@@ -1,0 +1,744 @@
+<div id="type-ouverture" class="screen">
+    <div class="page-header">
+        <button class="back-btn" onclick="goBack()"><svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg></button>
+        <div class="page-title-wrap">
+            <h1 class="page-title">Type d'ouverture du site</h1>
+            <p class="page-sub">Vitesse de démarrage de l'application</p>
+        </div>
+    </div>
+
+    <p class="state-intro">Définissez la vitesse d'ouverture de votre site.</p>
+
+    <div class="to-diagram-wrap" id="toDiagramWrap">
+        <div class="to-diagram-scaler" id="toDiagramScaler">
+            <div class="to-diagram" id="toDiagram" data-mode="instant">
+
+                <!-- CARTE INSTANTANÉE -->
+                <div class="to-card to-card-instant">
+                    <div class="to-card-label">INSTANTANÉE</div>
+                    <div class="to-phone">
+                        <div class="to-phone-statusbar" id="toSBInstant">
+                            <span class="to-sb-time">9:41</span>
+                            <div class="to-sb-icons">
+                                <svg viewBox="0 0 18 12"><rect x="0" y="9" width="3" height="3" rx="0.6" fill="currentColor"/><rect x="5" y="6" width="3" height="6" rx="0.6" fill="currentColor"/><rect x="10" y="3" width="3" height="9" rx="0.6" fill="currentColor"/><rect x="15" y="0" width="3" height="12" rx="0.6" fill="currentColor"/></svg>
+                                <svg viewBox="0 0 16 12"><path d="M1 4.3C3 2.5 5.4 1.3 8 1.3s5 1.2 7 3" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round"/><path d="M3.3 7.3C4.6 6.2 6.2 5.5 8 5.5s3.4.7 4.7 1.8" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round"/><circle cx="8" cy="10" r="1.05" fill="currentColor"/></svg>
+                                <svg viewBox="0 0 24 12"><rect x="0.6" y="0.6" width="20" height="10.8" rx="2.4" stroke="currentColor" stroke-width="1.1" fill="none"/><rect x="2.4" y="2.4" width="15" height="7.2" rx="1" fill="currentColor"/><rect x="22" y="3.6" width="1.6" height="4.8" rx="0.7" fill="currentColor"/></svg>
+                            </div>
+                        </div>
+                        <div class="to-phone-screen" id="toScreenInstant">
+                            <div class="to-blocks" id="toBlocksInstant">
+                                <div class="to-blk to-blk-title"></div>
+                                <div class="to-blk to-blk-subtitle"></div>
+                                <div class="to-blk to-blk-image"></div>
+                                <div class="to-blk to-blk-line"></div>
+                                <div class="to-blk to-blk-line-95"></div>
+                                <div class="to-blk to-blk-line-70"></div>
+                                <div class="to-blk to-blk-gap"></div>
+                                <div class="to-blk to-blk-mini-title"></div>
+                                <div class="to-blk to-blk-line"></div>
+                                <div class="to-blk to-blk-line-85"></div>
+                                <div class="to-blk to-blk-image-small"></div>
+                                <div class="to-blk to-blk-line"></div>
+                                <div class="to-blk to-blk-line-90"></div>
+                                <div class="to-blk to-blk-line-60"></div>
+                                <div class="to-blk to-blk-gap"></div>
+                                <div class="to-blk to-blk-mini-title-2"></div>
+                                <div class="to-blk to-blk-line"></div>
+                                <div class="to-blk to-blk-line-95"></div>
+                                <div class="to-blk to-blk-line-80"></div>
+                                <div class="to-blk to-blk-line-65"></div>
+                                <div class="to-blk to-blk-line"></div>
+                                <div class="to-blk to-blk-line-75"></div>
+                                <div class="to-blk to-blk-line-50"></div>
+                            </div>
+                            <div class="to-splash" id="toSplashInstant">
+                                <div class="to-splash-icon" id="toSplashIconInstant"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="to-card-caption">Démarrage quasi-immédiat</div>
+                </div>
+
+                <!-- CARTE NORMALE -->
+                <div class="to-card to-card-normal">
+                    <div class="to-card-label">NORMALE</div>
+                    <div class="to-phone">
+                        <div class="to-phone-statusbar" id="toSBNormal">
+                            <span class="to-sb-time">9:41</span>
+                            <div class="to-sb-icons">
+                                <svg viewBox="0 0 18 12"><rect x="0" y="9" width="3" height="3" rx="0.6" fill="currentColor"/><rect x="5" y="6" width="3" height="6" rx="0.6" fill="currentColor"/><rect x="10" y="3" width="3" height="9" rx="0.6" fill="currentColor"/><rect x="15" y="0" width="3" height="12" rx="0.6" fill="currentColor"/></svg>
+                                <svg viewBox="0 0 16 12"><path d="M1 4.3C3 2.5 5.4 1.3 8 1.3s5 1.2 7 3" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round"/><path d="M3.3 7.3C4.6 6.2 6.2 5.5 8 5.5s3.4.7 4.7 1.8" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round"/><circle cx="8" cy="10" r="1.05" fill="currentColor"/></svg>
+                                <svg viewBox="0 0 24 12"><rect x="0.6" y="0.6" width="20" height="10.8" rx="2.4" stroke="currentColor" stroke-width="1.1" fill="none"/><rect x="2.4" y="2.4" width="15" height="7.2" rx="1" fill="currentColor"/><rect x="22" y="3.6" width="1.6" height="4.8" rx="0.7" fill="currentColor"/></svg>
+                            </div>
+                        </div>
+                        <div class="to-phone-screen" id="toScreenNormal">
+                            <div class="to-blocks" id="toBlocksNormal">
+                                <div class="to-blk to-blk-title"></div>
+                                <div class="to-blk to-blk-subtitle"></div>
+                                <div class="to-blk to-blk-image"></div>
+                                <div class="to-blk to-blk-line"></div>
+                                <div class="to-blk to-blk-line-95"></div>
+                                <div class="to-blk to-blk-line-70"></div>
+                                <div class="to-blk to-blk-gap"></div>
+                                <div class="to-blk to-blk-mini-title"></div>
+                                <div class="to-blk to-blk-line"></div>
+                                <div class="to-blk to-blk-line-85"></div>
+                                <div class="to-blk to-blk-image-small"></div>
+                                <div class="to-blk to-blk-line"></div>
+                                <div class="to-blk to-blk-line-90"></div>
+                                <div class="to-blk to-blk-line-60"></div>
+                                <div class="to-blk to-blk-gap"></div>
+                                <div class="to-blk to-blk-mini-title-2"></div>
+                                <div class="to-blk to-blk-line"></div>
+                                <div class="to-blk to-blk-line-95"></div>
+                                <div class="to-blk to-blk-line-80"></div>
+                                <div class="to-blk to-blk-line-65"></div>
+                                <div class="to-blk to-blk-line"></div>
+                                <div class="to-blk to-blk-line-75"></div>
+                                <div class="to-blk to-blk-line-50"></div>
+                            </div>
+                            <div class="to-splash" id="toSplashNormal">
+                                <div class="to-splash-icon" id="toSplashIconNormal"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="to-card-caption">Démarrage habituel</div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <div class="option-list">
+        <label class="option-card">
+            <input type="radio" name="typeOuvertureOption" value="instant">
+            <span class="option-radio"></span>
+            <div class="option-content">
+                <div class="option-title">Ouverture instantanée</div>
+                <div class="option-desc">Le site s'ouvre instantanément avec un délai d'attente minime</div>
+            </div>
+        </label>
+        <label class="option-card">
+            <input type="radio" name="typeOuvertureOption" value="normal">
+            <span class="option-radio"></span>
+            <div class="option-content">
+                <div class="option-title">Ouverture normale</div>
+                <div class="option-desc">Le site s'ouvre à la vitesse habituelle sans aucune accélération particulière</div>
+            </div>
+        </label>
+    </div>
+</div>
+
+<style>
+.screen { display: none; }
+.screen.active { display: block; }
+#type-ouverture {
+    max-width: 640px;
+    width: 100%;
+    margin: 0 auto;
+    padding: 0 16px calc(16px + env(safe-area-inset-bottom, 0px));
+    box-sizing: border-box;
+    min-height: 100%;
+}
+
+/* ============================================
+   EN-TÊTE
+   ============================================ */
+.page-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 0 0 22px;
+    position: sticky;
+    top: 0;
+    background: #fff;
+    z-index: 10;
+}
+.back-btn {
+    width: 40px; height: 40px;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    color: #0b1220;
+    transition: background-color .15s ease;
+}
+.back-btn:hover { background: #f1f5f9; }
+.back-btn:active { transform: scale(.95); }
+.back-btn svg {
+    width: 24px; height: 24px;
+    stroke: currentColor; fill: none;
+    stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round;
+}
+.page-title-wrap {
+    flex: 1;
+    min-width: 0;
+    border-left: 2px solid #10b981;
+    padding-left: 14px;
+}
+.page-title {
+    font-size: 1.15rem;
+    font-weight: 800;
+    color: #0b1220;
+    line-height: 1.15;
+    letter-spacing: -0.025em;
+    margin: 0 0 2px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.page-sub {
+    font-size: 0.78rem;
+    font-weight: 450;
+    color: #64748b;
+    line-height: 1.35;
+    margin: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* ============================================
+   TEXTE D'INTRO
+   ============================================ */
+.state-intro {
+    font-size: 0.88rem;
+    color: #64748b;
+    margin: 4px 0 20px;
+    line-height: 1.5;
+    text-align: center;
+}
+
+/* ============================================
+   DIAGRAMME
+   ============================================ */
+.to-diagram-wrap {
+    position: relative;
+    min-height: 370px;
+    margin: 0 0 4px;
+    overflow: hidden;
+}
+.to-diagram-scaler {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 360px; height: 440px;
+    transform: translate(-50%, -50%) scale(1);
+    transform-origin: center center;
+    will-change: transform;
+}
+.to-diagram {
+    position: absolute;
+    inset: 0;
+    width: 360px; height: 440px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 22px;
+    padding: 20px 10px;
+    box-sizing: border-box;
+}
+
+/* ---------- CARTE TÉLÉPHONE ---------- */
+.to-card {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    opacity: 0.35;
+    filter: grayscale(0.6);
+    transition: opacity .4s ease, filter .4s ease, transform .4s ease;
+    transform: scale(0.94);
+}
+.to-diagram[data-mode="instant"] .to-card-instant,
+.to-diagram[data-mode="normal"] .to-card-normal {
+    opacity: 1;
+    filter: grayscale(0);
+    transform: scale(1);
+}
+
+.to-card-label {
+    font-size: 0.72rem;
+    font-weight: 900;
+    letter-spacing: 0.14em;
+    color: #94a3b8;
+    text-transform: uppercase;
+    transition: color .4s ease;
+}
+.to-diagram[data-mode="instant"] .to-card-instant .to-card-label,
+.to-diagram[data-mode="normal"] .to-card-normal .to-card-label {
+    color: #10b981;
+}
+
+.to-card-caption {
+    font-size: 0.7rem;
+    font-weight: 500;
+    color: #94a3b8;
+    text-align: center;
+    line-height: 1.35;
+    transition: color .4s ease;
+}
+.to-diagram[data-mode="instant"] .to-card-instant .to-card-caption,
+.to-diagram[data-mode="normal"] .to-card-normal .to-card-caption {
+    color: #475569;
+}
+
+/* ============================================
+   TÉLÉPHONE
+   ============================================ */
+.to-phone {
+    display: flex;
+    flex-direction: column;
+    width: 138px;
+    height: 245px;
+    border-radius: 20px;
+    overflow: hidden;
+    background: #ffffff;
+    box-shadow:
+        0 20px 40px -18px rgba(15,23,42,.38),
+        0 0 0 3px #1e293b,
+        0 0 0 3.5px #0f172a;
+}
+
+.to-phone-statusbar {
+    height: 20px;
+    flex-shrink: 0;
+    background: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 9px;
+    color: #0f172a;
+    overflow: hidden;
+    transition: background-color .3s ease, color .3s ease;
+    position: relative;
+    z-index: 3;
+}
+/* ⭐ Barre de statut masquée en mode plein écran */
+.to-phone.no-titlebar .to-phone-statusbar { display: none; }
+
+.to-sb-time {
+    font-size: 8.5px;
+    font-weight: 700;
+    line-height: 1;
+    letter-spacing: .01em;
+}
+.to-sb-icons {
+    display: flex;
+    gap: 3px;
+    align-items: center;
+}
+.to-sb-icons svg {
+    width: 9px; height: 7px;
+    stroke: currentColor;
+    fill: currentColor;
+    display: block;
+    flex-shrink: 0;
+}
+
+.to-phone-screen {
+    flex: 1;
+    position: relative;
+    overflow: hidden;
+    background: #ffffff;
+    transition: background-color .3s ease;
+}
+
+/* ============================================
+   SPLASH
+   ============================================ */
+.to-splash {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #ffffff;
+    z-index: 2;
+    transition: opacity .3s ease;
+    opacity: 1;
+}
+.to-splash.hidden {
+    opacity: 0;
+}
+.to-splash-icon {
+    width: 46px;
+    height: 46px;
+    border-radius: 11px;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-color: rgba(255,255,255,.15);
+    box-shadow: 0 6px 14px -6px rgba(0,0,0,.3);
+}
+
+/* ============================================
+   BLOCS — squelette qui remplit l'écran
+   ============================================ */
+.to-blocks {
+    position: absolute;
+    inset: 0;
+    padding: 8px 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    box-sizing: border-box;
+    z-index: 1;
+}
+
+.to-blk {
+    background: #0b1220;
+    border-radius: 3px;
+    opacity: 0;
+    transition: opacity .28s ease;
+    flex-shrink: 0;
+}
+
+.to-blk-title { height: 8px; width: 68%; }
+.to-blk-subtitle { height: 4px; width: 42%; border-radius: 2px; }
+.to-blk-image { height: 30px; width: 100%; border-radius: 5px; }
+.to-blk-image-small { height: 16px; width: 100%; border-radius: 4px; }
+.to-blk-mini-title   { height: 6px; width: 48%; }
+.to-blk-mini-title-2 { height: 6px; width: 55%; }
+
+.to-blk-line    { height: 3px; width: 100%; border-radius: 2px; }
+.to-blk-line-95 { height: 3px; width: 95%; border-radius: 2px; }
+.to-blk-line-90 { height: 3px; width: 90%; border-radius: 2px; }
+.to-blk-line-85 { height: 3px; width: 85%; border-radius: 2px; }
+.to-blk-line-80 { height: 3px; width: 80%; border-radius: 2px; }
+.to-blk-line-75 { height: 3px; width: 75%; border-radius: 2px; }
+.to-blk-line-70 { height: 3px; width: 70%; border-radius: 2px; }
+.to-blk-line-65 { height: 3px; width: 65%; border-radius: 2px; }
+.to-blk-line-60 { height: 3px; width: 60%; border-radius: 2px; }
+.to-blk-line-50 { height: 3px; width: 50%; border-radius: 2px; }
+
+.to-blk-gap { height: 3px; width: 100%; background: transparent; }
+
+/* ============================================
+   OPACITÉS FINALES — une seule couleur, deux tons
+   ============================================ */
+.to-blk.visible                    { opacity: 1; }
+.to-blk-title.visible              { opacity: 0.92; }
+.to-blk-subtitle.visible           { opacity: 0.5; }
+.to-blk-image.visible              { opacity: 0.88; }
+.to-blk-image-small.visible        { opacity: 0.85; }
+.to-blk-mini-title.visible,
+.to-blk-mini-title-2.visible       { opacity: 0.85; }
+.to-blk-line.visible,
+.to-blk-line-95.visible,
+.to-blk-line-90.visible,
+.to-blk-line-85.visible,
+.to-blk-line-80.visible,
+.to-blk-line-75.visible,
+.to-blk-line-70.visible,
+.to-blk-line-65.visible,
+.to-blk-line-60.visible,
+.to-blk-line-50.visible            { opacity: 0.55; }
+
+/* ============================================
+   CARTES D'OPTION
+   ============================================ */
+.option-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+.option-card {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 16px 16px;
+    background: #ffffff;
+    border: 1px solid #f1f5f9;
+    border-radius: 16px;
+    cursor: pointer;
+    box-shadow:
+        0 8px 20px -14px rgba(15,23,42,.14),
+        0 2px 6px -2px rgba(15,23,42,.04);
+    transition: border-color .18s ease, box-shadow .18s ease, transform .18s ease;
+}
+.option-card:hover {
+    transform: translateY(-1px);
+    box-shadow:
+        0 14px 26px -16px rgba(15,23,42,.22),
+        0 2px 6px -2px rgba(15,23,42,.05);
+}
+.option-card input[type="radio"] { display: none; }
+.option-radio {
+    flex-shrink: 0;
+    width: 22px; height: 22px;
+    border: 2px solid #cbd5e1;
+    border-radius: 50%;
+    position: relative;
+    transition: border-color .15s ease;
+}
+.option-card input[type="radio"]:checked + .option-radio {
+    border-color: #10b981;
+}
+.option-card input[type="radio"]:checked + .option-radio::after {
+    content: "";
+    position: absolute;
+    inset: 3px;
+    background: #10b981;
+    border-radius: 50%;
+}
+.option-card input[type="radio"]:checked ~ .option-content .option-title {
+    color: #047857;
+}
+.option-content { flex: 1; min-width: 0; }
+.option-title {
+    font-size: 0.98rem;
+    font-weight: 700;
+    color: #0b1220;
+    margin-bottom: 4px;
+    line-height: 1.3;
+    letter-spacing: -0.015em;
+    transition: color .15s ease;
+}
+.option-desc {
+    font-size: 0.84rem;
+    color: #64748b;
+    line-height: 1.45;
+    text-align: left;
+}
+
+@media (min-width: 520px) {
+    .page-title { font-size: 1.3rem; }
+    .option-title { font-size: 1.02rem; }
+    .option-desc { font-size: 0.87rem; }
+}
+</style>
+
+<script>
+(function() {
+
+    const TO_DIAGRAM_W = 360, TO_DIAGRAM_H = 440;
+
+    const T_INSTANT = 500;
+    const T_NORMAL  = 1600;
+    const T_DELAI   = 900;
+    const T_BARRE   = 70;
+
+    const LABEL_INSTANT = 'Instantané';
+    const LABEL_NORMAL  = 'Normale';
+
+    let logoBlobURL = null;
+    let timeoutIds = [];
+
+    function fitToDiagram() {
+        const wrap = document.getElementById('toDiagramWrap');
+        const scaler = document.getElementById('toDiagramScaler');
+        if (!wrap || !scaler) return;
+        const aw = wrap.clientWidth, ah = wrap.clientHeight;
+        if (aw <= 0 || ah <= 0) return;
+        const scale = Math.min(aw / TO_DIAGRAM_W, ah / TO_DIAGRAM_H, 1.6);
+        scaler.style.transform = 'translate(-50%, -50%) scale(' + scale + ')';
+    }
+
+    function applyToDiagram(mode) {
+        const d = document.getElementById('toDiagram');
+        if (!d) return;
+        d.dataset.mode = (mode === 'normal') ? 'normal' : 'instant';
+    }
+
+    function clearTimeouts() {
+        timeoutIds.forEach(function(t) { clearTimeout(t); });
+        timeoutIds = [];
+    }
+
+    function resetPhone(config) {
+        const { splashEl, blocksEl, screenEl, statusbarEl, couleurFond } = config;
+        splashEl.classList.remove('hidden');
+        splashEl.style.background = couleurFond;
+        if (screenEl) screenEl.style.background = couleurFond;
+        if (statusbarEl) {
+            statusbarEl.style.background = couleurFond;
+            statusbarEl.style.color = couleurContraste(couleurFond);
+        }
+        blocksEl.querySelectorAll('.to-blk').forEach(function(b) {
+            b.classList.remove('visible');
+        });
+    }
+
+    function appliquerCouleurApresSplash(config) {
+        const { screenEl, statusbarEl, themeColor } = config;
+        if (statusbarEl) {
+            statusbarEl.style.background = themeColor;
+            statusbarEl.style.color = couleurContraste(themeColor);
+        }
+        if (screenEl) screenEl.style.background = '#ffffff';
+    }
+
+    function jouerSequence(config) {
+        const { splashEl, blocksEl, dureeSplash, affichageIntelligent } = config;
+        const blocs = blocksEl.querySelectorAll('.to-blk');
+
+        resetPhone(config);
+
+        const t1 = setTimeout(function() {
+
+            if (affichageIntelligent === 'oui') {
+                splashEl.classList.add('hidden');
+                appliquerCouleurApresSplash(config);
+                blocs.forEach(function(b, i) {
+                    const t = setTimeout(function() {
+                        b.classList.add('visible');
+                    }, i * T_BARRE);
+                    timeoutIds.push(t);
+                });
+            } else {
+                const t2 = setTimeout(function() {
+                    splashEl.classList.add('hidden');
+                    appliquerCouleurApresSplash(config);
+                    blocs.forEach(function(b) { b.classList.add('visible'); });
+                }, T_DELAI);
+                timeoutIds.push(t2);
+            }
+        }, dureeSplash);
+        timeoutIds.push(t1);
+    }
+
+    function couleurContraste(hex) {
+        hex = hex.replace('#', '');
+        if (hex.length === 3) hex = hex.split('').map(c => c + c).join('');
+        const r = parseInt(hex.substring(0, 2), 16);
+        const g = parseInt(hex.substring(2, 4), 16);
+        const b = parseInt(hex.substring(4, 6), 16);
+        const lum = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+        return lum > 0.55 ? '#0f172a' : '#ffffff';
+    }
+
+    function mettreAJourLabel(valeur) {
+        const el = document.getElementById('typeOuvertureValue');
+        if (!el) return;
+        el.textContent = (valeur === 'normal') ? LABEL_NORMAL : LABEL_INSTANT;
+    }
+
+    async function chargerInfos() {
+        let logo = null;
+        try { logo = await recupererNatif('logo'); } catch (e) {}
+
+        let couleurFond = '#ffffff';
+        try { couleurFond = (await recupererNatif('couleurFond')) || '#ffffff'; } catch (e) {}
+
+        let themeColor = '#ffffff';
+        try { themeColor = (await recupererNatif('themeColor')) || '#ffffff'; } catch (e) {}
+
+        let affichageIntelligent = 'oui';
+        try {
+            const ai = await recupererNatif('affichageIntelligent');
+            if (ai === 'oui' || ai === 'non') affichageIntelligent = ai;
+        } catch (e) {}
+
+        if (logoBlobURL) { URL.revokeObjectURL(logoBlobURL); logoBlobURL = null; }
+        if (logo && logo instanceof Blob) {
+            logoBlobURL = URL.createObjectURL(logo);
+        }
+
+        const iconInstant = document.getElementById('toSplashIconInstant');
+        const iconNormal = document.getElementById('toSplashIconNormal');
+
+        if (logoBlobURL) {
+            if (iconInstant) iconInstant.style.backgroundImage = 'url(' + logoBlobURL + ')';
+            if (iconNormal) iconNormal.style.backgroundImage = 'url(' + logoBlobURL + ')';
+        }
+
+        return { affichageIntelligent, couleurFond, themeColor };
+    }
+
+    /* ⭐ Applique ou retire la barre de statut selon le mode d'affichage */
+    function appliquerModeAffichage(display) {
+        if (display === 'fullscreen') {
+            document.querySelectorAll('.to-phone').forEach(function(p) {
+                p.classList.add('no-titlebar');
+            });
+        } else {
+            document.querySelectorAll('.to-phone').forEach(function(p) {
+                p.classList.remove('no-titlebar');
+            });
+        }
+    }
+
+    async function lancerAnimation(mode) {
+        clearTimeouts();
+        const infos = await chargerInfos();
+
+        const configInstant = {
+            splashEl: document.getElementById('toSplashInstant'),
+            blocksEl: document.getElementById('toBlocksInstant'),
+            screenEl: document.getElementById('toScreenInstant'),
+            statusbarEl: document.getElementById('toSBInstant'),
+            dureeSplash: T_INSTANT,
+            affichageIntelligent: infos.affichageIntelligent,
+            couleurFond: infos.couleurFond,
+            themeColor: infos.themeColor
+        };
+        const configNormal = {
+            splashEl: document.getElementById('toSplashNormal'),
+            blocksEl: document.getElementById('toBlocksNormal'),
+            screenEl: document.getElementById('toScreenNormal'),
+            statusbarEl: document.getElementById('toSBNormal'),
+            dureeSplash: T_NORMAL,
+            affichageIntelligent: infos.affichageIntelligent,
+            couleurFond: infos.couleurFond,
+            themeColor: infos.themeColor
+        };
+
+        resetPhone(configInstant);
+        resetPhone(configNormal);
+
+        if (mode === 'normal') {
+            jouerSequence(configNormal);
+        } else {
+            jouerSequence(configInstant);
+        }
+    }
+
+    async function initTypeOuverture() {
+        let saved = 'instant';
+        try {
+            const lu = await recupererNatif('typeOuverture');
+            if (lu === 'instant' || lu === 'normal') saved = lu;
+        } catch (e) {}
+
+        const radio = document.querySelector('input[name="typeOuvertureOption"][value="' + saved + '"]');
+        if (radio) radio.checked = true;
+
+        applyToDiagram(saved);
+        mettreAJourLabel(saved);
+
+        /* ⭐ Appliquer le mode d'affichage (barre visible ou pas) */
+        const display = (await recupererNatif('display')) || 'standalone';
+        appliquerModeAffichage(display);
+
+        await lancerAnimation(saved);
+
+        setTimeout(fitToDiagram, 60);
+    }
+
+    document.querySelectorAll('input[name="typeOuvertureOption"]').forEach(function(r) {
+        r.addEventListener('change', async function() {
+            const valeur = this.value;
+            try { await stockerNatif('typeOuverture', valeur); } catch (e) {}
+            applyToDiagram(valeur);
+            mettreAJourLabel(valeur);
+
+            await lancerAnimation(valeur);
+        });
+    });
+
+    window.addEventListener('resize', function() {
+        const el = document.getElementById('type-ouverture');
+        if (el && el.classList.contains('active')) {
+            fitToDiagram();
+        }
+    });
+
+    window.init_type_ouverture = initTypeOuverture;
+
+    initTypeOuverture();
+
+})();
