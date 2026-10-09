@@ -1,0 +1,580 @@
+<div id="acces-reseau" class="screen">
+    <div class="page-header">
+        <button class="back-btn" onclick="goBack()"><svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg></button>
+        <div class="page-title-wrap">
+            <h1 class="page-title">Accès réseau</h1>
+            <p class="page-sub">Source des données du site</p>
+        </div>
+    </div>
+
+    <p class="state-intro">D'où doivent provenir les données de votre site ?</p>
+
+    <div class="ar-diagram-wrap" id="arDiagramWrap">
+        <div class="ar-diagram-scaler" id="arDiagramScaler">
+            <div class="ar-diagram" id="arDiagram" data-mode="memoire">
+
+                <!-- ════════════════════════════════════════
+                     SCHÉMA 1 — MÉMOIRE DE L'APPAREIL
+                     (viewBox 400x300 — plus de marges vides)
+                     ════════════════════════════════════════ -->
+                <div class="ar-schema ar-schema-memoire">
+                    <svg viewBox="0 0 400 300" preserveAspectRatio="xMidYMid meet" class="ar-svg-full">
+                        <defs>
+                            <linearGradient id="mChipGrad" x1="0" y1="0" x2="0" y2="1">
+                                <stop offset="0%" stop-color="#34d399"/>
+                                <stop offset="100%" stop-color="#059669"/>
+                            </linearGradient>
+                            <radialGradient id="mChipGlow" cx="50%" cy="50%" r="50%">
+                                <stop offset="0%" stop-color="#10b981" stop-opacity="0.4"/>
+                                <stop offset="100%" stop-color="#10b981" stop-opacity="0"/>
+                            </radialGradient>
+                            <marker id="mArrow" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto">
+                                <path d="M0,0 L10,5 L0,10 Z" fill="#10b981"/>
+                            </marker>
+                        </defs>
+
+                        <ellipse cx="100" cy="150" rx="75" ry="75" fill="url(#mChipGlow)"/>
+
+                        <g transform="translate(100, 150)">
+                            <line x1="-38" y1="-20" x2="-52" y2="-20" stroke="#0b1220" stroke-width="3" stroke-linecap="round"/>
+                            <line x1="-38" y1="0"   x2="-52" y2="0"   stroke="#0b1220" stroke-width="3" stroke-linecap="round"/>
+                            <line x1="-38" y1="20"  x2="-52" y2="20"  stroke="#0b1220" stroke-width="3" stroke-linecap="round"/>
+                            <line x1="38" y1="-20"  x2="52" y2="-20"  stroke="#0b1220" stroke-width="3" stroke-linecap="round"/>
+                            <line x1="38" y1="0"    x2="52" y2="0"    stroke="#0b1220" stroke-width="3" stroke-linecap="round"/>
+                            <line x1="38" y1="20"   x2="52" y2="20"   stroke="#0b1220" stroke-width="3" stroke-linecap="round"/>
+                            <line x1="-20" y1="-38" x2="-20" y2="-52" stroke="#0b1220" stroke-width="3" stroke-linecap="round"/>
+                            <line x1="0"   y1="-38" x2="0"   y2="-52" stroke="#0b1220" stroke-width="3" stroke-linecap="round"/>
+                            <line x1="20"  y1="-38" x2="20"  y2="-52" stroke="#0b1220" stroke-width="3" stroke-linecap="round"/>
+                            <line x1="-20" y1="38"  x2="-20" y2="52"  stroke="#0b1220" stroke-width="3" stroke-linecap="round"/>
+                            <line x1="0"   y1="38"  x2="0"   y2="52"  stroke="#0b1220" stroke-width="3" stroke-linecap="round"/>
+                            <line x1="20"  y1="38"  x2="20"  y2="52"  stroke="#0b1220" stroke-width="3" stroke-linecap="round"/>
+                            <rect x="-38" y="-38" width="76" height="76" rx="10" fill="url(#mChipGrad)" stroke="#047857" stroke-width="2.5"/>
+                            <rect x="-24" y="-22" width="48" height="6" rx="3" fill="#ffffff"/>
+                            <rect x="-24" y="-8"  width="48" height="6" rx="3" fill="#ffffff"/>
+                            <rect x="-24" y="6"   width="34" height="6" rx="3" fill="#ffffff"/>
+                            <rect x="-24" y="20"  width="48" height="6" rx="3" fill="#ffffff"/>
+                        </g>
+
+                        <line x1="160" y1="150" x2="228" y2="150" stroke="#10b981" stroke-width="2.5" stroke-linecap="round" marker-end="url(#mArrow)"/>
+                        <circle r="3.5" fill="#10b981" cx="160" cy="150" class="ar-particle ar-particle-m1"/>
+                        <circle r="3" fill="#10b981" cx="160" cy="146" class="ar-particle ar-particle-m2"/>
+                        <circle r="3" fill="#10b981" cx="160" cy="154" class="ar-particle ar-particle-m3"/>
+                        <circle r="2.5" fill="#34d399" cx="160" cy="142" class="ar-particle ar-particle-m4"/>
+                        <circle r="2.5" fill="#34d399" cx="160" cy="158" class="ar-particle ar-particle-m5"/>
+
+                        <g transform="translate(248, 48)">
+                            <rect x="0" y="0" width="118" height="204" rx="18" fill="#ffffff" stroke="#0b1220" stroke-width="2.5"/>
+                            <rect x="6" y="6" width="106" height="192" rx="13" fill="#ffffff"/>
+                            <text x="14" y="19" font-family="system-ui,sans-serif" font-size="7.5" font-weight="700" fill="#0b1220">9:41</text>
+                            <rect x="80" y="13" width="2.5" height="2.5" fill="#0b1220"/>
+                            <rect x="84" y="12" width="2.5" height="3.5" fill="#0b1220"/>
+                            <rect x="88" y="10.5" width="2.5" height="5" fill="#0b1220"/>
+                            <rect x="92" y="9" width="2.5" height="6.5" fill="#0b1220"/>
+                            <circle cx="100" cy="14" r="1" fill="#0b1220"/>
+                            <path d="M97,12 a5,4 0 0 1 6,0" stroke="#0b1220" stroke-width="1.2" fill="none"/>
+                            <rect x="107" y="11" width="7" height="3.5" rx="1" fill="#0b1220"/>
+                            <rect x="14" y="32" width="62" height="8" rx="3" fill="#0b1220"/>
+                            <rect x="14" y="46" width="42" height="4" rx="2" fill="#0b1220" opacity="0.5"/>
+                            <rect x="14" y="56" width="90" height="30" rx="5" fill="#0b1220" opacity="0.88"/>
+                            <rect x="14" y="92" width="90" height="3" rx="1.5" fill="#0b1220" opacity="0.55"/>
+                            <rect x="14" y="100" width="86" height="3" rx="1.5" fill="#0b1220" opacity="0.55"/>
+                            <rect x="14" y="108" width="62" height="3" rx="1.5" fill="#0b1220" opacity="0.55"/>
+                            <rect x="14" y="120" width="44" height="5" rx="2" fill="#0b1220" opacity="0.85"/>
+                            <rect x="14" y="131" width="90" height="3" rx="1.5" fill="#0b1220" opacity="0.55"/>
+                            <rect x="14" y="139" width="78" height="3" rx="1.5" fill="#0b1220" opacity="0.55"/>
+                            <rect x="14" y="150" width="90" height="18" rx="4" fill="#0b1220" opacity="0.85"/>
+                            <rect x="14" y="174" width="90" height="3" rx="1.5" fill="#0b1220" opacity="0.55"/>
+                            <rect x="14" y="182" width="60" height="3" rx="1.5" fill="#0b1220" opacity="0.55"/>
+                        </g>
+
+                        <text x="100" y="272" text-anchor="middle" font-family="system-ui,sans-serif" font-size="10" font-weight="800" fill="#047857" letter-spacing="1">MÉMOIRE DE L'APPAREIL</text>
+                        <text x="307" y="286" text-anchor="middle" font-family="system-ui,sans-serif" font-size="10" font-weight="800" fill="#047857" letter-spacing="1">SITE WEB</text>
+                    </svg>
+                </div>
+
+                <!-- ════════════════════════════════════════
+                     SCHÉMA 2 — INTERNET EN PRIORITÉ
+                     ════════════════════════════════════════ -->
+                <div class="ar-schema ar-schema-priorite">
+                    <svg viewBox="0 0 400 300" preserveAspectRatio="xMidYMid meet" class="ar-svg-full">
+                        <defs>
+                            <linearGradient id="prCloudGrad" x1="0" y1="0" x2="0" y2="1">
+                                <stop offset="0%" stop-color="#34d399"/>
+                                <stop offset="100%" stop-color="#059669"/>
+                            </linearGradient>
+                            <linearGradient id="prChipGrad" x1="0" y1="0" x2="0" y2="1">
+                                <stop offset="0%" stop-color="#34d399"/>
+                                <stop offset="100%" stop-color="#059669"/>
+                            </linearGradient>
+                            <marker id="prArrowTop" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto">
+                                <path d="M0,0 L10,5 L0,10 Z" fill="#10b981"/>
+                            </marker>
+                            <marker id="prArrowBot" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto">
+                                <path d="M0,0 L10,5 L0,10 Z" fill="#10b981"/>
+                            </marker>
+                        </defs>
+
+                        <g transform="translate(80, 42)">
+                            <path d="M-42 12 a24 24 0 0 1 24-24 a22 22 0 0 1 38 6 a18 18 0 0 1 8 34 h-62 a15 15 0 0 1-8-16 z"
+                                  fill="url(#prCloudGrad)" stroke="#047857" stroke-width="2.5"/>
+                            <g stroke="#ffffff" stroke-width="2.2" fill="none" stroke-linecap="round">
+                                <path d="M-14 0 a16 16 0 0 1 22 0" opacity="0.7"/>
+                                <path d="M-7 6 a9 9 0 0 1 12 0"/>
+                                <circle cx="0" cy="11" r="1.7" fill="#ffffff" stroke="none"/>
+                            </g>
+                        </g>
+                        <text x="80" y="95" text-anchor="middle" font-family="system-ui,sans-serif" font-size="9" font-weight="800" fill="#047857">Si utilisateur connecté</text>
+
+                        <g transform="translate(80, 200)">
+                            <line x1="-38" y1="-20" x2="-52" y2="-20" stroke="#0b1220" stroke-width="3" stroke-linecap="round"/>
+                            <line x1="-38" y1="0"   x2="-52" y2="0"   stroke="#0b1220" stroke-width="3" stroke-linecap="round"/>
+                            <line x1="-38" y1="20"  x2="-52" y2="20"  stroke="#0b1220" stroke-width="3" stroke-linecap="round"/>
+                            <line x1="38" y1="-20"  x2="52" y2="-20"  stroke="#0b1220" stroke-width="3" stroke-linecap="round"/>
+                            <line x1="38" y1="0"    x2="52" y2="0"    stroke="#0b1220" stroke-width="3" stroke-linecap="round"/>
+                            <line x1="38" y1="20"   x2="52" y2="20"   stroke="#0b1220" stroke-width="3" stroke-linecap="round"/>
+                            <line x1="-20" y1="-38" x2="-20" y2="-52" stroke="#0b1220" stroke-width="3" stroke-linecap="round"/>
+                            <line x1="0"   y1="-38" x2="0"   y2="-52" stroke="#0b1220" stroke-width="3" stroke-linecap="round"/>
+                            <line x1="20"  y1="-38" x2="20"  y2="-52" stroke="#0b1220" stroke-width="3" stroke-linecap="round"/>
+                            <line x1="-20" y1="38"  x2="-20" y2="52"  stroke="#0b1220" stroke-width="3" stroke-linecap="round"/>
+                            <line x1="0"   y1="38"  x2="0"   y2="52"  stroke="#0b1220" stroke-width="3" stroke-linecap="round"/>
+                            <line x1="20"  y1="38"  x2="20"  y2="52"  stroke="#0b1220" stroke-width="3" stroke-linecap="round"/>
+                            <rect x="-38" y="-38" width="76" height="76" rx="10" fill="url(#prChipGrad)" stroke="#047857" stroke-width="2.5"/>
+                            <rect x="-24" y="-22" width="48" height="6" rx="3" fill="#ffffff"/>
+                            <rect x="-24" y="-8"  width="48" height="6" rx="3" fill="#ffffff"/>
+                            <rect x="-24" y="6"   width="34" height="6" rx="3" fill="#ffffff"/>
+                            <rect x="-24" y="20"  width="48" height="6" rx="3" fill="#ffffff"/>
+                        </g>
+                        <text x="80" y="285" text-anchor="middle" font-family="system-ui,sans-serif" font-size="9" font-weight="800" fill="#047857">Si utilisateur non connecté</text>
+
+                        <line x1="150" y1="55" x2="240" y2="105" stroke="#10b981" stroke-width="2.5" stroke-linecap="round" marker-end="url(#prArrowTop)"/>
+                        <circle r="3.5" fill="#10b981" cx="150" cy="55" class="ar-particle ar-particle-pr1"/>
+                        <circle r="3" fill="#34d399" cx="150" cy="55" class="ar-particle ar-particle-pr2"/>
+
+                        <line x1="150" y1="200" x2="240" y2="155" stroke="#10b981" stroke-width="2.5" stroke-linecap="round" marker-end="url(#prArrowBot)"/>
+                        <circle r="3.5" fill="#10b981" cx="150" cy="200" class="ar-particle ar-particle-pr3"/>
+                        <circle r="3" fill="#34d399" cx="150" cy="200" class="ar-particle ar-particle-pr4"/>
+
+                        <g transform="translate(248, 48)">
+                            <rect x="0" y="0" width="118" height="204" rx="18" fill="#ffffff" stroke="#0b1220" stroke-width="2.5"/>
+                            <rect x="6" y="6" width="106" height="192" rx="13" fill="#ffffff"/>
+                            <text x="14" y="19" font-family="system-ui,sans-serif" font-size="7.5" font-weight="700" fill="#0b1220">9:41</text>
+                            <rect x="80" y="13" width="2.5" height="2.5" fill="#0b1220"/>
+                            <rect x="84" y="12" width="2.5" height="3.5" fill="#0b1220"/>
+                            <rect x="88" y="10.5" width="2.5" height="5" fill="#0b1220"/>
+                            <rect x="92" y="9" width="2.5" height="6.5" fill="#0b1220"/>
+                            <circle cx="100" cy="14" r="1" fill="#0b1220"/>
+                            <path d="M97,12 a5,4 0 0 1 6,0" stroke="#0b1220" stroke-width="1.2" fill="none"/>
+                            <rect x="107" y="11" width="7" height="3.5" rx="1" fill="#0b1220"/>
+                            <rect x="14" y="32" width="62" height="8" rx="3" fill="#0b1220"/>
+                            <rect x="14" y="46" width="42" height="4" rx="2" fill="#0b1220" opacity="0.5"/>
+                            <rect x="14" y="56" width="90" height="30" rx="5" fill="#0b1220" opacity="0.88"/>
+                            <rect x="14" y="92" width="90" height="3" rx="1.5" fill="#0b1220" opacity="0.55"/>
+                            <rect x="14" y="100" width="86" height="3" rx="1.5" fill="#0b1220" opacity="0.55"/>
+                            <rect x="14" y="108" width="62" height="3" rx="1.5" fill="#0b1220" opacity="0.55"/>
+                            <rect x="14" y="120" width="44" height="5" rx="2" fill="#0b1220" opacity="0.85"/>
+                            <rect x="14" y="131" width="90" height="3" rx="1.5" fill="#0b1220" opacity="0.55"/>
+                            <rect x="14" y="139" width="78" height="3" rx="1.5" fill="#0b1220" opacity="0.55"/>
+                            <rect x="14" y="150" width="90" height="18" rx="4" fill="#0b1220" opacity="0.85"/>
+                            <rect x="14" y="174" width="90" height="3" rx="1.5" fill="#0b1220" opacity="0.55"/>
+                            <rect x="14" y="182" width="60" height="3" rx="1.5" fill="#0b1220" opacity="0.55"/>
+                        </g>
+
+                        <text x="307" y="286" text-anchor="middle" font-family="system-ui,sans-serif" font-size="10" font-weight="800" fill="#047857" letter-spacing="1">SITE WEB</text>
+                    </svg>
+                </div>
+
+                <!-- ════════════════════════════════════════
+                     SCHÉMA 3 — INTERNET UNIQUEMENT
+                     ════════════════════════════════════════ -->
+                <div class="ar-schema ar-schema-internet">
+                    <svg viewBox="0 0 400 300" preserveAspectRatio="xMidYMid meet" class="ar-svg-full">
+                        <defs>
+                            <linearGradient id="iCloudGrad" x1="0" y1="0" x2="0" y2="1">
+                                <stop offset="0%" stop-color="#34d399"/>
+                                <stop offset="100%" stop-color="#059669"/>
+                            </linearGradient>
+                            <marker id="iArrow" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto">
+                                <path d="M0,0 L10,5 L0,10 Z" fill="#10b981"/>
+                            </marker>
+                        </defs>
+
+                        <g transform="translate(100, 150)">
+                            <path d="M-50 14 a30 30 0 0 1 30-30 a28 28 0 0 1 46 8 a22 22 0 0 1 10 42 h-76 a20 20 0 0 1-10-20 z"
+                                  fill="url(#iCloudGrad)" stroke="#047857" stroke-width="2.5"/>
+                            <g stroke="#ffffff" stroke-width="2.6" fill="none" stroke-linecap="round">
+                                <path d="M-18 -2 a20 20 0 0 1 28 0" opacity="0.7"/>
+                                <path d="M-10 6 a12 12 0 0 1 16 0"/>
+                                <circle cx="0" cy="12" r="2.2" fill="#ffffff" stroke="none"/>
+                            </g>
+                        </g>
+
+                        <line x1="160" y1="150" x2="228" y2="150" stroke="#10b981" stroke-width="2.5" stroke-linecap="round" marker-end="url(#iArrow)"/>
+                        <circle r="3.5" fill="#10b981" cx="160" cy="150" class="ar-particle ar-particle-m1"/>
+                        <circle r="3" fill="#10b981" cx="160" cy="146" class="ar-particle ar-particle-m2"/>
+                        <circle r="3" fill="#10b981" cx="160" cy="154" class="ar-particle ar-particle-m3"/>
+                        <circle r="2.5" fill="#34d399" cx="160" cy="142" class="ar-particle ar-particle-m4"/>
+                        <circle r="2.5" fill="#34d399" cx="160" cy="158" class="ar-particle ar-particle-m5"/>
+
+                        <g transform="translate(248, 48)">
+                            <rect x="0" y="0" width="118" height="204" rx="18" fill="#ffffff" stroke="#0b1220" stroke-width="2.5"/>
+                            <rect x="6" y="6" width="106" height="192" rx="13" fill="#ffffff"/>
+                            <text x="14" y="19" font-family="system-ui,sans-serif" font-size="7.5" font-weight="700" fill="#0b1220">9:41</text>
+                            <rect x="80" y="13" width="2.5" height="2.5" fill="#0b1220"/>
+                            <rect x="84" y="12" width="2.5" height="3.5" fill="#0b1220"/>
+                            <rect x="88" y="10.5" width="2.5" height="5" fill="#0b1220"/>
+                            <rect x="92" y="9" width="2.5" height="6.5" fill="#0b1220"/>
+                            <circle cx="100" cy="14" r="1" fill="#0b1220"/>
+                            <path d="M97,12 a5,4 0 0 1 6,0" stroke="#0b1220" stroke-width="1.2" fill="none"/>
+                            <rect x="107" y="11" width="7" height="3.5" rx="1" fill="#0b1220"/>
+                            <rect x="14" y="32" width="62" height="8" rx="3" fill="#0b1220"/>
+                            <rect x="14" y="46" width="42" height="4" rx="2" fill="#0b1220" opacity="0.5"/>
+                            <rect x="14" y="56" width="90" height="30" rx="5" fill="#0b1220" opacity="0.88"/>
+                            <rect x="14" y="92" width="90" height="3" rx="1.5" fill="#0b1220" opacity="0.55"/>
+                            <rect x="14" y="100" width="86" height="3" rx="1.5" fill="#0b1220" opacity="0.55"/>
+                            <rect x="14" y="108" width="62" height="3" rx="1.5" fill="#0b1220" opacity="0.55"/>
+                            <rect x="14" y="120" width="44" height="5" rx="2" fill="#0b1220" opacity="0.85"/>
+                            <rect x="14" y="131" width="90" height="3" rx="1.5" fill="#0b1220" opacity="0.55"/>
+                            <rect x="14" y="139" width="78" height="3" rx="1.5" fill="#0b1220" opacity="0.55"/>
+                            <rect x="14" y="150" width="90" height="18" rx="4" fill="#0b1220" opacity="0.85"/>
+                            <rect x="14" y="174" width="90" height="3" rx="1.5" fill="#0b1220" opacity="0.55"/>
+                            <rect x="14" y="182" width="60" height="3" rx="1.5" fill="#0b1220" opacity="0.55"/>
+                        </g>
+
+                        <text x="100" y="272" text-anchor="middle" font-family="system-ui,sans-serif" font-size="10" font-weight="800" fill="#047857" letter-spacing="1">INTERNET</text>
+                        <text x="307" y="286" text-anchor="middle" font-family="system-ui,sans-serif" font-size="10" font-weight="800" fill="#047857" letter-spacing="1">SITE WEB</text>
+                    </svg>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <div class="option-list">
+        <label class="option-card">
+            <input type="radio" name="accesReseauOption" value="memoire">
+            <span class="option-radio"></span>
+            <div class="option-content">
+                <div class="option-title">Mémoire de l'appareil</div>
+                <div class="option-desc">Pour les sites dont les données autres que les fichiers sources ne changent pas</div>
+            </div>
+        </label>
+        <label class="option-card">
+            <input type="radio" name="accesReseauOption" value="priorite">
+            <span class="option-radio"></span>
+            <div class="option-content">
+                <div class="option-title">Internet en priorité</div>
+                <div class="option-desc">Pour les sites dont les données autres que les fichiers sources changent régulièrement</div>
+            </div>
+        </label>
+        <label class="option-card">
+            <input type="radio" name="accesReseauOption" value="internet">
+            <span class="option-radio"></span>
+            <div class="option-content">
+                <div class="option-title">Internet uniquement</div>
+                <div class="option-desc">Pour les sites dont l'accès à Internet est obligatoire pour fonctionner parfaitement</div>
+            </div>
+        </label>
+    </div>
+</div>
+
+<style>
+.screen { display: none; }
+.screen.active { display: block; }
+#acces-reseau {
+    max-width: 640px;
+    width: 100%;
+    margin: 0 auto;
+    padding: 0 16px calc(16px + env(safe-area-inset-bottom, 0px));
+    box-sizing: border-box;
+    min-height: 100%;
+}
+
+.page-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 0 0 22px;
+    position: sticky;
+    top: 0;
+    background: #fff;
+    z-index: 10;
+}
+.back-btn {
+    width: 40px; height: 40px;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    color: #0b1220;
+    transition: background-color .15s ease;
+}
+.back-btn:hover { background: #f1f5f9; }
+.back-btn:active { transform: scale(.95); }
+.back-btn svg {
+    width: 24px; height: 24px;
+    stroke: currentColor; fill: none;
+    stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round;
+}
+.page-title-wrap {
+    flex: 1;
+    min-width: 0;
+    border-left: 2px solid #10b981;
+    padding-left: 14px;
+}
+.page-title {
+    font-size: 1.15rem;
+    font-weight: 800;
+    color: #0b1220;
+    line-height: 1.15;
+    letter-spacing: -0.025em;
+    margin: 0 0 2px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.page-sub {
+    font-size: 0.78rem;
+    font-weight: 450;
+    color: #64748b;
+    line-height: 1.35;
+    margin: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* ⭐ TEXTE D'INTRO — écart quasi nul */
+.state-intro {
+    font-size: 0.88rem;
+    color: #64748b;
+    margin: 4px 0 0;
+    line-height: 1.5;
+    text-align: center;
+}
+
+/* ⭐ DIAGRAMME — écart quasi nul avec rectangles */
+.ar-diagram-wrap {
+    position: relative;
+    min-height: 300px;
+    margin: 0;
+    overflow: hidden;
+}
+.ar-diagram-scaler {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 400px; height: 300px;
+    transform: translate(-50%, -50%) scale(1);
+    transform-origin: center center;
+    will-change: transform;
+}
+.ar-diagram {
+    position: absolute;
+    inset: 0;
+    width: 400px; height: 300px;
+}
+
+.ar-schema {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity .4s ease, visibility 0s linear .4s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.ar-schema svg { width: 100%; height: 100%; }
+.ar-diagram[data-mode="memoire"]  .ar-schema-memoire,
+.ar-diagram[data-mode="priorite"] .ar-schema-priorite,
+.ar-diagram[data-mode="internet"] .ar-schema-internet {
+    opacity: 1;
+    visibility: visible;
+    transition: opacity .4s ease, visibility 0s;
+}
+
+.ar-svg-full {
+    width: 100%;
+    height: 100%;
+    display: block;
+    overflow: visible;
+}
+
+@keyframes arTravelRight {
+    0%   { transform: translate(0, 0);     opacity: 0; }
+    20%  { opacity: 1; }
+    80%  { opacity: 1; }
+    100% { transform: translate(70px, 0);  opacity: 0; }
+}
+.ar-particle-m1 { animation: arTravelRight 2s infinite linear; animation-delay: 0s;   }
+.ar-particle-m2 { animation: arTravelRight 2s infinite linear; animation-delay: .4s;  }
+.ar-particle-m3 { animation: arTravelRight 2s infinite linear; animation-delay: .8s;  }
+.ar-particle-m4 { animation: arTravelRight 2s infinite linear; animation-delay: 1.2s; }
+.ar-particle-m5 { animation: arTravelRight 2s infinite linear; animation-delay: 1.6s; }
+
+@keyframes arTravelDiagTop {
+    0%   { transform: translate(0, 0);         opacity: 0; }
+    20%  { opacity: 1; }
+    80%  { opacity: 1; }
+    100% { transform: translate(75px, 25px);   opacity: 0; }
+}
+.ar-particle-pr1 { animation: arTravelDiagTop 2s infinite linear; animation-delay: 0s;  }
+.ar-particle-pr2 { animation: arTravelDiagTop 2s infinite linear; animation-delay: 1s;  }
+
+@keyframes arTravelDiagBot {
+    0%   { transform: translate(0, 0);          opacity: 0; }
+    20%  { opacity: 1; }
+    80%  { opacity: 1; }
+    100% { transform: translate(75px, -38px);   opacity: 0; }
+}
+.ar-particle-pr3 { animation: arTravelDiagBot 2s infinite linear; animation-delay: 0s;  }
+.ar-particle-pr4 { animation: arTravelDiagBot 2s infinite linear; animation-delay: 1s;  }
+
+.option-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+.option-card {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    padding: 16px 16px;
+    background: #ffffff;
+    border: 1px solid #f1f5f9;
+    border-radius: 16px;
+    cursor: pointer;
+    box-shadow:
+        0 8px 20px -14px rgba(15,23,42,.14),
+        0 2px 6px -2px rgba(15,23,42,.04);
+    transition: border-color .18s ease, box-shadow .18s ease, transform .18s ease;
+}
+.option-card:hover {
+    transform: translateY(-1px);
+    box-shadow:
+        0 14px 26px -16px rgba(15,23,42,.22),
+        0 2px 6px -2px rgba(15,23,42,.05);
+}
+.option-card input[type="radio"] { display: none; }
+.option-radio {
+    flex-shrink: 0;
+    width: 22px; height: 22px;
+    border: 2px solid #cbd5e1;
+    border-radius: 50%;
+    position: relative;
+    transition: border-color .15s ease;
+    margin-top: 2px;
+}
+.option-card input[type="radio"]:checked + .option-radio {
+    border-color: #10b981;
+}
+.option-card input[type="radio"]:checked + .option-radio::after {
+    content: "";
+    position: absolute;
+    inset: 3px;
+    background: #10b981;
+    border-radius: 50%;
+}
+.option-card input[type="radio"]:checked ~ .option-content .option-title {
+    color: #047857;
+}
+.option-content { flex: 1; min-width: 0; }
+.option-title {
+    font-size: 0.98rem;
+    font-weight: 700;
+    color: #0b1220;
+    margin-bottom: 4px;
+    line-height: 1.3;
+    letter-spacing: -0.015em;
+    transition: color .15s ease;
+}
+/* ⭐ Descriptions : texte complet, sur 2 lignes naturelles, sans troncature */
+.option-desc {
+    font-size: 0.84rem;
+    color: #64748b;
+    line-height: 1.45;
+    text-align: left;
+}
+
+@media (min-width: 520px) {
+    .page-title { font-size: 1.3rem; }
+    .option-title { font-size: 1.02rem; }
+    .option-desc { font-size: 0.87rem; }
+}
+</style>
+
+<script>
+(function() {
+
+    const AR_DIAGRAM_W = 400, AR_DIAGRAM_H = 300;
+
+    function fitArDiagram() {
+        const wrap = document.getElementById('arDiagramWrap');
+        const scaler = document.getElementById('arDiagramScaler');
+        if (!wrap || !scaler) return;
+        const aw = wrap.clientWidth, ah = wrap.clientHeight;
+        if (aw <= 0 || ah <= 0) return;
+        const scale = Math.min(aw / AR_DIAGRAM_W, ah / AR_DIAGRAM_H, 1.6);
+        scaler.style.transform = 'translate(-50%, -50%) scale(' + scale + ')';
+    }
+
+    function applyArDiagram(mode) {
+        const d = document.getElementById('arDiagram');
+        if (!d) return;
+        const allowed = ['memoire', 'priorite', 'internet'];
+        const newMode = allowed.indexOf(mode) !== -1 ? mode : 'memoire';
+        d.dataset.mode = newMode;
+    }
+
+    const LABELS = {
+        'memoire':  'Mémoire de l\'appareil',
+        'priorite': 'Internet en priorité',
+        'internet': 'Internet uniquement'
+    };
+
+    function mettreAJourLabel(valeur) {
+        const el = document.getElementById('accesReseauValue');
+        if (!el) return;
+        el.textContent = LABELS[valeur] || LABELS['memoire'];
+    }
+
+    async function initAccesReseau() {
+        let saved = 'memoire';
+        try {
+            const lu = await recupererNatif('accesReseau');
+            if (lu === 'memoire' || lu === 'priorite' || lu === 'internet') saved = lu;
+        } catch (e) {}
+
+        const radio = document.querySelector('input[name="accesReseauOption"][value="' + saved + '"]');
+        if (radio) radio.checked = true;
+
+        applyArDiagram(saved);
+        mettreAJourLabel(saved);
+
+        setTimeout(fitArDiagram, 60);
+    }
+
+    document.querySelectorAll('input[name="accesReseauOption"]').forEach(function(r) {
+        r.addEventListener('change', async function() {
+            const valeur = this.value;
+            try { await stockerNatif('accesReseau', valeur); } catch (e) {}
+            applyArDiagram(valeur);
+            mettreAJourLabel(valeur);
+        });
+    });
+
+    window.addEventListener('resize', function() {
+        const el = document.getElementById('acces-reseau');
+        if (el && el.classList.contains('active')) {
+            fitArDiagram();
+        }
+    });
+
+    window.init_acces_reseau = initAccesReseau;
+
+    initAccesReseau();
+
+})();
+</script>
