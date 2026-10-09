@@ -1,0 +1,792 @@
+<div id="fichiers" class="screen">
+    <div class="page-header">
+        <button class="back-btn" onclick="goBack()"><svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg></button>
+        <div class="page-title-wrap">
+            <h1 class="page-title">Fichiers sources</h1>
+            <p class="page-sub">Le contenu de votre site</p>
+        </div>
+    </div>
+
+    <!-- ÉTAT VIDE -->
+    <div id="filesEmptyState">
+        <p class="state-intro">Choisissez le type de document à importer, puis sélectionnez vos fichiers.</p>
+
+        <!-- Segment Dossier / Fichier -->
+        <div class="segment-control">
+            <input type="radio" name="sourceType" value="dossier" id="srcDossier" checked>
+            <label for="srcDossier">Dossier</label>
+            <input type="radio" name="sourceType" value="fichier" id="srcFichier">
+            <label for="srcFichier">Fichier</label>
+        </div>
+
+        <div id="blocDossier">
+            <label class="file-drop">
+                <input type="file" id="dossierInput" webkitdirectory multiple>
+                <div class="file-drop-icon-wrap">
+                    <svg viewBox="0 0 24 24"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+                </div>
+                <div class="file-drop-text">Sélectionner un dossier</div>
+                <div class="file-drop-hint">Le dossier complet de votre site</div>
+            </label>
+        </div>
+
+        <div id="blocFichier" class="hidden">
+            <label class="file-drop">
+                <input type="file" id="fichierInput" accept=".html,text/html">
+                <div class="file-drop-icon-wrap">
+                    <svg viewBox="0 0 24 24"><path d="M14 3v4a1 1 0 0 0 1 1h4M5 3h9l5 5v13a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1z"/></svg>
+                </div>
+                <div class="file-drop-text">Sélectionner un fichier .html</div>
+                <div class="file-drop-hint">Un seul fichier HTML</div>
+            </label>
+        </div>
+    </div>
+
+    <!-- ÉTAT CHARGEMENT -->
+    <div id="filesLoadingState" class="hidden">
+        <div class="import-loading">
+            <div class="spinner"></div>
+            <p>Importation en cours...</p>
+            <p class="import-loading-hint">Veuillez patienter</p>
+        </div>
+    </div>
+
+    <!-- ÉTAT REMPLI -->
+    <div id="filesFilledState" class="hidden">
+        <div id="mainPageCard" class="main-page-card hidden">
+            <div class="main-page-card-icon">
+                <svg viewBox="0 0 24 24"><path d="M14 3v4a1 1 0 0 0 1 1h4"/><path d="M5 3h9l5 5v13a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1z"/><path d="M9 13h6"/><path d="M9 17h4"/></svg>
+            </div>
+            <div class="main-page-card-info">
+                <div class="main-page-card-label">Page d'accueil principale</div>
+                <div class="main-page-card-name" id="mainPageCardName">index.html</div>
+            </div>
+            <div class="main-page-card-check">
+                <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+            </div>
+        </div>
+
+        <div id="mainPageSelectWrapper" class="main-page-select-wrapper hidden">
+            <label class="main-page-select-label" for="selectHtmlPrincipal">Choisissez la page d'accueil principale de votre site.</label>
+            <select id="selectHtmlPrincipal"></select>
+        </div>
+
+        <div class="files-header">
+            <span class="files-header-text" id="filesCount">0 fichier</span>
+            <button type="button" class="delete-all-btn" onclick="openConfirmDeleteAllFiles()">
+                <svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+                Tout supprimer
+            </button>
+        </div>
+
+        <div class="files-gallery" id="filesGallery"></div>
+    </div>
+</div>
+
+<style>
+/* === Écran === */
+.screen { display: none; }
+.screen.active { display: block; }
+#fichiers {
+    max-width: 640px;
+    width: 100%;
+    margin: 0 auto;
+    padding: 0 16px 40px;
+}
+
+/* ============================================
+   EN-TÊTE — titre + sous-titre empilés
+   ============================================ */
+.page-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 0 22px;
+    position: sticky;
+    top: 0;
+    background: #fff;
+    z-index: 10;
+}
+.back-btn {
+    width: 40px; height: 40px;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    color: #0b1220;
+    transition: background-color .15s ease;
+}
+.back-btn:hover { background: #f1f5f9; }
+.back-btn:active { transform: scale(.95); }
+.back-btn svg {
+    width: 24px; height: 24px;
+    stroke: currentColor; fill: none;
+    stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round;
+}
+
+.page-title-wrap {
+    flex: 1;
+    min-width: 0;
+    border-left: 2px solid #10b981;
+    padding-left: 14px;
+}
+.page-title {
+    font-size: 1.15rem;
+    font-weight: 800;
+    color: #0b1220;
+    line-height: 1.15;
+    letter-spacing: -0.025em;
+    margin: 0 0 2px;
+}
+.page-sub {
+    font-size: 0.78rem;
+    font-weight: 450;
+    color: #64748b;
+    line-height: 1.35;
+    margin: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* ============================================
+   INTRO
+   ============================================ */
+.state-intro {
+    font-size: 0.88rem;
+    color: #64748b;
+    margin-bottom: 18px;
+    line-height: 1.5;
+}
+
+/* ============================================
+   SEGMENT CONTROL
+   ============================================ */
+.segment-control {
+    display: flex;
+    background: #f1f5f9;
+    border-radius: 14px;
+    padding: 4px;
+    margin-bottom: 20px;
+    gap: 4px;
+}
+.segment-control label {
+    flex: 1;
+    text-align: center;
+    padding: 11px 14px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #64748b;
+    cursor: pointer;
+    border-radius: 10px;
+    transition: background-color .18s ease, color .18s ease, box-shadow .18s ease;
+}
+.segment-control input { display: none; }
+.segment-control input:checked + label {
+    background: #ffffff;
+    color: #0b1220;
+    font-weight: 700;
+    box-shadow: 0 2px 6px rgba(15,23,42,.08);
+}
+
+/* ============================================
+   ZONE DE DROP
+   ============================================ */
+.file-drop {
+    display: block;
+    padding: 36px 20px 30px;
+    border: 2px dashed #cbd5e1;
+    border-radius: 18px;
+    text-align: center;
+    cursor: pointer;
+    background: #fafbfc;
+    transition: border-color .18s ease, background-color .18s ease, transform .18s ease;
+    margin-bottom: 14px;
+}
+.file-drop:hover {
+    border-color: #3b82f6;
+    background: #f0f7ff;
+}
+.file-drop:active { transform: scale(.99); }
+.file-drop input { display: none; }
+.file-drop-icon-wrap {
+    width: 60px; height: 60px;
+    margin: 0 auto 14px;
+    background: #dbeafe;
+    color: #1e40af;
+    border-radius: 16px;
+    display: flex; align-items: center; justify-content: center;
+}
+.file-drop-icon-wrap svg {
+    width: 28px; height: 28px;
+    stroke: currentColor; fill: none;
+    stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round;
+}
+.file-drop-text {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: #0b1220;
+    margin-bottom: 5px;
+    letter-spacing: -0.01em;
+}
+.file-drop-hint {
+    font-size: 0.8rem;
+    color: #64748b;
+}
+
+/* ============================================
+   CHARGEMENT
+   ============================================ */
+.import-loading {
+    text-align: center;
+    padding: 70px 20px;
+}
+.import-loading .spinner {
+    width: 52px; height: 52px;
+    border: 4px solid #e5e5ea;
+    border-top-color: #10b981;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    margin: 0 auto 22px;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+.import-loading p {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #0b1220;
+    margin-bottom: 6px;
+}
+.import-loading .import-loading-hint {
+    font-size: 0.85rem;
+    color: #64748b;
+    font-weight: 400;
+}
+
+/* ============================================
+   CARTE PAGE D'ACCUEIL
+   ============================================ */
+.main-page-card {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 14px 16px;
+    background: linear-gradient(135deg, #f0fdf4 0%, #ffffff 100%);
+    border: 1.5px solid #bbf7d0;
+    border-radius: 16px;
+    margin-bottom: 14px;
+    box-shadow: 0 8px 20px -14px rgba(16,185,129,.35);
+}
+.main-page-card-icon {
+    width: 42px; height: 42px;
+    border-radius: 11px;
+    background: #dcfce7;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    color: #16a34a;
+}
+.main-page-card-icon svg {
+    width: 22px; height: 22px;
+    stroke: currentColor; fill: none;
+    stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round;
+}
+.main-page-card-info { flex: 1; min-width: 0; }
+.main-page-card-label {
+    font-size: 0.7rem;
+    font-weight: 800;
+    color: #16a34a;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 3px;
+}
+.main-page-card-name {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: #0b1220;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    letter-spacing: -0.01em;
+}
+.main-page-card-check {
+    width: 24px; height: 24px;
+    border-radius: 50%;
+    background: #16a34a;
+    display: flex; align-items: center; justify-content: center;
+    color: #fff;
+    flex-shrink: 0;
+}
+.main-page-card-check svg {
+    width: 13px; height: 13px;
+    stroke: currentColor; fill: none;
+    stroke-width: 3; stroke-linecap: round; stroke-linejoin: round;
+}
+
+/* ============================================
+   SÉLECTEUR DE PAGE
+   ============================================ */
+.main-page-select-wrapper {
+    background: #fafbfc;
+    border: 1px solid #e2e8f0;
+    border-radius: 14px;
+    padding: 14px;
+    margin-bottom: 14px;
+    transition: background-color .15s ease, border-color .15s ease;
+}
+.main-page-select-wrapper.has-error {
+    background: #fef2f2;
+    border-color: #ef4444;
+    box-shadow: 0 0 0 2px #ef4444;
+    animation: shake 0.4s ease;
+}
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-4px); }
+    75% { transform: translateX(4px); }
+}
+.main-page-select-label {
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: #0b1220;
+    margin-bottom: 10px;
+    display: block;
+    line-height: 1.4;
+    letter-spacing: -0.01em;
+}
+.main-page-select-wrapper select {
+    width: 100%;
+    padding: 11px 12px;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    font-size: 0.9rem;
+    background: #fff;
+    font-family: inherit;
+    outline: none;
+    font-weight: 500;
+    color: #0b1220;
+    cursor: pointer;
+    transition: border-color .15s ease;
+}
+.main-page-select-wrapper select:focus {
+    border-color: #3b82f6;
+}
+
+/* ============================================
+   EN-TÊTE FICHIERS
+   ============================================ */
+.files-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 14px;
+    padding: 0 2px;
+    gap: 10px;
+}
+.files-header-text {
+    font-size: 0.85rem;
+    color: #64748b;
+    font-weight: 600;
+    letter-spacing: -0.005em;
+}
+.delete-all-btn {
+    background: #fef2f2;
+    color: #ef4444;
+    border: 1px solid #fecaca;
+    padding: 8px 14px;
+    border-radius: 10px;
+    font-size: 0.78rem;
+    font-weight: 700;
+    cursor: pointer;
+    font-family: inherit;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: background-color .15s ease, transform .1s ease;
+}
+.delete-all-btn:hover { background: #fee2e2; }
+.delete-all-btn:active { transform: scale(.97); }
+.delete-all-btn svg {
+    width: 14px; height: 14px;
+    stroke: currentColor; fill: none;
+    stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round;
+}
+
+/* ============================================
+   GALERIE
+   ============================================ */
+.files-gallery {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    margin-bottom: 16px;
+}
+.gallery-item {
+    display: flex;
+    flex-direction: column;
+    background: #ffffff;
+    border: 1px solid #f1f5f9;
+    border-radius: 14px;
+    overflow: hidden;
+    box-shadow:
+        0 6px 16px -12px rgba(15,23,42,.12),
+        0 1px 3px rgba(15,23,42,.03);
+    transition: transform .15s ease, box-shadow .15s ease;
+}
+.gallery-item:hover {
+    transform: translateY(-2px);
+    box-shadow:
+        0 12px 22px -14px rgba(15,23,42,.2),
+        0 2px 4px rgba(15,23,42,.04);
+}
+.gallery-thumb {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    background: #f8fafc;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    border-bottom: 1px solid #f1f5f9;
+}
+.gallery-thumb img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    display: block;
+}
+.gallery-thumb svg {
+    width: 42px; height: 42px;
+    stroke: #94a3b8; fill: none;
+    stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round;
+}
+.gallery-thumb .ext-badge {
+    position: absolute;
+    bottom: 8px;
+    right: 8px;
+    font-size: 0.6rem;
+    font-weight: 800;
+    background: #fff;
+    color: #0b1220;
+    padding: 3px 7px;
+    border-radius: 999px;
+    letter-spacing: 0.05em;
+    box-shadow: 0 1px 3px rgba(0,0,0,.15);
+}
+.ext-badge.html { background: #fee2e2; color: #dc2626; }
+.ext-badge.css { background: #dbeafe; color: #2563eb; }
+.ext-badge.js { background: #fef3c7; color: #d97706; }
+.ext-badge.svg { background: #ede9fe; color: #7c3aed; }
+.ext-badge.json { background: #fce7f3; color: #db2777; }
+.ext-badge.png, .ext-badge.jpg, .ext-badge.jpeg, .ext-badge.gif, .ext-badge.webp {
+    background: #d1fae5;
+    color: #059669;
+}
+.gallery-item-info {
+    padding: 10px 12px;
+    min-width: 0;
+}
+.gallery-item-name {
+    font-size: 0.78rem;
+    color: #0b1220;
+    font-weight: 600;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    letter-spacing: -0.005em;
+}
+.gallery-item-size {
+    font-size: 0.68rem;
+    color: #64748b;
+    margin-top: 3px;
+    font-weight: 450;
+}
+
+.hidden { display: none !important; }
+</style>
+
+<script>
+/* ============================================================
+   ÉCRAN FICHIERS SOURCES — FORMULE PRO
+   ============================================================ */
+(function() {
+
+    let filesActiveMode = 'dossier';
+    let filesData = [];
+    let galleryBlobUrls = [];
+
+    function revokeGalleryBlobUrls() {
+        galleryBlobUrls.forEach(url => { try { URL.revokeObjectURL(url); } catch (e) {} });
+        galleryBlobUrls.length = 0;
+    }
+
+    function formatFileSize(bytes) {
+        if (!bytes) return '';
+        if (bytes < 1024) return bytes + ' o';
+        if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' Ko';
+        return (bytes / (1024 * 1024)).toFixed(1) + ' Mo';
+    }
+
+    function getFileIconSvg(ext) {
+        const e = (ext || '').toLowerCase();
+        if (e === 'html' || e === 'htm') return '<svg viewBox="0 0 24 24"><path d="M14 3v4a1 1 0 0 0 1 1h4"/><path d="M5 3h9l5 5v13a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1z"/><path d="M9 13h6"/><path d="M9 17h4"/></svg>';
+        if (e === 'css') return '<svg viewBox="0 0 24 24"><path d="M14 3v4a1 1 0 0 0 1 1h4"/><path d="M5 3h9l5 5v13a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1z"/><path d="M8 14h8"/><path d="M8 17h5"/></svg>';
+        if (e === 'js') return '<svg viewBox="0 0 24 24"><path d="M14 3v4a1 1 0 0 0 1 1h4"/><path d="M5 3h9l5 5v13a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1z"/><path d="M10 14v3"/><path d="M14 14v3"/></svg>';
+        return '<svg viewBox="0 0 24 24"><path d="M14 3v4a1 1 0 0 0 1 1h4"/><path d="M5 3h9l5 5v13a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1z"/></svg>';
+    }
+
+    function renderGallery(containerId, files) {
+        const container = document.getElementById(containerId);
+        if (!container) return;
+        container.innerHTML = '';
+        files.forEach(f => {
+            const displayName = f.name;
+            const ext = (displayName.split('.').pop() || '').toLowerCase();
+            const isImage = /^(png|jpg|jpeg|gif|webp|bmp|svg)$/.test(ext);
+            let thumbContent;
+            if (isImage && f.buffer) {
+                try {
+                    const blob = new Blob([f.buffer], { type: f.type || 'image/*' });
+                    const url = URL.createObjectURL(blob);
+                    galleryBlobUrls.push(url);
+                    thumbContent = '<img src="' + url + '" alt="">';
+                } catch (e) { thumbContent = getFileIconSvg(ext); }
+            } else { thumbContent = getFileIconSvg(ext); }
+
+            const el = document.createElement('div');
+            el.className = 'gallery-item';
+            el.innerHTML =
+                '<div class="gallery-thumb">' +
+                    thumbContent +
+                    (ext ? '<span class="ext-badge ' + ext + '">' + ext.toUpperCase() + '</span>' : '') +
+                '</div>' +
+                '<div class="gallery-item-info">' +
+                    '<div class="gallery-item-name" title="' + displayName + '">' + displayName + '</div>' +
+                    '<div class="gallery-item-size">' + formatFileSize(f.buffer ? f.buffer.byteLength : 0) + '</div>' +
+                '</div>';
+            container.appendChild(el);
+        });
+    }
+
+    async function refreshFilesScreenUI() {
+        revokeGalleryBlobUrls();
+        const emptyState = document.getElementById('filesEmptyState');
+        const loadingState = document.getElementById('filesLoadingState');
+        const filledState = document.getElementById('filesFilledState');
+        if (!emptyState) return;
+
+        loadingState.classList.add('hidden');
+        const hasSelection = filesData && filesData.length > 0;
+
+        if (!hasSelection) {
+            emptyState.classList.remove('hidden');
+            filledState.classList.add('hidden');
+            const radio = document.querySelector('input[name="sourceType"][value="' + filesActiveMode + '"]');
+            if (radio) radio.checked = true;
+            document.getElementById('blocDossier').classList.toggle('hidden', filesActiveMode !== 'dossier');
+            document.getElementById('blocFichier').classList.toggle('hidden', filesActiveMode !== 'fichier');
+            return;
+        }
+
+        emptyState.classList.add('hidden');
+        filledState.classList.remove('hidden');
+        const n = filesData.length;
+        document.getElementById('filesCount').textContent = n + ' fichier' + (n > 1 ? 's' : '') + ' importé' + (n > 1 ? 's' : '');
+
+        const htmlFiles = filesData.map((f, idx) => ({ f, idx })).filter(o => o.f.name.toLowerCase().endsWith('.html'));
+        const cardEl = document.getElementById('mainPageCard');
+        const selectWrap = document.getElementById('mainPageSelectWrapper');
+
+        if (htmlFiles.length === 0) {
+            cardEl.classList.add('hidden');
+            selectWrap.classList.add('hidden');
+        } else if (htmlFiles.length === 1) {
+            cardEl.classList.remove('hidden');
+            selectWrap.classList.add('hidden');
+            selectWrap.classList.remove('has-error');
+            document.getElementById('mainPageCardName').textContent = htmlFiles[0].f.name;
+            await stockerNatif('indexPrefere', htmlFiles[0].idx);
+        } else {
+            cardEl.classList.add('hidden');
+            selectWrap.classList.remove('hidden');
+            const selectEl = document.getElementById('selectHtmlPrincipal');
+            selectEl.innerHTML = '';
+            const placeholderOpt = document.createElement('option');
+            placeholderOpt.value = '';
+            placeholderOpt.textContent = '-- Choisissez une page --';
+            selectEl.appendChild(placeholderOpt);
+            htmlFiles.forEach((o) => {
+                const opt = document.createElement('option');
+                opt.value = o.idx;
+                opt.textContent = o.f.name;
+                selectEl.appendChild(opt);
+            });
+            const prefIndex = await recupererNatif('indexPrefere');
+            let isValidPref = false;
+            if (prefIndex !== null && prefIndex !== undefined) {
+                isValidPref = htmlFiles.some(o => o.idx === prefIndex);
+            }
+            if (isValidPref) {
+                selectEl.value = String(prefIndex);
+                selectWrap.classList.remove('has-error');
+            } else {
+                selectEl.value = '';
+                await supprimerNatif('indexPrefere');
+            }
+        }
+        renderGallery('filesGallery', filesData);
+    }
+
+    async function showFilesLoading() {
+        document.getElementById('filesEmptyState').classList.add('hidden');
+        document.getElementById('filesFilledState').classList.add('hidden');
+        document.getElementById('filesLoadingState').classList.remove('hidden');
+        await new Promise(r => setTimeout(r, 30));
+    }
+
+    document.querySelectorAll('input[name="sourceType"]').forEach(radio => {
+        radio.addEventListener('change', function() {
+            filesActiveMode = this.value;
+            document.getElementById('blocDossier').classList.toggle('hidden', filesActiveMode !== 'dossier');
+            document.getElementById('blocFichier').classList.toggle('hidden', filesActiveMode !== 'fichier');
+        });
+    });
+
+    const di = document.getElementById('dossierInput');
+    if (di) {
+        di.addEventListener('change', async function() {
+            const files = Array.from(this.files);
+            this.value = '';
+            if (files.length === 0) return;
+            const hasHtml = files.some(f => f.name.toLowerCase().endsWith('.html'));
+            if (!hasHtml) {
+                showNotification("Ce dossier ne contient aucun fichier HTML. Un fichier HTML est obligatoire pour générer l'application.", 'error');
+                return;
+            }
+            await showFilesLoading();
+            try {
+                const converties = [];
+                for (let i = 0; i < files.length; i++) {
+                    const f = files[i];
+                    const buf = await f.arrayBuffer();
+                    converties.push({ name: f.name, webkitRelativePath: f.webkitRelativePath || '', buffer: buf, type: f.type });
+                }
+                filesData = converties;
+                await stockerNatif('files_data', converties);
+                await stockerNatif('sourceType', 'dossier');
+                await supprimerNatif('indexPrefere');
+                invalidateSitePreviewCache();
+                await refreshFilesScreenUI();
+            } catch (err) {
+                showNotification('❌ Erreur import dossier : ' + err.message, 'error');
+                await refreshFilesScreenUI();
+            }
+        });
+    }
+
+    const fi = document.getElementById('fichierInput');
+    if (fi) {
+        fi.addEventListener('change', async function() {
+            const files = Array.from(this.files);
+            this.value = '';
+            if (files.length === 0) return;
+            const file = files[0];
+            if (!file.name.toLowerCase().endsWith('.html')) {
+                showNotification('Veuillez sélectionner un fichier .html.', 'error');
+                return;
+            }
+            await showFilesLoading();
+            try {
+                const buf = await file.arrayBuffer();
+                filesData = [{ name: file.name, webkitRelativePath: '', buffer: buf, type: file.type || 'text/html' }];
+                await stockerNatif('files_data', filesData);
+                await stockerNatif('sourceType', 'fichier');
+                await supprimerNatif('indexPrefere');
+                invalidateSitePreviewCache();
+                await refreshFilesScreenUI();
+            } catch (err) {
+                showNotification('❌ Erreur import fichier : ' + err.message, 'error');
+                await refreshFilesScreenUI();
+            }
+        });
+    }
+
+    const shp = document.getElementById('selectHtmlPrincipal');
+    if (shp) {
+        shp.addEventListener('change', async function() {
+            const wrapper = document.getElementById('mainPageSelectWrapper');
+            if (this.value === '') {
+                await supprimerNatif('indexPrefere');
+            } else {
+                await stockerNatif('indexPrefere', parseInt(this.value, 10));
+                if (wrapper) wrapper.classList.remove('has-error');
+            }
+            invalidateSitePreviewCache();
+        });
+    }
+
+    async function confirmDeleteAllFiles() {
+        closeConfirmDeleteAllFiles();
+        revokeGalleryBlobUrls();
+        filesData = [];
+        await supprimerNatif('files_data');
+        await supprimerNatif('indexPrefere');
+        invalidateSitePreviewCache();
+        await refreshFilesScreenUI();
+        const rf = document.getElementById('rowFiles');
+        if (rf) rf.classList.remove('has-error');
+    }
+
+    function invalidateSitePreviewCache() {
+        if (typeof window._invalidateSitePreviewCache === 'function') {
+            window._invalidateSitePreviewCache();
+        }
+    }
+
+    /* ⭐ Vérifie en temps réel si l'écran fichiers est valide (pas de blocage nécessaire) */
+    function estFichiersValide() {
+        const htmlFiles = (filesData || []).filter(f => f.name.toLowerCase().endsWith('.html'));
+        if (htmlFiles.length <= 1) return true; // 0 ou 1 fichier : rien à choisir
+        const selectEl = document.getElementById('selectHtmlPrincipal');
+        if (!selectEl) return true;
+        const val = selectEl.value;
+        if (val === '') return false;
+        const idx = parseInt(val, 10);
+        if (isNaN(idx)) return false;
+        if (!filesData[idx]) return false;
+        return filesData[idx].name.toLowerCase().endsWith('.html');
+    }
+
+    async function initFichiers() {
+        try {
+            filesActiveMode = await recupererNatif('sourceType') || 'dossier';
+            filesData = await recupererNatif('files_data') || [];
+        } catch (e) {}
+        await refreshFilesScreenUI();
+
+        /* ⭐ Enregistrer la garde auprès du shell :
+           Bloque la sortie de l'écran fichiers si plusieurs HTML importés
+           et qu'aucune page d'accueil principale n'a été choisie */
+        if (typeof window.enregistrerGarde === 'function') {
+            window.enregistrerGarde('fichiers', function() {
+                if (estFichiersValide()) return true;
+
+                /* Blocage : montrer l'erreur */
+                const wrap = document.getElementById('mainPageSelectWrapper');
+                if (wrap) {
+                    wrap.classList.remove('hidden');
+                    wrap.classList.add('has-error');
+                    if (typeof wrap.scrollIntoView === 'function') {
+                        wrap.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    }
+                }
+                return false;
+            });
+        }
+    }
+
+    window.init_fichiers = initFichiers;
+    window.confirmDeleteAllFiles = confirmDeleteAllFiles;
+
+})();
+</script>
