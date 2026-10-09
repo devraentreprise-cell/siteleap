@@ -1,0 +1,116 @@
+<div id="parametres" class="screen">
+    <div class="page-header">
+        <button class="back-btn" onclick="goBack()"><svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg></button>
+        <h1 class="page-title">Paramètres avancés</h1>
+    </div>
+
+    <div class="list-group">
+        <button type="button" class="list-row" onclick="openScreen('langues')">
+            <div class="list-row-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.5 4 5.5 4 9s-1.5 6.5-4 9c-2.5-2.5-4-5.5-4-9s1.5-6.5 4-9z"/></svg></div>
+            <div class="list-row-content">
+                <div class="list-row-label">Nom du site selon l'appareil</div>
+                <span class="list-row-value" id="languagesValue">Aucune langue ajoutée</span>
+            </div>
+            <div class="list-row-chevron"><svg viewBox="0 0 24 24"><polyline points="9 6 15 12 9 18"/></svg></div>
+        </button>
+    </div>
+
+    <div class="list-group">
+        <button type="button" class="list-row" onclick="openScreen('ouverture')">
+            <div class="list-row-icon"><svg viewBox="0 0 24 24"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/><path d="M12 15l-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/><path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0"/><path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"/></svg></div>
+            <div class="list-row-content">
+                <div class="list-row-label">Gestion de l'ouverture</div>
+                <span class="list-row-value" id="launchValue">Réutiliser la fenêtre existante</span>
+            </div>
+            <div class="list-row-chevron"><svg viewBox="0 0 24 24"><polyline points="9 6 15 12 9 18"/></svg></div>
+        </button>
+    </div>
+</div>
+
+<style>
+.screen { display: none; }
+.screen.active { display: block; }
+#parametres { max-width: 640px; width: 100%; margin: 0 auto; padding: 0 16px 40px; }
+
+.page-header { display: flex; align-items: center; gap: 12px; padding: 14px 0 22px; position: sticky; top: 0; background: #fff; z-index: 10; }
+.back-btn { width: 40px; height: 40px; border: none; background: transparent; cursor: pointer; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; color: #0b1220; transition: background-color .15s ease; }
+.back-btn:hover { background: #f1f5f9; }
+.back-btn:active { transform: scale(.95); }
+.back-btn svg { width: 24px; height: 24px; stroke: currentColor; fill: none; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+.page-title { flex: 1; font-size: 1.25rem; font-weight: 600; color: #0b1220; line-height: 1.2; }
+
+.list-group { background: #ffffff; border-radius: 14px; margin-bottom: 20px; }
+.list-row {
+    display: flex; align-items: center; gap: 18px;
+    padding: 16px 12px; border-radius: 12px;
+    transition: background-color .15s ease;
+    width: 100%; border: none; background: transparent;
+    font-family: inherit; text-align: left; color: #0b1220;
+}
+button.list-row { cursor: pointer; }
+button.list-row:hover { background: #f8fafc; }
+button.list-row:active { background: #f1f5f9; }
+
+.list-row-icon {
+    width: 30px; height: 30px; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    color: #0b1220;
+}
+.list-row-icon svg {
+    width: 100%; height: 100%; stroke: currentColor; fill: none;
+    stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round;
+}
+.list-row-content { flex: 1; min-width: 0; }
+.list-row-label { font-size: 0.78rem; color: #64748b; font-weight: 400; }
+.list-row-value {
+    font-size: 1rem; color: #0b1220; font-weight: 500;
+    display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    margin-top: 4px;
+}
+.list-row-value.placeholder { color: #94a3b8; font-weight: 400; }
+.list-row-chevron {
+    width: 22px; height: 22px; flex-shrink: 0;
+    color: #94a3b8; display: flex; align-items: center; justify-content: center;
+}
+.list-row-chevron svg {
+    width: 100%; height: 100%; stroke: currentColor; fill: none;
+    stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round;
+}
+</style>
+
+<script>
+(function() {
+
+    async function initParametres() {
+        /* Langues */
+        try {
+            const translations = await recupererNatif('translations') || [];
+            const lv = document.getElementById('languagesValue');
+            if (lv) {
+                const n = translations.length;
+                if (n === 0) {
+                    lv.textContent = 'Aucune langue ajoutée';
+                    lv.classList.add('placeholder');
+                } else {
+                    lv.textContent = n + ' langue' + (n > 1 ? 's' : '') + ' ajoutée' + (n > 1 ? 's' : '');
+                    lv.classList.remove('placeholder');
+                }
+            }
+        } catch (e) {}
+
+        /* Gestion de l'ouverture */
+        try {
+            const launch = await recupererNatif('launchHandler') || 'navigate-existing';
+            const lv2 = document.getElementById('launchValue');
+            if (lv2) {
+                lv2.textContent = launch === 'navigate-new'
+                    ? 'Ouvrir toujours une nouvelle fenêtre'
+                    : 'Réutiliser la fenêtre existante';
+            }
+        } catch (e) {}
+    }
+
+    window.init_parametres = initParametres;
+
+})();
+</script>
