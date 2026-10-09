@@ -1,0 +1,416 @@
+<div id="ouverture" class="screen">
+    <div class="page-header">
+        <button class="back-btn" onclick="goBack()"><svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg></button>
+        <div class="page-title-wrap">
+            <h1 class="page-title">Gestion de l'ouverture</h1>
+            <p class="page-sub">Depuis un lien, une notif ou un email</p>
+        </div>
+    </div>
+
+    <p class="state-intro">Que se passe-t-il lors de l'ouverture depuis une<br>source externe ?</p>
+
+    <div class="launch-diagram-wrap" id="launchDiagramWrap">
+        <div class="launch-diagram-scaler" id="launchDiagramScaler">
+            <div class="launch-diagram" id="launchDiagram" data-mode="existing">
+                <svg class="launch-arrows" viewBox="0 0 340 380" preserveAspectRatio="xMidYMid meet">
+                    <defs>
+                        <marker id="launchAh" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto" markerUnits="strokeWidth">
+                            <polygon points="0 0, 9 4.5, 0 9" fill="#0b1220"/>
+                        </marker>
+                    </defs>
+                    <g class="launch-arrows-existing">
+                        <path d="M 60 40 L 228 178" fill="none" stroke="#0b1220" stroke-width="2.5" stroke-linecap="round" marker-end="url(#launchAh)"/>
+                        <path d="M 60 180 L 228 180" fill="none" stroke="#0b1220" stroke-width="2.5" stroke-linecap="round" marker-end="url(#launchAh)"/>
+                        <path d="M 60 320 L 228 182" fill="none" stroke="#0b1220" stroke-width="2.5" stroke-linecap="round" marker-end="url(#launchAh)"/>
+                    </g>
+                    <g class="launch-arrows-new">
+                        <path d="M 60 40 L 228 40" fill="none" stroke="#0b1220" stroke-width="2.5" stroke-linecap="round" marker-end="url(#launchAh)"/>
+                        <path d="M 60 180 L 228 180" fill="none" stroke="#0b1220" stroke-width="2.5" stroke-linecap="round" marker-end="url(#launchAh)"/>
+                        <path d="M 60 320 L 228 320" fill="none" stroke="#0b1220" stroke-width="2.5" stroke-linecap="round" marker-end="url(#launchAh)"/>
+                    </g>
+                </svg>
+
+                <div class="launch-source s1">
+                    <div class="launch-source-icon link"><svg viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg></div>
+                    <span class="launch-source-label">Lien</span>
+                </div>
+                <div class="launch-source s2">
+                    <div class="launch-source-icon notif"><svg viewBox="0 0 24 24"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg></div>
+                    <span class="launch-source-label">Notification</span>
+                </div>
+                <div class="launch-source s3">
+                    <div class="launch-source-icon mail"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg></div>
+                    <span class="launch-source-label">Email</span>
+                </div>
+
+                <div class="launch-window launch-win-1">
+                    <div class="lw-bar"><span class="lw-dot red"></span><span class="lw-dot yellow"></span><span class="lw-dot green"></span></div>
+                    <div class="lw-content"><div class="lw-line"></div><div class="lw-line short"></div></div>
+                </div>
+                <div class="launch-window launch-win-2">
+                    <div class="lw-bar"><span class="lw-dot red"></span><span class="lw-dot yellow"></span><span class="lw-dot green"></span></div>
+                    <div class="lw-content"><div class="lw-line"></div><div class="lw-line short"></div></div>
+                </div>
+                <div class="launch-window launch-win-3">
+                    <div class="lw-bar"><span class="lw-dot red"></span><span class="lw-dot yellow"></span><span class="lw-dot green"></span></div>
+                    <div class="lw-content"><div class="lw-line"></div><div class="lw-line short"></div></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="option-list">
+        <label class="option-card">
+            <input type="radio" name="launchOption" value="navigate-existing">
+            <span class="option-radio"></span>
+            <div class="option-content">
+                <div class="option-title">Réutiliser la fenêtre existante</div>
+                <div class="option-desc">Conserve la fenêtre déjà ouverte et poursuit la navigation dans celle-ci</div>
+            </div>
+        </label>
+        <label class="option-card">
+            <input type="radio" name="launchOption" value="navigate-new">
+            <span class="option-radio"></span>
+            <div class="option-content">
+                <div class="option-title">Ouvrir une nouvelle fenêtre</div>
+                <div class="option-desc">Ouvre une nouvelle fenêtre pour afficher le contenu sans réutiliser la fenêtre ouverte</div>
+            </div>
+        </label>
+    </div>
+</div>
+
+<style>
+.screen { display: none; }
+.screen.active { display: block; }
+#ouverture { max-width: 640px; width: 100%; margin: 0 auto; padding: 0 16px 40px; }
+
+/* ============================================
+   EN-TÊTE — cohérent avec les autres pages
+   ============================================ */
+.page-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 0 22px;
+    position: sticky;
+    top: 0;
+    background: #fff;
+    z-index: 10;
+}
+.back-btn {
+    width: 40px; height: 40px;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    color: #0b1220;
+    transition: background-color .15s ease;
+}
+.back-btn:hover { background: #f1f5f9; }
+.back-btn:active { transform: scale(.95); }
+.back-btn svg {
+    width: 24px; height: 24px;
+    stroke: currentColor; fill: none;
+    stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round;
+}
+.page-title-wrap {
+    flex: 1;
+    min-width: 0;
+    border-left: 2px solid #10b981;
+    padding-left: 14px;
+}
+.page-title {
+    font-size: 1.15rem;
+    font-weight: 800;
+    color: #0b1220;
+    line-height: 1.15;
+    letter-spacing: -0.025em;
+    margin: 0 0 2px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.page-sub {
+    font-size: 0.78rem;
+    font-weight: 450;
+    color: #64748b;
+    line-height: 1.35;
+    margin: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* ============================================
+   TEXTE D'INTRO — 2 lignes, centré
+   ============================================ */
+.state-intro {
+    font-size: 0.88rem;
+    color: #64748b;
+    margin: 4px 0 18px;
+    line-height: 1.5;
+    text-align: center;
+}
+
+/* ============================================
+   DIAGRAMME
+   ============================================ */
+.launch-diagram-wrap {
+    position: relative;
+    min-height: 300px;
+    margin: 0 0 20px;
+    overflow: hidden;
+}
+.launch-diagram-scaler {
+    position: absolute;
+    left: 50%; top: 50%;
+    width: 340px; height: 380px;
+    transform: translate(-50%, -50%) scale(1);
+    transform-origin: center center;
+    will-change: transform;
+}
+.launch-diagram {
+    position: absolute;
+    inset: 0;
+    width: 340px; height: 380px;
+}
+.launch-arrows {
+    position: absolute;
+    inset: 0;
+    width: 100%; height: 100%;
+    pointer-events: none;
+}
+.launch-arrows-existing,
+.launch-arrows-new { transition: opacity .5s ease; }
+.launch-arrows-existing { opacity: 1; }
+.launch-arrows-new { opacity: 0; }
+.launch-diagram[data-mode="new"] .launch-arrows-existing { opacity: 0; }
+.launch-diagram[data-mode="new"] .launch-arrows-new { opacity: 1; }
+
+/* ============================================
+   ICÔNES SOURCE — style d'origine restauré
+   ============================================ */
+.launch-source {
+    position: absolute;
+    width: 60px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+}
+.launch-source.s1 { left: 0; top: 14px; }
+.launch-source.s2 { left: 0; top: 154px; }
+.launch-source.s3 { left: 0; top: 294px; }
+.launch-source-icon {
+    width: 52px; height: 52px;
+    border-radius: 14px;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    border: 1.5px solid transparent;
+}
+.launch-source-icon svg {
+    width: 26px; height: 26px;
+    stroke: currentColor; fill: none;
+    stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
+}
+.launch-source-icon.link { background: #ede9fe; color: #7c3aed; border-color: #ddd6fe; }
+.launch-source-icon.notif { background: #fef3c7; color: #d97706; border-color: #fde68a; }
+.launch-source-icon.mail { background: #dbeafe; color: #2563eb; border-color: #bfdbfe; }
+.launch-source-label {
+    font-size: 11px;
+    font-weight: 600;
+    color: #64748b;
+    text-align: center;
+    line-height: 1.2;
+    white-space: nowrap;
+}
+
+/* ============================================
+   FENÊTRES NAVIGATEUR — style d'origine restauré
+   ============================================ */
+.launch-window {
+    position: absolute;
+    width: 110px; height: 80px;
+    border-radius: 8px;
+    border: 1.5px solid #cbd5e1;
+    background: #fff;
+    overflow: hidden;
+    box-shadow: 0 4px 10px -6px rgba(15,23,42,.18);
+    transition: all .5s cubic-bezier(0.34, 1.15, 0.64, 1);
+    transform-origin: center center;
+}
+.launch-window .lw-bar {
+    height: 16px;
+    background: #f1f5f9;
+    border-bottom: 1px solid #e2e8f0;
+    display: flex; align-items: center; gap: 4px; padding: 0 7px;
+}
+.launch-window .lw-dot { width: 5px; height: 5px; border-radius: 50%; }
+.launch-window .lw-dot.red { background: #ff5f57; }
+.launch-window .lw-dot.yellow { background: #febc2e; }
+.launch-window .lw-dot.green { background: #28c840; }
+.launch-window .lw-content {
+    padding: 7px 9px;
+    display: flex; flex-direction: column; gap: 4px;
+}
+.launch-window .lw-line { height: 4px; border-radius: 2px; background: #e2e8f0; }
+.launch-window .lw-line.short { width: 55%; }
+.launch-win-1 { left: 230px; top: 0; }
+.launch-win-2 { left: 230px; top: 140px; }
+.launch-win-3 { left: 230px; top: 280px; }
+
+.launch-diagram[data-mode="existing"] .launch-win-1,
+.launch-diagram[data-mode="existing"] .launch-win-3 {
+    opacity: 0;
+    transform: scale(0.72);
+    pointer-events: none;
+}
+.launch-diagram[data-mode="existing"] .launch-win-2 {
+    opacity: 1;
+    transform: scale(1);
+    border-color: #10b981;
+    box-shadow:
+        0 8px 18px -8px rgba(16,185,129,.55),
+        0 0 0 3px rgba(16,185,129,.15);
+}
+.launch-diagram[data-mode="new"] .launch-win-1,
+.launch-diagram[data-mode="new"] .launch-win-2,
+.launch-diagram[data-mode="new"] .launch-win-3 {
+    opacity: 1;
+    transform: scale(1);
+    border-color: #10b981;
+    box-shadow:
+        0 6px 14px -6px rgba(16,185,129,.45),
+        0 0 0 2.5px rgba(16,185,129,.15);
+}
+
+/* ============================================
+   CARTES D'OPTION — style cohérent avec les autres pages
+   ============================================ */
+.option-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+.option-card {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 16px 16px;
+    background: #ffffff;
+    border: 1px solid #f1f5f9;
+    border-radius: 16px;
+    cursor: pointer;
+    box-shadow:
+        0 8px 20px -14px rgba(15,23,42,.14),
+        0 2px 6px -2px rgba(15,23,42,.04);
+    transition: border-color .18s ease, box-shadow .18s ease, transform .18s ease;
+}
+.option-card:hover {
+    transform: translateY(-1px);
+    box-shadow:
+        0 14px 26px -16px rgba(15,23,42,.22),
+        0 2px 6px -2px rgba(15,23,42,.05);
+}
+.option-card input[type="radio"] { display: none; }
+.option-radio {
+    flex-shrink: 0;
+    width: 22px; height: 22px;
+    border: 2px solid #cbd5e1;
+    border-radius: 50%;
+    position: relative;
+    transition: border-color .15s ease;
+}
+.option-card input[type="radio"]:checked + .option-radio {
+    border-color: #10b981;
+}
+.option-card input[type="radio"]:checked + .option-radio::after {
+    content: "";
+    position: absolute;
+    inset: 3px;
+    background: #10b981;
+    border-radius: 50%;
+}
+.option-card input[type="radio"]:checked ~ .option-content .option-title {
+    color: #047857;
+}
+.option-content { flex: 1; min-width: 0; }
+.option-title {
+    font-size: 0.98rem;
+    font-weight: 700;
+    color: #0b1220;
+    margin-bottom: 4px;
+    line-height: 1.3;
+    letter-spacing: -0.015em;
+    transition: color .15s ease;
+}
+.option-desc {
+    font-size: 0.84rem;
+    color: #64748b;
+    line-height: 1.45;
+}
+
+@media (min-width: 520px) {
+    .page-title { font-size: 1.3rem; }
+    .option-title { font-size: 1.02rem; }
+    .option-desc { font-size: 0.87rem; }
+}
+</style>
+
+<script>
+(function() {
+
+    const LAUNCH_DIAGRAM_W = 340, LAUNCH_DIAGRAM_H = 380;
+
+    function fitLaunchDiagram() {
+        const wrap = document.getElementById('launchDiagramWrap');
+        const scaler = document.getElementById('launchDiagramScaler');
+        if (!wrap || !scaler) return;
+        const aw = wrap.clientWidth, ah = wrap.clientHeight;
+        if (aw <= 0 || ah <= 0) return;
+        const scale = Math.min(aw / LAUNCH_DIAGRAM_W, ah / LAUNCH_DIAGRAM_H, 1.6);
+        scaler.style.transform = 'translate(-50%, -50%) scale(' + scale + ')';
+    }
+
+    function applyLaunchDiagram(mode) {
+        const d = document.getElementById('launchDiagram');
+        if (!d) return;
+        d.dataset.mode = (mode === 'navigate-new') ? 'new' : 'existing';
+    }
+
+    async function initOuverture() {
+        let saved = 'navigate-existing';
+        try { saved = (await recupererNatif('launchHandler')) || 'navigate-existing'; } catch (e) {}
+        applyLaunchDiagram(saved);
+        const radio = document.querySelector('input[name="launchOption"][value="' + saved + '"]');
+        if (radio) radio.checked = true;
+        setTimeout(fitLaunchDiagram, 60);
+    }
+
+    document.querySelectorAll('input[name="launchOption"]').forEach(r => {
+        r.addEventListener('change', async function() {
+            try { await stockerNatif('launchHandler', this.value); } catch (e) {}
+            applyLaunchDiagram(this.value);
+
+            const el = document.getElementById('launchValue');
+            if (el) {
+                el.textContent = this.value === 'navigate-new'
+                    ? 'Ouvrir une nouvelle fenêtre'
+                    : 'Réutiliser la fenêtre existante';
+            }
+        });
+    });
+
+    window.addEventListener('resize', function() {
+        const el = document.getElementById('ouverture');
+        if (el && el.classList.contains('active')) {
+            fitLaunchDiagram();
+        }
+    });
+
+    window.init_ouverture = initOuverture;
+
+})();
+</script>
