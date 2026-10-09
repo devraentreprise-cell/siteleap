@@ -1,0 +1,709 @@
+<div id="couleur" class="screen">
+    <div class="page-header">
+        <button class="back-btn" onclick="goBack()"><svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg></button>
+        <div class="page-title-wrap">
+            <h1 class="page-title" id="colorScreenTitle">Couleur</h1>
+            <p class="page-sub">Aperçu en direct</p>
+        </div>
+        <button class="header-validate-btn" onclick="validateColorScreen()">Valider</button>
+    </div>
+
+    <div class="cp-2d-wrapper">
+        <div class="cp-2d" id="cp2D">
+            <div class="cp-2d-inner"></div>
+            <div class="cp-cursor" id="cpCursor"></div>
+        </div>
+        <div class="cp-hand-anim" id="cpHandAnim">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="#f97316"><g transform="rotate(180 12 12)"><path d="M9 11.24V7.5C9 6.12 10.12 5 11.5 5S14 6.12 14 7.5v3.74c1.21-.81 2-2.18 2-3.74C16 5.01 13.99 3 11.5 3S7 5.01 7 7.5c0 1.56.79 2.93 2 3.74zm9.84 4.63l-4.54-2.26c-.17-.07-.35-.11-.54-.11H13v-6c0-.83-.67-1.5-1.5-1.5S10 6.67 10 7.5v10.74c-3.6-.76-3.54-.75-3.67-.75-.31 0-.59.13-.79.33l-.79.8 4.94 4.94c.27.27.65.44 1.06.44h6.79c.75 0 1.33-.55 1.44-1.28l.75-5.27c.01-.07.02-.14.02-.2 0-.62-.38-1.16-.91-1.38z"/></g></svg>
+        </div>
+    </div>
+
+    <div class="cp-phone-wrap">
+        <div class="cp-phone">
+            <div class="cp-phone-titlebar" id="cpPhoneTitlebar">
+                <div class="cp-tb-content" id="cpTbContent">
+                    <span class="cp-tb-time">9:41</span>
+                    <div class="cp-tb-icons">
+                        <svg viewBox="0 0 18 12"><rect x="0" y="9" width="3" height="3" rx="0.6" fill="currentColor"/><rect x="5" y="6" width="3" height="6" rx="0.6" fill="currentColor"/><rect x="10" y="3" width="3" height="9" rx="0.6" fill="currentColor"/><rect x="15" y="0" width="3" height="12" rx="0.6" fill="currentColor"/></svg>
+                        <svg viewBox="0 0 16 12"><path d="M1 4.3C3 2.5 5.4 1.3 8 1.3s5 1.2 7 3" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round"/><path d="M3.3 7.3C4.6 6.2 6.2 5.5 8 5.5s3.4.7 4.7 1.8" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round"/><circle cx="8" cy="10" r="1.05" fill="currentColor"/></svg>
+                        <svg viewBox="0 0 24 12"><rect x="0.6" y="0.6" width="20" height="10.8" rx="2.4" stroke="currentColor" stroke-width="1.1" fill="none"/><rect x="2.4" y="2.4" width="15" height="7.2" rx="1" fill="currentColor"/><rect x="22" y="3.6" width="1.6" height="4.8" rx="0.7" fill="currentColor"/></svg>
+                    </div>
+                </div>
+            </div>
+            <div class="cp-phone-screen" id="cpPhoneScreen">
+                <img id="cpPhoneIcon" class="cp-phone-icon hidden" src="" alt="">
+                <div id="cpPhoneIconPlaceholder" class="cp-phone-icon-placeholder hidden">Icône</div>
+                <!-- L'iframe est insérée dynamiquement à l'ouverture -->
+            </div>
+        </div>
+    </div>
+
+    <div class="cp-palette" id="cpPalette"></div>
+</div>
+
+<style>
+.screen { display: none; }
+.screen.active { display: block; }
+#couleur {
+    max-width: 640px;
+    width: 100%;
+    margin: 0 auto;
+    padding: 0 16px 40px;
+}
+
+/* ============================================
+   EN-TÊTE
+   ============================================ */
+.page-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 0 12px;
+    position: sticky;
+    top: 0;
+    background: #fff;
+    z-index: 10;
+}
+.back-btn {
+    width: 40px; height: 40px;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    color: #0b1220;
+    transition: background-color .15s ease;
+}
+.back-btn:hover { background: #f1f5f9; }
+.back-btn:active { transform: scale(.95); }
+.back-btn svg {
+    width: 24px; height: 24px;
+    stroke: currentColor; fill: none;
+    stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round;
+}
+.page-title-wrap {
+    flex: 1;
+    min-width: 0;
+    border-left: 2px solid #10b981;
+    padding-left: 14px;
+}
+.page-title {
+    font-size: 1.15rem;
+    font-weight: 800;
+    color: #0b1220;
+    line-height: 1.15;
+    letter-spacing: -0.025em;
+    margin: 0 0 2px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.page-sub {
+    font-size: 0.78rem;
+    font-weight: 450;
+    color: #64748b;
+    line-height: 1.35;
+    margin: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.header-validate-btn {
+    background: #10b981;
+    color: #fff;
+    border: none;
+    padding: 9px 16px;
+    border-radius: 10px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: inherit;
+    flex-shrink: 0;
+    transition: background-color .15s ease, transform .1s ease;
+    box-shadow: 0 8px 16px -8px rgba(16,185,129,.75);
+}
+.header-validate-btn:hover { background: #059669; }
+.header-validate-btn:active { transform: scale(.96); }
+
+/* ============================================
+   ZONE 2D — blocage scroll + bordure retirée
+   ============================================ */
+.cp-2d-wrapper {
+    position: relative;
+    margin-top: 4px;
+    margin-bottom: 9px;
+    touch-action: none;
+}
+.cp-2d {
+    position: relative;
+    width: 100%;
+    height: 200px;
+    border-radius: 14px;
+    cursor: crosshair;
+    touch-action: none;
+    user-select: none;
+    -webkit-user-select: none;
+    overflow: hidden;
+}
+.cp-2d-inner {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, #000, transparent), linear-gradient(to right, #fff, transparent);
+}
+.cp-cursor {
+    position: absolute;
+    width: 24px; height: 24px;
+    border-radius: 50%;
+    border: 2px solid #fff;
+    box-shadow: 0 0 0 1.5px rgba(0,0,0,.5), 0 2px 8px rgba(0,0,0,.35);
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+    z-index: 4;
+    transition: left .1s linear, top .1s linear;
+}
+.cp-hand-anim {
+    position: absolute;
+    width: 100px; height: 100px;
+    pointer-events: none;
+    z-index: 10;
+    opacity: 0;
+}
+.cp-hand-anim svg {
+    width: 100%; height: 100%;
+    display: block;
+    filter: drop-shadow(0 10px 16px rgba(0,0,0,.5));
+}
+
+/* ============================================
+   TÉLÉPHONE
+   ============================================ */
+.cp-phone-wrap {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 6px 0 8px;
+}
+.cp-phone {
+    display: flex;
+    width: 100%;
+    max-width: 340px;
+    aspect-ratio: 16 / 9;
+    border-radius: 18px;
+    overflow: hidden;
+    background: #ffffff;
+    box-shadow:
+        0 25px 45px -18px rgba(15,23,42,.4),
+        0 0 0 3px #1e293b,
+        0 0 0 3.5px #0f172a;
+}
+.cp-phone-titlebar {
+    width: 26px;
+    flex-shrink: 0;
+    background: #ffffff;
+    transition: background-color .12s linear;
+    border-right: 1px solid rgba(15,23,42,.08);
+    position: relative;
+    overflow: hidden;
+}
+.cp-tb-content {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%) rotate(-90deg);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    padding: 0 8px;
+    box-sizing: border-box;
+    color: #0f172a;
+    white-space: nowrap;
+}
+.cp-tb-time {
+    font-size: 10px;
+    font-weight: 700;
+    line-height: 1;
+    letter-spacing: .01em;
+}
+.cp-tb-icons {
+    display: flex;
+    gap: 3px;
+    align-items: center;
+}
+.cp-tb-icons svg {
+    width: 11px; height: 8px;
+    stroke: currentColor;
+    fill: currentColor;
+    display: block;
+    flex-shrink: 0;
+}
+.cp-phone-screen {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #ffffff;
+    transition: background-color .12s linear;
+    position: relative;
+    overflow: hidden;
+}
+.cp-phone-icon {
+    width: 104px; height: 104px;
+    border-radius: 24px;
+    object-fit: cover;
+    box-shadow: 0 12px 26px -10px rgba(0,0,0,.35);
+    z-index: 1;
+    transform: rotate(-90deg);
+}
+.cp-phone-icon.hidden { display: none !important; }
+.cp-phone-icon-placeholder {
+    width: 104px; height: 104px;
+    border-radius: 24px;
+    border: 2.5px dashed rgba(100,116,139,.55);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #64748b;
+    font-size: 13px;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 4px;
+    box-sizing: border-box;
+    transform: rotate(-90deg);
+    background: rgba(255,255,255,.4);
+    z-index: 1;
+}
+.cp-phone-icon-placeholder.hidden { display: none !important; }
+.cp-phone-iframe {
+    position: absolute;
+    border: none;
+    background: #ffffff;
+    pointer-events: none;
+    display: block;
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-user-drag: none;
+}
+.cp-phone-iframe.hidden { display: none !important; }
+
+/* ============================================
+   PALETTE
+   ============================================ */
+.cp-palette {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    column-gap: 10px;
+    row-gap: 4px;
+    padding-top: 8px;
+    padding-bottom: calc(16px + env(safe-area-inset-bottom, 0px));
+}
+.cp-swatch {
+    aspect-ratio: 1 / 1;
+    border-radius: 10px;
+    cursor: pointer;
+    border: 2px solid transparent;
+    transition: transform .12s ease, border-color .15s ease;
+    padding: 0;
+    box-shadow: inset 0 0 0 1px rgba(0,0,0,.06);
+}
+.cp-swatch:hover { transform: scale(1.1); }
+.cp-swatch.selected {
+    border-color: #0b1220;
+    transform: scale(1.1);
+}
+
+.hidden { display: none !important; }
+</style>
+
+<script>
+(function() {
+
+    let cpTarget = null;
+    let cpHSV = { h: 0, s: 0, v: 100 };
+    let cpAnimationRAF = null;
+    let cpAnimationCancelled = false;
+    let cpPhoneIconURL = null;
+
+    /* ⭐ Crée une iframe NEUVE, supprime l'ancienne */
+    function creerIframeNeuve() {
+        const container = document.getElementById('cpPhoneScreen');
+        if (!container) return null;
+        const ancienne = document.getElementById('cpPhoneIframe');
+        if (ancienne) ancienne.remove();
+        const iframe = document.createElement('iframe');
+        iframe.id = 'cpPhoneIframe';
+        iframe.className = 'cp-phone-iframe hidden';
+        iframe.setAttribute('sandbox', 'allow-same-origin');
+        container.appendChild(iframe);
+        return iframe;
+    }
+
+    function hsvToRgb(h, s, v) {
+        s /= 100; v /= 100;
+        const c = v * s;
+        const x = c * (1 - Math.abs(((h / 60) % 2) - 1));
+        const m = v - c;
+        let r = 0, g = 0, b = 0;
+        if (h < 60) { r = c; g = x; b = 0; }
+        else if (h < 120) { r = x; g = c; b = 0; }
+        else if (h < 180) { r = 0; g = c; b = x; }
+        else if (h < 240) { r = 0; g = x; b = c; }
+        else if (h < 300) { r = x; g = 0; b = c; }
+        else { r = c; g = 0; b = x; }
+        return { r: Math.round((r+m)*255), g: Math.round((g+m)*255), b: Math.round((b+m)*255) };
+    }
+    function rgbToHsv(r, g, b) {
+        r /= 255; g /= 255; b /= 255;
+        const max = Math.max(r, g, b), min = Math.min(r, g, b);
+        const d = max - min;
+        let h = 0;
+        if (d !== 0) {
+            if (max === r) h = 60 * (((g - b) / d) % 6);
+            else if (max === g) h = 60 * ((b - r) / d + 2);
+            else h = 60 * ((r - g) / d + 4);
+        }
+        if (h < 0) h += 360;
+        return { h, s: max === 0 ? 0 : (d / max) * 100, v: max * 100 };
+    }
+    function hsvToHex(h, s, v) {
+        const { r, g, b } = hsvToRgb(h, s, v);
+        const toHex = n => n.toString(16).padStart(2, '0').toUpperCase();
+        return '#' + toHex(r) + toHex(g) + toHex(b);
+    }
+    function hexToHsv(hex) {
+        hex = hex.replace('#', '');
+        if (hex.length === 3) hex = hex.split('').map(c => c + c).join('');
+        return rgbToHsv(
+            parseInt(hex.substring(0, 2), 16),
+            parseInt(hex.substring(2, 4), 16),
+            parseInt(hex.substring(4, 6), 16)
+        );
+    }
+    function contrastColor(hex) {
+        hex = hex.replace('#', '');
+        if (hex.length === 3) hex = hex.split('').map(c => c + c).join('');
+        const r = parseInt(hex.substring(0, 2), 16);
+        const g = parseInt(hex.substring(2, 4), 16);
+        const b = parseInt(hex.substring(4, 6), 16);
+        const lum = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+        return lum > 0.55 ? '#0f172a' : '#ffffff';
+    }
+
+    function cpRefreshUI() {
+        const hex = hsvToHex(cpHSV.h, cpHSV.s, cpHSV.v);
+        const hueColor = hsvToHex(cpHSV.h, 100, 100);
+
+        const el2d = document.getElementById('cp2D');
+        if (el2d) el2d.style.background = hueColor;
+
+        const cursor = document.getElementById('cpCursor');
+        if (cursor) {
+            cursor.style.left = cpHSV.s + '%';
+            cursor.style.top = (100 - cpHSV.v) + '%';
+        }
+
+        if (cpTarget === 'couleurFond') {
+            const screenEl = document.getElementById('cpPhoneScreen');
+            const titleEl = document.getElementById('cpPhoneTitlebar');
+            if (screenEl) screenEl.style.background = hex;
+            if (titleEl) { titleEl.style.background = hex; titleEl.style.color = contrastColor(hex); }
+            const tbContent = document.getElementById('cpTbContent');
+            if (tbContent) tbContent.style.color = contrastColor(hex);
+        } else if (cpTarget === 'themeColor') {
+            const titleEl = document.getElementById('cpPhoneTitlebar');
+            const screenEl = document.getElementById('cpPhoneScreen');
+            if (titleEl) { titleEl.style.background = hex; titleEl.style.color = contrastColor(hex); }
+            if (screenEl) screenEl.style.background = '#ffffff';
+            const tbContent = document.getElementById('cpTbContent');
+            if (tbContent) tbContent.style.color = contrastColor(hex);
+        }
+
+        document.querySelectorAll('#cpPalette .cp-swatch').forEach(s => {
+            s.classList.toggle('selected', s.dataset.color.toUpperCase() === hex.toUpperCase());
+        });
+    }
+
+    const CP_PALETTE = ['#CBD5E1','#FCA5A5','#EF4444','#DC2626','#EC4899','#BE185D','#64748B','#FDBA74','#F97316','#F59E0B','#FDE047','#EAB308','#334155','#6EE7B7','#10B981','#059669','#14B8A6','#0D9488','#0F172A','#93C5FD','#3B82F6','#2563EB','#8B5CF6','#7C3AED'];
+
+    function cpBuildPalette() {
+        const container = document.getElementById('cpPalette');
+        if (!container) return;
+        container.innerHTML = '';
+        CP_PALETTE.forEach(c => {
+            const btn = document.createElement('button');
+            btn.type = 'button';
+            btn.className = 'cp-swatch';
+            btn.style.background = c;
+            btn.dataset.color = c;
+            btn.onclick = () => { cpCancelHandAnimation(); cpHSV = hexToHsv(c); cpRefreshUI(); };
+            container.appendChild(btn);
+        });
+    }
+
+    function cpSetup2D() {
+        const el = document.getElementById('cp2D');
+        if (!el) return;
+        let dragging = false;
+        function updateFromEvent(e) {
+            const rect = el.getBoundingClientRect();
+            const cx = e.touches ? e.touches[0].clientX : e.clientX;
+            const cy = e.touches ? e.touches[0].clientY : e.clientY;
+            let x = (cx - rect.left) / rect.width;
+            let y = (cy - rect.top) / rect.height;
+            x = Math.max(0, Math.min(1, x));
+            y = Math.max(0, Math.min(1, y));
+            cpHSV.s = x * 100;
+            cpHSV.v = (1 - y) * 100;
+            cpRefreshUI();
+        }
+        el.addEventListener('mousedown', (e) => { cpCancelHandAnimation(); dragging = true; updateFromEvent(e); });
+        window.addEventListener('mousemove', (e) => { if (dragging) updateFromEvent(e); });
+        window.addEventListener('mouseup', () => { dragging = false; });
+        el.addEventListener('touchstart', (e) => { cpCancelHandAnimation(); e.preventDefault(); dragging = true; updateFromEvent(e); }, { passive: false });
+        el.addEventListener('touchmove', (e) => { if (dragging) { e.preventDefault(); updateFromEvent(e); } }, { passive: false });
+        el.addEventListener('touchend', () => { dragging = false; });
+    }
+
+    const CP_DEMO_HUE = 221, CP_DEMO_TARGET_S = 85, CP_DEMO_TARGET_V = 92;
+    function cpEaseInOutCubic(t) { return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2; }
+    function cpCancelHandAnimation() {
+        if (cpAnimationRAF) { cancelAnimationFrame(cpAnimationRAF); cpAnimationRAF = null; }
+        cpAnimationCancelled = true;
+        const hand = document.getElementById('cpHandAnim');
+        if (hand) hand.style.opacity = '0';
+    }
+    function cpPlayHandAnimation() {
+        const hand = document.getElementById('cpHandAnim');
+        const wrapper = document.getElementById('cp2D');
+        if (!hand || !wrapper) return;
+        const startPos = { x: 0, y: 0 };
+        const endPos = { x: CP_DEMO_TARGET_S, y: 100 - CP_DEMO_TARGET_V };
+        cpHSV.h = CP_DEMO_HUE; cpHSV.s = 0; cpHSV.v = 100;
+        cpRefreshUI();
+        cpAnimationCancelled = false;
+        const wrapperRect = wrapper.getBoundingClientRect();
+        const T_FADE_IN = 400, T_MOVE = 1600, T_HOLD = 300, T_FADE_OUT = 400;
+        const TOTAL = T_FADE_IN + T_MOVE + T_HOLD + T_FADE_OUT;
+        const startTime = performance.now();
+        function step(now) {
+            if (cpAnimationCancelled) return;
+            const elapsed = now - startTime;
+            let x, y, opacity;
+            if (elapsed < T_FADE_IN) { const t = elapsed / T_FADE_IN; const e = cpEaseInOutCubic(t); x = startPos.x; y = startPos.y; opacity = e; }
+            else if (elapsed < T_FADE_IN + T_MOVE) { const t = (elapsed - T_FADE_IN) / T_MOVE; const e = cpEaseInOutCubic(t); x = startPos.x + (endPos.x - startPos.x) * e; y = startPos.y + (endPos.y - startPos.y) * e; opacity = 1; cpHSV.s = x; cpHSV.v = 100 - y; cpRefreshUI(); }
+            else if (elapsed < T_FADE_IN + T_MOVE + T_HOLD) { x = endPos.x; y = endPos.y; opacity = 1; cpHSV.s = CP_DEMO_TARGET_S; cpHSV.v = CP_DEMO_TARGET_V; cpRefreshUI(); }
+            else if (elapsed < TOTAL) { const t = (elapsed - T_FADE_IN - T_MOVE - T_HOLD) / T_FADE_OUT; const e = cpEaseInOutCubic(t); x = endPos.x; y = endPos.y; opacity = 1 - e; }
+            else { cpAnimationRAF = null; cpFinishHandAnimation(); return; }
+            const pxX = (x / 100) * wrapperRect.width;
+            const pxY = (y / 100) * wrapperRect.height;
+            hand.style.left = pxX + 'px';
+            hand.style.top = pxY + 'px';
+            hand.style.transform = 'translate(-50%, -90%)';
+            hand.style.opacity = opacity;
+            cpAnimationRAF = requestAnimationFrame(step);
+        }
+        cpAnimationRAF = requestAnimationFrame(step);
+    }
+    function cpFinishHandAnimation() {
+        const hand = document.getElementById('cpHandAnim');
+        if (hand) hand.style.opacity = '0';
+        cpHSV.s = CP_DEMO_TARGET_S; cpHSV.v = CP_DEMO_TARGET_V;
+        cpRefreshUI();
+    }
+
+    function layoutCpTitlebar() {
+        const titlebar = document.getElementById('cpPhoneTitlebar');
+        const content = document.getElementById('cpTbContent');
+        if (!titlebar || !content) return;
+        const w = titlebar.clientWidth;
+        const h = titlebar.clientHeight;
+        if (w <= 0 || h <= 0) return;
+        content.style.width = h + 'px';
+        content.style.height = w + 'px';
+    }
+
+    function guessMime(name) {
+        const ext = (name.split('.').pop() || '').toLowerCase();
+        const map = { 'html':'text/html','htm':'text/html','css':'text/css','js':'application/javascript','mjs':'application/javascript','json':'application/json','svg':'image/svg+xml','png':'image/png','jpg':'image/jpeg','jpeg':'image/jpeg','gif':'image/gif','webp':'image/webp','bmp':'image/bmp','ico':'image/x-icon','woff':'font/woff','woff2':'font/woff2','ttf':'font/ttf','otf':'font/otf','eot':'application/vnd.ms-fontobject','mp4':'video/mp4','webm':'video/webm','mp3':'audio/mpeg','wav':'audio/wav','ogg':'audio/ogg' };
+        return map[ext] || 'application/octet-stream';
+    }
+
+    async function buildSiteBlobUrl() {
+        const files = await recupererNatif('files_data') || [];
+        if (files.length === 0) return null;
+
+        let mainFile = null;
+        const prefIndex = await recupererNatif('indexPrefere');
+        if (prefIndex !== null && prefIndex !== undefined && files[prefIndex] && files[prefIndex].name.toLowerCase().endsWith('.html')) {
+            mainFile = files[prefIndex];
+        } else {
+            const htmlFiles = files.filter(f => f.name.toLowerCase().endsWith('.html'));
+            if (htmlFiles.length === 0) return null;
+            mainFile = htmlFiles.find(f => /^index\.html?$/i.test(f.name)) || htmlFiles[0];
+        }
+
+        const mainDir = mainFile.webkitRelativePath ? mainFile.webkitRelativePath.split('/').slice(0, -1).join('/') + '/' : '';
+        const urlMap = new Map();
+        function addUrl(key, url) { if (key) urlMap.set(key, url); }
+
+        for (const f of files) {
+            const mime = f.type || guessMime(f.name);
+            const blob = new Blob([f.buffer], { type: mime });
+            const url = URL.createObjectURL(blob);
+            addUrl(f.name, url);
+            if (f.webkitRelativePath) {
+                addUrl(f.webkitRelativePath, url);
+                if (mainDir && f.webkitRelativePath.startsWith(mainDir)) addUrl(f.webkitRelativePath.substring(mainDir.length), url);
+                const parts = f.webkitRelativePath.split('/');
+                if (parts.length > 1) addUrl(parts.slice(1).join('/'), url);
+            }
+        }
+
+        function resolveUrl(path, baseDir) {
+            if (!path) return null;
+            if (/^(https?:|data:|blob:|#|mailto:|tel:|javascript:|\/\/)/i.test(path)) return null;
+            let clean = path.replace(/^\.\//, '').replace(/^\//, '');
+            if (baseDir) { const withBase = baseDir + clean; if (urlMap.has(withBase)) return urlMap.get(withBase); }
+            if (urlMap.has(clean)) return urlMap.get(clean);
+            const basename = clean.split('/').pop();
+            if (urlMap.has(basename)) return urlMap.get(basename);
+            return null;
+        }
+
+        const htmlText = new TextDecoder().decode(mainFile.buffer);
+        const rewrittenHtml = htmlText.replace(/(\s(?:src|href|poster|data-src)\s*=\s*)(["'])([^"']+)\2/gi, (match, prefix, quote, path) => {
+            const url = resolveUrl(path, mainDir);
+            if (url) return prefix + quote + url + quote;
+            return match;
+        });
+
+        const finalBlob = new Blob([rewrittenHtml], { type: 'text/html' });
+        return URL.createObjectURL(finalBlob);
+    }
+
+    function fitIframeToScreen(iframe) {
+        const screenEl = document.getElementById('cpPhoneScreen');
+        if (!screenEl || !iframe) return;
+        const screenW = screenEl.clientWidth;
+        const screenH = screenEl.clientHeight;
+        if (screenW <= 0 || screenH <= 0) return;
+        const siteW = 375, siteH = 812;
+        const sx = screenH / siteW;
+        const sy = screenW / siteH;
+        iframe.style.position = 'absolute';
+        iframe.style.width = siteW + 'px';
+        iframe.style.height = siteH + 'px';
+        iframe.style.left = (screenW / 2 - siteW / 2) + 'px';
+        iframe.style.top = (screenH / 2 - siteH / 2) + 'px';
+        iframe.style.transformOrigin = 'center center';
+        iframe.style.transform = 'rotate(-90deg) scale(' + sx + ', ' + sy + ')';
+        iframe.style.border = 'none';
+        iframe.style.pointerEvents = 'none';
+        iframe.style.display = 'block';
+        iframe.style.background = '#ffffff';
+    }
+
+    async function ouvrirCouleur(cible) {
+        cpTarget = cible;
+        const titles = {
+            'couleurFond': "Couleur de l'écran au démarrage",
+            'themeColor': 'Couleur de la barre de titre'
+        };
+        document.getElementById('colorScreenTitle').textContent = titles[cible] || 'Couleur';
+
+        history.pushState({ screen: 'couleur' }, '', '#couleur');
+        afficherEcran('couleur');
+
+        const savedFond = (await recupererNatif('couleurFond')) || '#ffffff';
+        const savedTheme = (await recupererNatif('themeColor')) || '#ffffff';
+
+        const screenEl = document.getElementById('cpPhoneScreen');
+        const titleEl = document.getElementById('cpPhoneTitlebar');
+        const iconEl = document.getElementById('cpPhoneIcon');
+        const placeholderEl = document.getElementById('cpPhoneIconPlaceholder');
+
+        if (iconEl) { iconEl.classList.add('hidden'); iconEl.removeAttribute('src'); }
+        if (placeholderEl) placeholderEl.classList.add('hidden');
+
+        if (cible === 'themeColor') {
+            const iframe = creerIframeNeuve();
+            const url = await buildSiteBlobUrl();
+            if (iframe && url) {
+                iframe.src = url;
+                iframe.classList.remove('hidden');
+            }
+            if (screenEl) screenEl.style.background = '#ffffff';
+            if (titleEl) { titleEl.style.background = savedTheme; titleEl.style.color = contrastColor(savedTheme); }
+            const tbContent = document.getElementById('cpTbContent');
+            if (tbContent) tbContent.style.color = contrastColor(savedTheme);
+            cpHSV = hexToHsv(savedTheme);
+        } else if (cible === 'couleurFond') {
+            const ancienne = document.getElementById('cpPhoneIframe');
+            if (ancienne) ancienne.remove();
+            const logo = await recupererNatif('logo');
+            if (logo && iconEl) {
+                if (cpPhoneIconURL) URL.revokeObjectURL(cpPhoneIconURL);
+                cpPhoneIconURL = URL.createObjectURL(logo);
+                iconEl.src = cpPhoneIconURL;
+                iconEl.classList.remove('hidden');
+            } else if (placeholderEl) {
+                placeholderEl.classList.remove('hidden');
+            }
+            if (screenEl) screenEl.style.background = savedFond;
+            if (titleEl) { titleEl.style.background = savedFond; titleEl.style.color = contrastColor(savedFond); }
+            const tbContent = document.getElementById('cpTbContent');
+            if (tbContent) tbContent.style.color = contrastColor(savedFond);
+            cpHSV = hexToHsv(savedFond);
+        }
+
+        cpRefreshUI();
+
+        requestAnimationFrame(() => {
+            layoutCpTitlebar();
+            if (cible === 'themeColor') {
+                const iframe = document.getElementById('cpPhoneIframe');
+                fitIframeToScreen(iframe);
+                setTimeout(() => { layoutCpTitlebar(); fitIframeToScreen(document.getElementById('cpPhoneIframe')); }, 200);
+            }
+        });
+
+        const hasAnyColorValidated = (await recupererNatif('couleurFond')) || (await recupererNatif('themeColor'));
+        if (!hasAnyColorValidated) setTimeout(() => cpPlayHandAnimation(), 300);
+    }
+
+    function validateColorScreen() {
+        if (!cpTarget) return;
+        const value = hsvToHex(cpHSV.h, cpHSV.s, cpHSV.v);
+        stockerNatif(cpTarget, value).then(() => {
+            cpCancelHandAnimation();
+            history.back();
+        });
+    }
+
+    window.addEventListener('resize', function() {
+        const el = document.getElementById('couleur');
+        if (el && el.classList.contains('active')) {
+            if (cpTarget === 'themeColor') {
+                fitIframeToScreen(document.getElementById('cpPhoneIframe'));
+                layoutCpTitlebar();
+            }
+        }
+    });
+
+    cpBuildPalette();
+    cpSetup2D();
+    cpRefreshUI();
+
+    window.ouvrirCouleur = ouvrirCouleur;
+    window.validateColorScreen = validateColorScreen;
+    window.init_couleur = function() {
+        layoutCpTitlebar();
+        if (cpTarget === 'themeColor') {
+            fitIframeToScreen(document.getElementById('cpPhoneIframe'));
+            setTimeout(() => { layoutCpTitlebar(); fitIframeToScreen(document.getElementById('cpPhoneIframe')); }, 200);
+        }
+    };
+
+})();
+</script>
