@@ -1,0 +1,330 @@
+<div id="langues" class="screen">
+    <div class="page-header">
+        <button class="back-btn" onclick="goBack()"><svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg></button>
+        <div class="page-title-wrap">
+            <h1 class="page-title">Nom du site selon l'appareil</h1>
+            <p class="page-sub">Proposez un nom dans différentes langues</p>
+        </div>
+    </div>
+
+    <p class="lang-subtitle">Proposez le nom de votre site dans les langues de<br>vos utilisateurs.</p>
+
+    <div class="language-input-wrapper">
+        <select id="languageSelect">
+            <option value="">-- Choisissez une langue --</option>
+            <option value="fr">Français</option>
+            <option value="en">Anglais</option>
+            <option value="de">Allemand</option>
+            <option value="es">Espagnol</option>
+            <option value="it">Italien</option>
+            <option value="pt">Portugais</option>
+        </select>
+    </div>
+    <div id="translationsContainer"></div>
+</div>
+
+<style>
+.screen { display: none; }
+.screen.active { display: block; }
+#langues { max-width: 640px; width: 100%; margin: 0 auto; padding: 0 16px 40px; }
+
+/* ============================================
+   EN-TÊTE — cohérent avec les autres sous-écrans
+   ============================================ */
+.page-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 0 22px;
+    position: sticky;
+    top: 0;
+    background: #fff;
+    z-index: 10;
+}
+.back-btn {
+    width: 40px; height: 40px;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    color: #0b1220;
+    transition: background-color .15s ease;
+}
+.back-btn:hover { background: #f1f5f9; }
+.back-btn:active { transform: scale(.95); }
+.back-btn svg {
+    width: 24px; height: 24px;
+    stroke: currentColor; fill: none;
+    stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round;
+}
+.page-title-wrap {
+    flex: 1;
+    min-width: 0;
+    border-left: 2px solid #10b981;
+    padding-left: 14px;
+}
+.page-title {
+    font-size: 1.15rem;
+    font-weight: 800;
+    color: #0b1220;
+    line-height: 1.15;
+    letter-spacing: -0.025em;
+    margin: 0 0 2px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.page-sub {
+    font-size: 0.78rem;
+    font-weight: 450;
+    color: #64748b;
+    line-height: 1.35;
+    margin: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* ============================================
+   SOUS-TITRE INTRO — centré sur 2 lignes
+   ============================================ */
+.lang-subtitle {
+    font-size: .9rem;
+    color: #64748b;
+    margin: 0 0 18px;
+    line-height: 1.5;
+    text-align: center;
+}
+
+/* ============================================
+   SÉLECTEUR DE LANGUE
+   ============================================ */
+.language-input-wrapper { display: flex; gap: 8px; margin-bottom: 18px; }
+.language-input-wrapper select {
+    flex: 1; padding: 13px 38px 13px 14px;
+    border: 1.5px solid #e2e8f0; border-radius: 12px;
+    font-size: .95rem; background: #fff; color: #0b1220;
+    font-family: inherit; font-weight: 500; cursor: pointer;
+    transition: border-color .15s ease;
+    -webkit-appearance: none; -moz-appearance: none; appearance: none;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'/></svg>");
+    background-repeat: no-repeat;
+    background-position: right 14px center;
+}
+.language-input-wrapper select:focus { border-color: #0b1220; outline: none; }
+.language-input-wrapper select:disabled { background: #f8fafc; color: #94a3b8; cursor: not-allowed; }
+
+/* ============================================
+   LISTE DES TRADUCTIONS
+   ============================================ */
+#translationsContainer { border-top: 1px solid #f1f5f9; }
+.translation-item {
+    display: flex; align-items: center; gap: 10px;
+    padding: 12px 0; border-bottom: 1px solid #e2e8f0;
+}
+.translation-lang-name {
+    flex: 0 0 84px; font-size: .85rem; font-weight: 600;
+    color: #0b1220; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.translation-input-wrap { flex: 1; position: relative; display: flex; align-items: center; }
+.translation-input {
+    width: 100%; padding: 11px 44px 11px 12px;
+    font-size: .92rem; font-family: inherit; color: #0b1220; font-weight: 500;
+    border: 1.5px solid transparent; border-radius: 10px;
+    background: #f8fafc;
+    transition: border-color .15s ease, background-color .15s ease;
+}
+.translation-input::placeholder { color: #94a3b8; font-weight: 400; }
+.translation-input:focus { background: #fff; border-color: #0b1220; outline: none; }
+.char-count {
+    position: absolute; right: 12px; top: 50%; transform: translateY(-50%);
+    font-size: .72rem; color: #94a3b8; font-weight: 600; pointer-events: none;
+}
+.char-count.limit { color: #ef4444; }
+.btn-remove-x {
+    flex: 0 0 36px; width: 36px; height: 36px; border-radius: 50%;
+    border: none; background: #f8fafc; color: #64748b;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer;
+    transition: background-color .15s ease, color .15s ease, transform .1s ease;
+}
+.btn-remove-x:hover { background: #fef2f2; color: #ef4444; }
+.btn-remove-x:active { transform: scale(.9); }
+.btn-remove-x svg { width: 15px; height: 15px; stroke: currentColor; fill: none; stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
+
+.empty-lang {
+    text-align: center; padding: 44px 24px;
+    color: #94a3b8; font-size: .88rem; line-height: 1.55; font-weight: 500;
+}
+.empty-lang svg {
+    width: 48px; height: 48px; stroke: #cbd5e1; fill: none;
+    stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round;
+    margin: 0 auto 14px; display: block;
+}
+
+.translation-item.has-error {
+    background: #fef2f2; border-radius: 12px;
+    padding-left: 10px; padding-right: 10px; margin: 4px -10px;
+    box-shadow: inset 0 0 0 1.5px #ef4444;
+    border-bottom-color: transparent;
+    animation: shake .4s ease;
+}
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-4px); }
+    75% { transform: translateX(4px); }
+}
+.translation-item.has-error .translation-input { background: #fff; border-color: #ef4444; }
+
+@media (min-width: 520px) {
+    .page-title { font-size: 1.3rem; }
+}
+</style>
+
+<script>
+(function() {
+
+    let translationsCache = [];
+
+    const LANG_NAMES = {
+        'fr': 'Français', 'en': 'Anglais', 'de': 'Allemand',
+        'es': 'Espagnol', 'it': 'Italien', 'pt': 'Portugais'
+    };
+
+    function escapeHtml(str) {
+        return String(str).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    }
+
+    /* ⭐ Vérifie si on est dans un contexte grisé (venant de principal) */
+    function estContexteGrise() {
+        try {
+            if (sessionStorage.getItem('principalContexteGrise') === '1') return true;
+        } catch (e) {}
+        if (window._bloquerSauvegardes === true) return true;
+        return false;
+    }
+
+    function renderTranslations() {
+        const container = document.getElementById('translationsContainer');
+        const select = document.getElementById('languageSelect');
+        if (!container || !select) return;
+
+        const allCodes = ['fr', 'en', 'de', 'es', 'it', 'pt'];
+        const used = translationsCache.map(t => t.code);
+        const remaining = allCodes.filter(c => !used.includes(c));
+
+        select.innerHTML = '<option value="">-- Choisissez une langue --</option>';
+        remaining.forEach(c => {
+            const o = document.createElement('option');
+            o.value = c;
+            o.textContent = LANG_NAMES[c];
+            select.appendChild(o);
+        });
+        select.disabled = (remaining.length === 0);
+
+        if (translationsCache.length === 0) {
+            container.innerHTML = '<div class="empty-lang"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.5 4 5.5 4 9s-1.5 6.5-4 9c-2.5-2.5-4-5.5-4-9s1.5-6.5 4-9z"/></svg>Aucune langue sélectionnée<br>pour le moment</div>';
+            return;
+        }
+
+        container.innerHTML = '';
+        translationsCache.forEach((item, i) => {
+            const len = (item.name || '').length;
+            const row = document.createElement('div');
+            row.className = 'translation-item';
+            row.innerHTML =
+                '<span class="translation-lang-name">' + (LANG_NAMES[item.code] || item.code) + '</span>' +
+                '<div class="translation-input-wrap">' +
+                    '<input type="text" class="translation-input" data-i="' + i + '" maxlength="12" value="' + escapeHtml(item.name || '') + '" placeholder="Nom de l\'application">' +
+                    '<span class="char-count' + (len >= 12 ? ' limit' : '') + '">' + len + '/12</span>' +
+                '</div>' +
+                '<button type="button" class="btn-remove-x" data-i="' + i + '" aria-label="Supprimer"><svg viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg></button>';
+            container.appendChild(row);
+        });
+
+        container.querySelectorAll('.translation-input').forEach(inp => {
+            inp.addEventListener('input', async e => {
+                if (e.target.value.length > 12) e.target.value = e.target.value.slice(0, 12);
+                const i = parseInt(e.target.dataset.i, 10);
+                translationsCache[i].name = e.target.value;
+                const cc = e.target.parentElement.querySelector('.char-count');
+                cc.textContent = e.target.value.length + '/12';
+                cc.classList.toggle('limit', e.target.value.length >= 12);
+                e.target.closest('.translation-item').classList.remove('has-error');
+                /* ⭐ Ne sauvegarde QUE si on n'est pas en contexte grisé */
+                if (!estContexteGrise()) {
+                    try { await stockerNatif('translations', translationsCache); } catch (err) {}
+                }
+            });
+        });
+
+        container.querySelectorAll('.btn-remove-x').forEach(btn => {
+            btn.addEventListener('click', async e => {
+                const i = parseInt(e.currentTarget.dataset.i, 10);
+                translationsCache.splice(i, 1);
+                /* ⭐ Ne sauvegarde QUE si on n'est pas en contexte grisé */
+                if (!estContexteGrise()) {
+                    try { await stockerNatif('translations', translationsCache); } catch (err) {}
+                }
+                renderTranslations();
+            });
+        });
+    }
+
+    const selectEl = document.getElementById('languageSelect');
+    if (selectEl) {
+        selectEl.addEventListener('change', async function() {
+            const code = this.value;
+            if (!code) return;
+            if (translationsCache.some(t => t.code === code)) { this.value = ''; return; }
+            translationsCache.push({ code, name: '' });
+            /* ⭐ Ne sauvegarde QUE si on n'est pas en contexte grisé */
+            if (!estContexteGrise()) {
+                try { await stockerNatif('translations', translationsCache); } catch (e) {}
+            }
+            this.value = '';
+            renderTranslations();
+            const inputs = document.querySelectorAll('.translation-input');
+            if (inputs.length) inputs[inputs.length - 1].focus();
+        });
+    }
+
+    async function initLangues() {
+        /* ⭐ Si contexte grisé → on force une liste vide, on ne lit PAS la base */
+        if (estContexteGrise()) {
+            translationsCache = [];
+        } else {
+            try { translationsCache = (await recupererNatif('translations')) || []; }
+            catch (e) { translationsCache = []; }
+        }
+
+        renderTranslations();
+
+        if (typeof window.enregistrerGarde === 'function') {
+            window.enregistrerGarde('langues', function() {
+                let hasEmpty = false;
+                document.querySelectorAll('.translation-item').forEach(row => {
+                    const inp = row.querySelector('.translation-input');
+                    if (inp && !inp.value.trim()) {
+                        row.classList.add('has-error');
+                        hasEmpty = true;
+                    }
+                });
+                if (hasEmpty) {
+                    const first = document.querySelector('.translation-item.has-error');
+                    if (first && typeof first.scrollIntoView === 'function') {
+                        first.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    }
+                    return false;
+                }
+                return true;
+            });
+        }
+    }
+
+    window.init_langues = initLangues;
+
+})();
+</script>
