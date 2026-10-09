@@ -1,0 +1,1914 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>WebToApp</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+:root {
+    --green: #10b981; --green-dark: #059669; --green-deep: #047857;
+    --green-soft: #ecfdf5; --green-glow: rgba(16,185,129,.28);
+    --ink: #0b1220; --ink-soft: #1e293b;
+    --muted: #64748b; --muted-2: #94a3b8;
+    --line: #e2e8f0; --line-soft: #f1f5f9;
+    --row-hover: #f8fafc; --error: #ef4444; --error-soft: #fef2f2;
+}
+body { background: #ffffff; width: 100vw; height: 100dvh; overflow: hidden; position: relative; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif; color: var(--ink); }
+button, a, label, input, select, textarea, [role="button"] { -webkit-tap-highlight-color: transparent; }
+button { outline: none; font-family: inherit; }
+button:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+
+.header { background: #ffffff; padding: 16px 16px 12px 16px; border-bottom: 1px solid #e5e5ea; display: flex; justify-content: space-between; align-items: center; }
+.header-left { display: flex; align-items: center; gap: 10px; min-width: 0; }
+.header-title { font-size: 1.4rem; font-weight: 700; color: #000; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.header-icons { display: flex; gap: 16px; }
+.header-icon-btn { background: none; border: none; cursor: pointer; padding: 8px; display: flex; align-items: center; justify-content: center; }
+.header-icon-btn svg { width: 28px; height: 28px; stroke: #000; fill: none; stroke-width: 2; stroke-linecap: round; }
+
+.pro-badge {
+    display: inline-flex; align-items: center; justify-content: center;
+    padding: 3px 8px;
+    background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+    color: #92400e; font-size: 0.58rem; font-weight: 900;
+    letter-spacing: 0.06em; border-radius: 6px;
+    border: 1px solid #fcd34d; flex-shrink: 0; line-height: 1.4;
+}
+.pro-badge.hidden { display: none; }
+
+.main-content { width: 100%; height: calc(100dvh - 137px); overflow-y: auto; padding: 0; -webkit-overflow-scrolling: touch; position: relative; }
+body.in-sub-screen .header, body.in-sub-screen .navbar-container { display: none !important; }
+body.in-sub-screen .main-content { height: 100dvh !important; }
+body.in-sub-screen #other-container { display: none !important; }
+body.drawer-open .main-content, body.modal-open .main-content { overflow: hidden; }
+
+.chargement-bloc { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; min-height: calc(100dvh - 260px); padding: 40px 20px; }
+.chargement-spinner { width: 52px; height: 52px; border: 4px solid #e5e5ea; border-top-color: var(--green); border-radius: 50%; animation: spin 0.8s linear infinite; margin-bottom: 22px; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.chargement-texte { font-size: 1rem; font-weight: 600; color: var(--ink); margin-bottom: 6px; }
+.chargement-hint { font-size: 0.85rem; color: var(--muted); font-weight: 400; }
+
+.navbar-container { position: absolute; bottom: 0; left: 0; width: 100%; z-index: 9999; background: #fff; border-top: 1px solid #e5e5ea; }
+.navbar { display: flex; justify-content: space-around; align-items: center; background: #fff; }
+.nav-btn { background: transparent; border: none; width: 25%; height: 80px; cursor: pointer; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 6px; transition: all 0.2s ease; border-top: 3px solid transparent; }
+.nav-btn svg { width: 24px; height: 24px; stroke: #64748b; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; transition: stroke 0.2s ease; }
+.nav-btn-label { font-size: 0.75rem; color: #64748b; transition: color 0.2s ease; font-weight: 500; }
+.nav-btn.active { border-top-color: #10b981; }
+.nav-btn.active svg { stroke: #10b981; }
+.nav-btn.active .nav-btn-label { color: #10b981; }
+
+.coming-soon { display: flex; align-items: center; justify-content: center; height: 100%; min-height: calc(100dvh - 260px); padding: 20px; }
+.coming-soon-text { font-size: 1.1rem; font-weight: 500; color: #64748b; text-align: center; letter-spacing: 0.02em; }
+
+/* ⭐ AJOUT : Page de connexion Google */
+.login-page {
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    min-height: calc(100dvh - 260px); padding: 40px 24px; text-align: center;
+    max-width: 440px; margin: 0 auto;
+}
+.login-illustration {
+    width: 84px; height: 84px; border-radius: 22px; background: var(--green-soft);
+    display: flex; align-items: center; justify-content: center;
+    margin-bottom: 24px; color: var(--green);
+}
+.login-illustration svg { width: 42px; height: 42px; stroke: currentColor; fill: none; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+.login-title { font-size: 1.5rem; font-weight: 800; color: var(--ink); letter-spacing: -0.025em; margin-bottom: 10px; line-height: 1.25; }
+.login-subtitle { font-size: 0.92rem; color: var(--muted); line-height: 1.55; margin-bottom: 28px; max-width: 320px; }
+.login-google-btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: 12px;
+    padding: 14px 22px; background: #ffffff; border: 1.5px solid #dadce0;
+    border-radius: 12px; font-family: inherit; font-size: 0.95rem; font-weight: 600;
+    color: #3c4043; cursor: pointer; min-width: 260px;
+    transition: background-color .15s ease, box-shadow .15s ease, transform .12s ease;
+    box-shadow: 0 1px 2px rgba(60,64,67,.08);
+}
+.login-google-btn:hover { background: #f8f9fa; box-shadow: 0 2px 6px rgba(60,64,67,.12); }
+.login-google-btn:active { transform: scale(.98); }
+.login-google-btn:disabled { opacity: .55; cursor: not-allowed; }
+.login-google-btn svg { width: 20px; height: 20px; flex-shrink: 0; }
+.login-hint { font-size: 0.78rem; color: var(--muted-2); margin-top: 18px; line-height: 1.5; }
+
+/* ⭐ AJOUT : Espace Projets (utilisateur connecté) */
+.projets-vide {
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    min-height: calc(100dvh - 260px); padding: 40px 24px; text-align: center;
+    max-width: 440px; margin: 0 auto;
+}
+.projets-vide h2 { font-size: 1.25rem; font-weight: 700; color: var(--ink); margin-bottom: 8px; }
+.projets-vide p { font-size: 0.9rem; color: var(--muted); line-height: 1.55; }
+
+.formule-drawer-overlay { position: fixed; inset: 0; background: rgba(15,23,42,.45); -webkit-backdrop-filter: blur(2px); backdrop-filter: blur(2px); opacity: 0; visibility: hidden; transition: opacity .28s ease, visibility 0s linear .28s; z-index: 10000; }
+.formule-drawer-overlay.active { opacity: 1; visibility: visible; transition: opacity .28s ease, visibility 0s; }
+.formule-drawer { position: fixed; top: 0; right: 0; bottom: 0; width: 92%; max-width: 460px; background: #fbfcfd; box-shadow: -20px 0 40px -20px rgba(15,23,42,.4); transform: translateX(100%); transition: transform .34s cubic-bezier(.16,.84,.44,1); z-index: 10001; overflow-y: auto; -webkit-overflow-scrolling: touch; overscroll-behavior-y: contain; }
+.formule-drawer.active { transform: translateX(0); }
+.formule-drawer-header { padding: 26px 22px 18px; border-bottom: 1px solid var(--line); background: #fbfcfd; position: sticky; top: 0; z-index: 2; }
+.formule-drawer-title { font-size: 1.35rem; font-weight: 800; line-height: 1.3; color: var(--ink); letter-spacing: -0.025em; margin-bottom: 8px; }
+.formule-drawer-subtitle { font-size: 0.85rem; color: var(--muted); line-height: 1.45; font-weight: 450; }
+.formule-list { display: flex; flex-direction: column; padding: 8px 0 40px; }
+.formule-accordion-item { border-bottom: 1px solid rgba(226,232,240,.75); }
+.formule-accordion-item:last-child { border-bottom: none; }
+.formule-trigger { display: flex; align-items: center; gap: 14px; width: 100%; background: transparent; border: none; cursor: pointer; padding: 18px 22px; text-align: left; font-family: inherit; transition: background-color .15s ease; position: relative; }
+.formule-trigger:hover { background: rgba(241,245,249,.7); }
+.formule-trigger-icon { width: 38px; height: 38px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
+.formule-trigger-icon svg { width: 20px; height: 20px; stroke: currentColor; fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.formule-trigger-icon.decouverte-icon { color: #64748b; background: #f1f5f9; }
+.formule-trigger-icon.pro-icon       { color: #f59e0b; background: #fef3c7; }
+.formule-trigger-icon.proplus-icon   { color: var(--green); background: var(--green-soft); }
+.formule-trigger-label { flex: 1; font-size: 1rem; font-weight: 600; color: var(--ink); line-height: 1.3; transition: color .15s ease; }
+.formule-trigger-chevron { width: 20px; height: 20px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; color: #94a3b8; transition: transform .3s ease, color .15s ease; }
+.formule-trigger-chevron svg { width: 100%; height: 100%; stroke: currentColor; fill: none; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+.formule-accordion-item.open .formule-trigger-chevron { transform: rotate(180deg); color: var(--ink); }
+.formule-accordion-item.is-current .formule-trigger { background: #ecfdf5; }
+.formule-accordion-item.is-current .formule-trigger-label { color: var(--green-deep); font-weight: 700; }
+.formule-accordion-item.is-current .formule-trigger::after { content: ""; position: absolute; left: 22px; right: 22px; height: 3px; background: var(--green); border-radius: 0; bottom: -1px; }
+.formule-active-badge { display: none; align-items: center; gap: 4px; background: var(--green); color: #ffffff; font-size: 0.66rem; font-weight: 800; padding: 3px 8px; border-radius: 999px; letter-spacing: 0.02em; margin-right: 6px; flex-shrink: 0; }
+.formule-active-badge svg { width: 10px; height: 10px; stroke: #ffffff; fill: none; stroke-width: 3.2; stroke-linecap: round; stroke-linejoin: round; }
+.formule-accordion-item.is-current .formule-active-badge { display: inline-flex; }
+.formule-panel { max-height: 0; overflow: hidden; transition: max-height .45s cubic-bezier(.16,.84,.44,1); }
+.formule-accordion-item.open .formule-panel { max-height: 2400px; }
+.formule-panel-inner { padding: 6px 18px 24px; }
+
+.plan-card { width: 100%; background: #ffffff; border: 1.5px solid var(--green); border-radius: 0; padding: 22px 20px 20px; box-shadow: 0 1px 2px rgba(15,23,42,.04), 0 18px 42px -20px var(--green-glow); display: flex; flex-direction: column; }
+.plan-icon { width: 38px; height: 38px; display: flex; align-items: center; justify-content: center; margin-bottom: 14px; flex-shrink: 0; }
+.plan-icon.pro-icon      { color: #f59e0b; background: #fef3c7; }
+.plan-icon.proplus-icon  { color: var(--green); background: var(--green-soft); }
+.plan-icon svg { width: 20px; height: 20px; stroke: currentColor; fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.plan-head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; margin-bottom: 12px; flex-shrink: 0; }
+.plan-name { font-size: 1.7rem; font-weight: 800; color: var(--ink); letter-spacing: -0.03em; line-height: 1; }
+.plan-price-row { display: flex; align-items: baseline; gap: 4px; }
+.plan-price { font-size: 2.2rem; font-weight: 800; color: var(--ink); letter-spacing: -0.04em; line-height: 1; }
+.plan-currency { font-size: 1.1rem; font-weight: 700; color: var(--ink); letter-spacing: -0.02em; }
+.plan-period { font-size: 0.8rem; color: var(--muted-2); font-weight: 500; margin-left: 2px; }
+.plan-desc { font-size: 0.78rem; color: var(--muted); line-height: 1.5; margin-bottom: 14px; padding-bottom: 14px; border-bottom: 1px solid var(--line-soft); flex-shrink: 0; white-space: nowrap; }
+.pack-included { display: flex; align-items: center; gap: 8px; font-size: 0.75rem; font-weight: 700; color: var(--green-deep); background: var(--green-soft); padding: 8px 12px; margin-bottom: 14px; letter-spacing: -0.005em; flex-shrink: 0; white-space: nowrap; }
+.pack-included svg { width: 14px; height: 14px; stroke: currentColor; fill: none; stroke-width: 2.6; stroke-linecap: round; stroke-linejoin: round; flex-shrink: 0; }
+.plan-body { flex: 1; display: flex; flex-direction: column; gap: 14px; margin-bottom: 16px; }
+.plan-section-title { font-size: 0.66rem; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted-2); margin-bottom: 8px; }
+.plan-features { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+.plan-features li { display: flex; align-items: flex-start; gap: 10px; font-size: 0.82rem; line-height: 1.4; color: var(--ink-soft); }
+.plan-features li .feature-text strong { font-weight: 700; color: var(--ink); display: block; margin-bottom: 1px; }
+.plan-features li .feature-text span { color: var(--muted); font-weight: 450; }
+.feature-check { flex-shrink: 0; width: 16px; height: 16px; border-radius: 50%; background: var(--green); display: flex; align-items: center; justify-content: center; margin-top: 2px; }
+.feature-check svg { width: 9px; height: 9px; stroke: #ffffff; fill: none; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
+.plan-btn { width: 100%; padding: 14px; border-radius: 0; font-size: 0.82rem; font-weight: 700; cursor: pointer; font-family: inherit; letter-spacing: 0.04em; text-transform: uppercase; border: none; background: var(--green); color: #ffffff; box-shadow: 0 12px 24px -12px var(--green-glow); transition: background-color .18s ease, transform .12s ease; margin-top: auto; flex-shrink: 0; }
+.plan-btn:hover { background: var(--green-dark); }
+.plan-btn:active { transform: scale(.985); }
+.plan-btn:disabled { opacity: .45; cursor: not-allowed; }
+
+.upgrade-modal-overlay { position: fixed; inset: 0; background: rgba(15,23,42,.62); z-index: 30000; display: none; opacity: 0; transition: opacity .28s, backdrop-filter .5s; overflow: hidden; }
+.upgrade-modal-overlay.active { display: block; opacity: 1; -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px); }
+.upgrade-modal-close { position: absolute; top: calc(18px + env(safe-area-inset-top, 0px)); right: 18px; width: 40px; height: 40px; border-radius: 50%; background: rgba(255,255,255,.15); border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; color: #ffffff; opacity: 0; transform: scale(.7) rotate(-90deg); transition: all .3s ease; z-index: 10; }
+.upgrade-modal-overlay.active .upgrade-modal-close { opacity: 1; transform: scale(1) rotate(0deg); transition-delay: .12s; }
+.upgrade-modal-close svg { width: 20px; height: 20px; stroke: currentColor; fill: none; stroke-width: 2.4; stroke-linecap: round; }
+.upgrade-modal-content { display: flex; flex-direction: column; height: 100%; max-width: 460px; margin: 0 auto; width: 100%; padding: calc(28px + env(safe-area-inset-top, 0px)) 20px calc(24px + env(safe-area-inset-bottom, 0px)); }
+.upgrade-modal-title { font-size: 1.35rem; font-weight: 800; line-height: 1.35; color: #ffffff; letter-spacing: -0.025em; padding-right: 52px; flex-shrink: 0; max-width: 340px; opacity: 0; transform: translateY(-18px); }
+.upgrade-modal-overlay.active .upgrade-modal-title { animation: upTitleIn .65s cubic-bezier(.16,.84,.44,1) .08s forwards; }
+@keyframes upTitleIn { from { opacity: 0; transform: translateY(-18px); } to { opacity: 1; transform: translateY(0); } }
+.upgrade-modal-title .highlight { color: #10b981; }
+.upgrade-modal-middle { flex: 1; display: flex; align-items: center; justify-content: center; padding: 18px 0; min-height: 0; }
+.upgrade-modal-intro { font-size: 0.95rem; font-weight: 500; color: rgba(255,255,255,.92); line-height: 1.55; text-align: center; padding: 0 8px; opacity: 0; transform: translateY(14px); }
+.upgrade-modal-overlay.active .upgrade-modal-intro { animation: upIntroIn .6s cubic-bezier(.16,.84,.44,1) .24s forwards; }
+@keyframes upIntroIn { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: translateY(0); } }
+.upgrade-modal-intro strong { color: #10b981; font-weight: 800; }
+.upgrade-modal-card { width: 100%; flex-shrink: 0; opacity: 0; transform: translateY(60px) scale(.97); }
+.upgrade-modal-overlay.active .upgrade-modal-card { animation: upCardIn .7s cubic-bezier(.16,.84,.44,1) .34s forwards; }
+@keyframes upCardIn { from { opacity: 0; transform: translateY(60px) scale(.97); } to { opacity: 1; transform: translateY(0) scale(1); } }
+
+.confirm-overlay { position: fixed; inset: 0; background: rgba(15,23,42,.55); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); display: none; align-items: flex-start; justify-content: center; padding: 80px 16px 16px; z-index: 20000; }
+.confirm-overlay.active { display: flex; }
+.confirm-modal { background: #fff; border-radius: 18px; padding: 26px 22px 22px; max-width: 380px; width: 100%; text-align: center; box-shadow: 0 30px 60px -20px rgba(15,23,42,.4); }
+.confirm-icon { width: 54px; height: 54px; margin: 0 auto 16px; border-radius: 50%; background: #fef2f2; display: flex; align-items: center; justify-content: center; color: #ef4444; }
+.confirm-icon svg { width: 26px; height: 26px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.confirm-modal h3 { font-size: 1.05rem; font-weight: 700; color: var(--ink); margin-bottom: 8px; }
+.confirm-modal p { font-size: 0.85rem; color: var(--muted); margin-bottom: 22px; line-height: 1.5; }
+.confirm-buttons { display: flex; gap: 10px; }
+.confirm-buttons button { flex: 1; padding: 13px; border-radius: 12px; font-size: 0.9rem; font-weight: 600; cursor: pointer; border: none; font-family: inherit; }
+.btn-confirm-cancel { background: #f1f5f9; color: var(--ink); }
+.btn-confirm-delete { background: #ef4444; color: #fff; }
+.notification-overlay { position: fixed; inset: 0; background: rgba(15,23,42,.6); backdrop-filter: blur(4px); display: none; align-items: center; justify-content: center; z-index: 99999; padding: 16px; }
+.notification-overlay.active { display: flex; }
+.notification-modal { background: #fff; border-radius: 14px; padding: 26px 24px; max-width: 90%; width: 360px; text-align: center; border: 1px solid var(--line); }
+.notification-modal .icon { font-size: 34px; margin: 0 auto 12px; width: 64px; height: 64px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+.notification-modal .icon.error-icon { background: #fef2f2; color: #ef4444; }
+.notification-modal .icon.success-icon { background: #f1f5f9; color: var(--ink); }
+.notification-modal h3 { margin-bottom: 8px; font-size: 1.05rem; font-weight: 700; }
+.notification-modal p { color: #475569; font-size: .9rem; margin-bottom: 20px; }
+.notification-modal .btn-ok { background: var(--ink); color: #fff; padding: 12px 24px; border: none; border-radius: 10px; font-size: .95rem; font-weight: 700; cursor: pointer; width: 100%; font-family: inherit; }
+.hidden { display: none !important; }
+
+.pro-transition-overlay { position: fixed; inset: 0; z-index: 50000; background: transparent; opacity: 0; visibility: hidden; transition: opacity .18s ease-out, visibility 0s linear .18s; pointer-events: none; overflow: hidden; }
+.pro-transition-overlay.active { opacity: 1; visibility: visible; transition: opacity .22s ease-out, visibility 0s; pointer-events: auto; }
+.pt-half { position: absolute; inset: 0; overflow: hidden; will-change: transform; transition: transform 2s cubic-bezier(.45,.05,.55,.95); background: #ffffff; }
+.pt-half-top { clip-path: polygon(0% 0%, 100% 0%, 100% 100%); }
+.pt-half-bottom { clip-path: polygon(0% 0%, 100% 100%, 0% 100%); }
+.pro-transition-overlay.step-1 .pt-half-top { transform: translate(28%, -105%); }
+.pro-transition-overlay.step-1 .pt-half-bottom { transform: translate(-28%, 105%); }
+.pt-loading { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 18px; z-index: 10; pointer-events: none; opacity: 0; transform: translateY(8px) scale(.94); visibility: hidden; transition: opacity .28s ease, transform .28s ease, visibility 0s linear .28s; }
+.pro-transition-overlay.active .pt-loading { opacity: 1; transform: translateY(0) scale(1); visibility: visible; transition: opacity .45s cubic-bezier(.16,.84,.44,1) .12s, transform .5s cubic-bezier(.16,.84,.44,1) .12s, visibility 0s .12s; }
+.pro-transition-overlay.active .pt-loading.hidden { opacity: 0; transform: translateY(-6px) scale(.97); visibility: hidden; transition: opacity .22s ease, transform .22s ease, visibility 0s linear .22s; }
+.pt-spinner { width: 52px; height: 52px; border: 4px solid #e5e5ea; border-top-color: #10b981; border-radius: 50%; animation: ptSpin 0.8s linear infinite; }
+@keyframes ptSpin { to { transform: rotate(360deg); } }
+.pt-loading-text { font-size: 1rem; font-weight: 700; color: #0b1220; letter-spacing: -0.01em; }
+
+/* BOTTOM SHEET RÉCAPITULATIF */
+.recap-overlay { position: fixed; inset: 0; background: rgba(15,23,42,.55); -webkit-backdrop-filter: blur(4px); backdrop-filter: blur(4px); z-index: 999996; opacity: 0; visibility: hidden; transition: opacity .28s ease, visibility 0s linear .28s; }
+.recap-overlay.active { opacity: 1; visibility: visible; transition: opacity .28s ease, visibility 0s; }
+.recap-sheet { position: fixed; left: 0; right: 0; bottom: 0; z-index: 999997; background: #ffffff; border-radius: 24px 24px 0 0; height: auto; max-height: 92dvh; display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 -20px 45px -15px rgba(15,23,42,.35); transform: translateY(105%); transition: transform .38s cubic-bezier(.22,1,.36,1); will-change: transform; }
+.recap-sheet.active { transform: translateY(0); }
+.recap-sheet.dragging { transition: none; }
+.recap-handle-wrap { flex-shrink: 0; padding: 12px 22px 0; cursor: grab; touch-action: none; user-select: none; -webkit-user-select: none; }
+.recap-handle-wrap:active { cursor: grabbing; }
+.recap-handle { width: 40px; height: 4px; background: #cbd5e1; border-radius: 2px; margin: 0 auto; pointer-events: none; }
+.recap-track { flex: 0 1 auto; min-height: 0; display: flex; width: 200%; transition: transform .38s cubic-bezier(.22,1,.36,1); will-change: transform; }
+.recap-track.show-details { transform: translateX(-50%); }
+#recapPanelDetails { contain: size; }
+.recap-panel { flex: 0 0 50%; width: 50%; align-self: stretch; display: flex; flex-direction: column; overflow: hidden; box-sizing: border-box; }
+.recap-header { flex-shrink: 0; padding: 16px 22px 14px; display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.recap-header-left { display: flex; align-items: center; gap: 10px; min-width: 0; }
+.recap-title { font-size: 1.25rem; font-weight: 800; color: #0b1220; letter-spacing: -0.025em; margin: 0; line-height: 1.2; }
+.recap-see-details { display: inline-flex; align-items: center; gap: 4px; background: transparent; border: none; cursor: pointer; font-family: inherit; font-size: 0.82rem; font-weight: 600; color: #10b981; padding: 6px 8px; border-radius: 8px; transition: background-color .15s ease, color .15s ease; flex-shrink: 0; white-space: nowrap; }
+.recap-see-details:hover { background: #ecfdf5; color: #059669; }
+.recap-see-details:active { transform: scale(.96); }
+.recap-see-details svg { width: 14px; height: 14px; stroke: currentColor; fill: none; stroke-width: 2.6; stroke-linecap: round; stroke-linejoin: round; }
+.recap-see-details.hidden { display: none; }
+.recap-back { width: 34px; height: 34px; border-radius: 50%; background: #f1f5f9; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; color: #0b1220; padding: 0; flex-shrink: 0; transition: background-color .15s ease, transform .15s ease; }
+.recap-back:hover { background: #e2e8f0; }
+.recap-back:active { transform: scale(.94); }
+.recap-back svg { width: 18px; height: 18px; stroke: currentColor; fill: none; stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
+.recap-body { flex: 1 1 auto; min-height: 0; overflow-y: auto; -webkit-overflow-scrolling: touch; padding: 0 22px calc(10px + env(safe-area-inset-bottom, 0px)); display: flex; flex-direction: column; }
+.recap-block { background: #f8fafc; border-radius: 14px; padding: 16px 18px; margin-bottom: 14px; border: 1px solid #f1f5f9; }
+.recap-block-title { font-size: 0.72rem; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; color: #94a3b8; margin-bottom: 12px; }
+.recap-info-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 6px 0; font-size: 0.9rem; }
+.recap-info-row:not(:last-child) { border-bottom: 1px dashed #e2e8f0; }
+.recap-info-label { color: #64748b; font-weight: 500; flex-shrink: 0; }
+.recap-info-value { color: #0b1220; font-weight: 600; text-align: right; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; }
+.recap-info-value.ok { color: #059669; display: inline-flex; align-items: center; gap: 4px; }
+.recap-info-value.ok svg { width: 14px; height: 14px; stroke: currentColor; stroke-width: 3; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+.recap-formula-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.recap-formula-name-wrap { display: flex; align-items: center; gap: 10px; min-width: 0; }
+.recap-formula-icon { width: 40px; height: 40px; border-radius: 12px; background: #fef3c7; color: #f59e0b; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.recap-formula-icon svg { width: 20px; height: 20px; stroke: currentColor; fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.recap-formula-icon.pro-plus { background: #ecfdf5; color: #10b981; }
+.recap-formula-icon.decouverte { background: #f1f5f9; color: #64748b; }
+.recap-formula-name { font-size: 1.15rem; font-weight: 800; color: #0b1220; letter-spacing: -0.02em; line-height: 1.2; }
+.recap-formula-sub { font-size: 0.75rem; color: #64748b; font-weight: 500; margin-top: 2px; }
+.recap-formula-price { font-size: 1.15rem; font-weight: 800; color: #0b1220; letter-spacing: -0.02em; white-space: nowrap; }
+.recap-total-row { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; padding: 18px 4px 20px; border-top: 1px solid #f1f5f9; margin-bottom: 4px; }
+.recap-total-label { font-size: 0.95rem; font-weight: 600; color: #334155; }
+.recap-total-amount { font-size: 1.6rem; font-weight: 800; color: #0b1220; letter-spacing: -0.03em; line-height: 1; }
+.recap-total-period { font-size: 0.85rem; color: #64748b; font-weight: 500; margin-left: 2px; }
+.recap-action { width: 100%; padding: 16px 18px; background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: #ffffff; border: none; border-radius: 12px; font-family: inherit; font-size: 1rem; font-weight: 700; letter-spacing: 0.005em; line-height: 1.3; cursor: pointer; box-shadow: 0 12px 24px -10px rgba(16,185,129,.7), inset 0 1px 0 rgba(255,255,255,.18); transition: transform .18s ease, box-shadow .18s ease, filter .18s ease; text-align: center; margin-top: auto; }
+.recap-action:hover { transform: translateY(-1px); filter: brightness(1.03); box-shadow: 0 16px 30px -10px rgba(16,185,129,.78), inset 0 1px 0 rgba(255,255,255,.22); }
+.recap-action:active { transform: scale(.98); }
+.recap-details-list { display: flex; flex-direction: column; gap: 10px; padding-bottom: 4px; }
+.recap-detail-item { display: flex; align-items: flex-start; gap: 14px; padding: 16px 16px; background: #f8fafc; border: 1px solid #f1f5f9; border-radius: 14px; }
+.recap-detail-item-icon { flex-shrink: 0; width: 38px; height: 38px; border-radius: 10px; background: #dbeafe; color: #1e40af; display: flex; align-items: center; justify-content: center; }
+.recap-detail-item-icon svg { width: 20px; height: 20px; stroke: currentColor; fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.recap-detail-item-body { flex: 1; min-width: 0; }
+.recap-detail-item-label { font-size: 0.82rem; font-weight: 500; color: #64748b; margin-bottom: 4px; }
+.recap-detail-item-value { font-size: 1.02rem; font-weight: 700; color: #0b1220; letter-spacing: -0.01em; line-height: 1.35; word-break: break-word; }
+.recap-detail-item-value.color { display: inline-flex; align-items: center; gap: 8px; }
+.recap-color-dot { display: inline-block; width: 18px; height: 18px; border-radius: 5px; border: 1px solid #e2e8f0; flex-shrink: 0; }
+@media (min-width: 520px) {
+    .recap-sheet { max-width: 460px; left: 50%; right: auto; transform: translate(-50%, 105%); }
+    .recap-sheet.active { transform: translate(-50%, 0); }
+}
+
+/* ⭐ AJOUT : BOTTOM SHEET DE SAISIE DU NUMÉRO DE RÉFÉRENCE */
+.refsheet-overlay {
+    position: fixed; inset: 0; background: rgba(15,23,42,.55);
+    -webkit-backdrop-filter: blur(4px); backdrop-filter: blur(4px);
+    z-index: 999998; opacity: 0; visibility: hidden;
+    transition: opacity .28s ease, visibility 0s linear .28s;
+}
+.refsheet-overlay.active {
+    opacity: 1; visibility: visible;
+    transition: opacity .28s ease, visibility 0s;
+}
+.refsheet-sheet {
+    position: fixed; left: 0; right: 0; bottom: 0; z-index: 999999;
+    background: #ffffff; border-radius: 24px 24px 0 0;
+    height: auto; max-height: 92dvh;
+    display: flex; flex-direction: column; overflow: hidden;
+    box-shadow: 0 -20px 45px -15px rgba(15,23,42,.35);
+    transform: translateY(105%);
+    transition: transform .38s cubic-bezier(.22,1,.36,1);
+    will-change: transform;
+}
+.refsheet-sheet.active { transform: translateY(0); }
+.refsheet-sheet.dragging { transition: none; }
+.refsheet-handle-wrap { flex-shrink: 0; padding: 12px 22px 0; cursor: grab; touch-action: none; user-select: none; }
+.refsheet-handle { width: 40px; height: 4px; background: #cbd5e1; border-radius: 2px; margin: 0 auto; }
+.refsheet-body {
+    flex: 1 1 auto; min-height: 0; overflow-y: auto;
+    padding: 20px 22px calc(24px + env(safe-area-inset-bottom, 0px));
+    display: flex; flex-direction: column;
+}
+.refsheet-title {
+    font-size: 1.35rem; font-weight: 800; color: #0b1220;
+    letter-spacing: -0.025em; margin: 0 0 8px; line-height: 1.25;
+}
+.refsheet-subtitle {
+    font-size: 0.88rem; color: #64748b; line-height: 1.5;
+    margin: 0 0 22px;
+}
+.refsheet-label {
+    font-size: 0.75rem; font-weight: 700; color: #64748b;
+    letter-spacing: 0.05em; text-transform: uppercase;
+    margin-bottom: 8px; display: block;
+}
+.refsheet-input {
+    width: 100%; padding: 14px 16px;
+    border: 1.5px solid #e2e8f0; border-radius: 12px;
+    background: #f8fafc; font-family: inherit;
+    font-size: 1rem; font-weight: 500; color: #0b1220;
+    outline: none; box-sizing: border-box;
+    transition: border-color .15s ease, background-color .15s ease;
+}
+.refsheet-input:focus { border-color: #10b981; background: #ffffff; }
+.refsheet-input::placeholder { color: #94a3b8; }
+.refsheet-action {
+    width: 100%; padding: 16px 18px;
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    color: #fff; border: none; border-radius: 12px;
+    font-family: inherit; font-size: 1rem; font-weight: 700;
+    cursor: pointer; margin-top: 20px;
+    box-shadow: 0 12px 24px -10px rgba(16,185,129,.7);
+    transition: transform .18s ease, filter .18s ease;
+}
+.refsheet-action:hover { transform: translateY(-1px); filter: brightness(1.03); }
+.refsheet-action:active { transform: scale(.98); }
+.refsheet-action:disabled { opacity: .55; cursor: not-allowed; }
+.refsheet-result {
+    margin-top: 18px; padding: 16px; border-radius: 12px;
+    font-size: 1rem; font-weight: 700; text-align: center;
+    display: none;
+}
+.refsheet-result.show { display: block; }
+.refsheet-result.true { background: #ecfdf5; color: #059669; }
+.refsheet-result.false { background: #fef2f2; color: #ef4444; }
+.refsheet-error {
+    font-size: 0.82rem; color: #ef4444; margin-top: 8px;
+    display: none;
+}
+.refsheet-error.show { display: block; }
+@media (min-width: 520px) {
+    .refsheet-sheet { max-width: 460px; left: 50%; right: auto; transform: translate(-50%, 105%); }
+    .refsheet-sheet.active { transform: translate(-50%, 0); }
+}
+</style>
+</head>
+
+<body>
+
+<div class="header" id="header">
+    <div class="header-left">
+        <div class="header-title" id="header-title">WebToApp</div>
+        <span class="pro-badge hidden" id="headerProBadge">PRO</span>
+    </div>
+    <div class="header-icons">
+        <button class="header-icon-btn" id="btn-menu">
+            <svg viewBox="0 0 24 24"><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+        </button>
+    </div>
+</div>
+
+<main class="main-content" id="content-area"></main>
+<div class="main-content" id="other-container" style="display:none;"></div>
+
+<div class="navbar-container" id="navbar-container">
+    <nav class="navbar">
+        <button class="nav-btn" id="btn-home"><svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg><span class="nav-btn-label">Projets</span></button>
+        <button class="nav-btn" id="btn-create"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg><span class="nav-btn-label">Créer</span></button>
+        <button class="nav-btn" id="btn-notifications"><svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg><span class="nav-btn-label">Notifications</span></button>
+        <button class="nav-btn" id="btn-guide"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg><span class="nav-btn-label">Infos</span></button>
+    </nav>
+</div>
+
+<div class="formule-drawer-overlay" id="formuleDrawerOverlay" onclick="closeFormuleDrawer()"></div>
+<aside class="formule-drawer" id="formuleDrawer" aria-hidden="true">
+    <div class="formule-drawer-header">
+        <h2 class="formule-drawer-title">Choisissez la formule qui vous correspond</h2>
+        <p class="formule-drawer-subtitle">Découvrez les options disponibles pour libérer tout le potentiel de votre projet.</p>
+    </div>
+    <nav class="formule-list" id="formuleList"></nav>
+</aside>
+
+<div class="upgrade-modal-overlay" id="upgradeModalOverlay">
+    <button class="upgrade-modal-close" id="upgradeModalClose" aria-label="Fermer"><svg viewBox="0 0 24 24"><line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/></svg></button>
+    <div class="upgrade-modal-content">
+        <h2 class="upgrade-modal-title">Passer à la <span class="highlight">vitesse supérieure</span></h2>
+        <div class="upgrade-modal-middle"><p class="upgrade-modal-intro">Pour seulement 4€ de plus. Débloquez <strong>6 nouvelles fonctionnalités</strong>.</p></div>
+        <div class="upgrade-modal-card" id="upgradeModalCard"></div>
+    </div>
+</div>
+
+<div id="confirmDeleteOverlay" class="confirm-overlay">
+    <div class="confirm-modal">
+        <div class="confirm-icon"><svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></div>
+        <h3>Supprimer l'icône ?</h3>
+        <p>Cette action est définitive et irréversible.</p>
+        <div class="confirm-buttons">
+            <button type="button" class="btn-confirm-cancel" onclick="closeConfirmDelete()">Annuler</button>
+            <button type="button" class="btn-confirm-delete" onclick="confirmDelete()">Supprimer</button>
+        </div>
+    </div>
+</div>
+
+<div id="confirmDeleteAllFilesOverlay" class="confirm-overlay">
+    <div class="confirm-modal">
+        <div class="confirm-icon"><svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></div>
+        <h3>Tout supprimer ?</h3>
+        <p>Tous les fichiers importés seront supprimés. Cette action est définitive et irréversible.</p>
+        <div class="confirm-buttons">
+            <button type="button" class="btn-confirm-cancel" onclick="closeConfirmDeleteAllFiles()">Annuler</button>
+            <button type="button" class="btn-confirm-delete" onclick="confirmDeleteAllFiles()">Supprimer</button>
+        </div>
+    </div>
+</div>
+
+<div id="notificationOverlay" class="notification-overlay">
+    <div class="notification-modal">
+        <div class="icon" id="notificationIcon">❌</div>
+        <h3 id="notificationTitle">Erreur</h3>
+        <p id="notificationMessage">Une erreur est survenue.</p>
+        <button class="btn-ok" onclick="closeNotification()">OK</button>
+    </div>
+</div>
+
+<div id="proTransitionOverlay" class="pro-transition-overlay">
+    <div class="pt-half pt-half-top"></div>
+    <div class="pt-half pt-half-bottom"></div>
+    <div class="pt-loading" id="ptLoading">
+        <div class="pt-spinner"></div>
+        <div class="pt-loading-text">Chargement...</div>
+    </div>
+</div>
+
+<!-- BOTTOM SHEET RÉCAPITULATIF -->
+<div class="recap-overlay" id="recapOverlay"></div>
+<div class="recap-sheet" id="recapSheet" role="dialog" aria-modal="true" aria-hidden="true">
+    <div class="recap-handle-wrap" id="recapHandleWrap">
+        <div class="recap-handle"></div>
+    </div>
+
+    <div class="recap-track" id="recapTrack">
+
+        <div class="recap-panel" id="recapPanelRecap">
+            <div class="recap-header">
+                <h2 class="recap-title">Récapitulatif</h2>
+                <button type="button" class="recap-see-details" id="recapSeeDetails">
+                    Voir les détails
+                    <svg viewBox="0 0 24 24"><polyline points="9 6 15 12 9 18"/></svg>
+                </button>
+            </div>
+
+            <div class="recap-body">
+                <div class="recap-block">
+                    <div class="recap-block-title">Votre projet</div>
+                    <div class="recap-info-row">
+                        <span class="recap-info-label">Nom</span>
+                        <span class="recap-info-value" id="recapInfoNom">—</span>
+                    </div>
+                    <div class="recap-info-row">
+                        <span class="recap-info-label">Icône</span>
+                        <span class="recap-info-value ok" id="recapInfoIcone">
+                            <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+                            Configurée
+                        </span>
+                    </div>
+                    <div class="recap-info-row">
+                        <span class="recap-info-label">Fichiers</span>
+                        <span class="recap-info-value" id="recapInfoFiles">—</span>
+                    </div>
+                </div>
+
+                <div class="recap-block">
+                    <div class="recap-block-title">Votre formule</div>
+                    <div class="recap-formula-row">
+                        <div class="recap-formula-name-wrap">
+                            <div class="recap-formula-icon" id="recapFormulaIcon">
+                                <svg viewBox="0 0 24 24"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>
+                            </div>
+                            <div>
+                                <div class="recap-formula-name" id="recapFormulaName">—</div>
+                                <div class="recap-formula-sub" id="recapFormulaSub">—</div>
+                            </div>
+                        </div>
+                        <div class="recap-formula-price" id="recapFormulaPrice">—</div>
+                    </div>
+                </div>
+
+                <div class="recap-total-row">
+                    <span class="recap-total-label">Total mensuel</span>
+                    <span>
+                        <span class="recap-total-amount" id="recapTotalAmount">—</span>
+                        <span class="recap-total-period">/ mois</span>
+                    </span>
+                </div>
+
+                <button type="button" class="recap-action" id="recapAction">Procéder au paiement</button>
+            </div>
+        </div>
+
+        <div class="recap-panel" id="recapPanelDetails">
+            <div class="recap-header">
+                <div class="recap-header-left">
+                    <button type="button" class="recap-back" id="recapBack" aria-label="Retour">
+                        <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+                    </button>
+                    <h2 class="recap-title">Détails du projet</h2>
+                </div>
+            </div>
+
+            <div class="recap-body">
+                <div class="recap-details-list" id="recapDetailsList"></div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<!-- ⭐ AJOUT : BOTTOM SHEET DE SAISIE DU NUMÉRO DE RÉFÉRENCE -->
+<div class="refsheet-overlay" id="refsheetOverlay"></div>
+<div class="refsheet-sheet" id="refsheetSheet" role="dialog" aria-modal="true" aria-hidden="true">
+    <div class="refsheet-handle-wrap" id="refsheetHandleWrap">
+        <div class="refsheet-handle"></div>
+    </div>
+    <div class="refsheet-body">
+        <h2 class="refsheet-title">Vérification du paiement</h2>
+        <p class="refsheet-subtitle">Entrez le numéro de référence que vous avez reçu par email après votre paiement.</p>
+
+        <label class="refsheet-label" for="referenceSelarInput">Numéro de référence</label>
+        <input type="text" id="referenceSelarInput" class="refsheet-input" placeholder="Ex : REF-123456" autocomplete="off" autocapitalize="characters">
+        <div class="refsheet-error" id="refsheetError">Veuillez entrer un numéro de référence.</div>
+
+        <button type="button" class="refsheet-action" id="refsheetAction">Envoyer</button>
+
+        <div class="refsheet-result" id="refsheetResult"></div>
+    </div>
+</div>
+
+<!-- ⭐ AJOUT : Module Firebase (ES module, chargé en defer) -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged }
+    from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
+const firebaseConfig = {
+    apiKey: "AIzaSyD_d-9UEQKE9LJtqonEZa3_Cepqn2Q87Iw",
+    authDomain: "zerofrais-2026.firebaseapp.com",
+    databaseURL: "https://zerofrais-2026-default-rtdb.europe-west1.firebasedatabase.app",
+    projectId: "zerofrais-2026",
+    storageBucket: "zerofrais-2026.firebasestorage.app",
+    messagingSenderId: "314231104997",
+    appId: "1:314231104997:web:3bd94f825c49772a41bb0c",
+    measurementId: "G-3JJ8LY3SE4"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const provider = new GoogleAuthProvider();
+
+// ── Système d'attente / notification de l'état d'auth ──
+window._authReady = false;
+window._authUser  = null;
+window._authWaiters = [];
+window.currentUserEmail = null;
+
+window.resoudreAuth = function(user) {
+    window._authReady = true;
+    window._authUser  = user || null;
+    window.currentUserEmail = (user && user.email) ? user.email : null;
+    const waiters = window._authWaiters.slice();
+    window._authWaiters = [];
+    waiters.forEach(function(fn) { try { fn(window._authUser); } catch (e) {} });
+};
+
+window.attendreAuth = function() {
+    if (window._authReady) return Promise.resolve(window._authUser);
+    return new Promise(function(resolve) { window._authWaiters.push(resolve); });
+};
+
+// Reconnaissance automatique à chaque changement d'état
+onAuthStateChanged(auth, function(user) {
+    window.resoudreAuth(user);
+    if (user && user.email) {
+        console.log("Utilisateur Google connecté :", user.email);
+    } else {
+        console.log("Aucun utilisateur connecté.");
+    }
+    // Notifie le Shell (s'il est prêt) pour rafraîchir l'onglet Projets
+    if (typeof window.onAuthStateChangedCallback === "function") {
+        try { window.onAuthStateChangedCallback(user); } catch (e) {}
+    }
+});
+
+// Exposé au Shell : déclenchement manuel de la pop-up Google
+window.firebaseSignIn = async function() {
+    try {
+        const result = await signInWithPopup(auth, provider);
+        console.log("Connexion Google réussie :", result.user.email);
+        return true;
+    } catch (error) {
+        console.error("Erreur lors de la connexion Google :", error);
+        if (typeof window.showNotification === "function") {
+            window.showNotification("Échec de la connexion Google.", "error");
+        }
+        return false;
+    }
+};
+
+window.firebaseAuth = auth;
+</script>
+
+<script>
+const FICHIERS = [
+    'principal', 'icone', 'fichiers', 'couleur', 'affichage', 'orientation',
+    'langues', 'ouverture', 'parametres', 'acces-reseau',
+    'affichage-intelligent', 'type-ouverture'
+];
+
+const FORMULES_META = {
+    'decouverte': { label: 'Découverte' },
+    'pro':        { label: 'Pro' },
+    'pro-plus':   { label: 'Pro+' }
+};
+const FORMULES_ORDRE = ['decouverte', 'pro', 'pro-plus'];
+
+const DUREE_SPINNER = 2000;
+
+let formuleActive = 'decouverte';
+let ecranActif = null;
+let cacheFichiers = {};
+let scriptsInjectes = [];
+let isDrawerOpen = false;
+let isUpgradeModalOpen = false;
+let activeConfirmModal = null;
+let _suppressPopstate = false;
+let _fichiersChargees = false;
+let _navToken = 0;
+let _infosPrecharge = null;
+
+let ongletActif = null;
+const cacheOnglets = {
+    creer: { html: null, codesScripts: [], sousEcran: 'principal', scroll: 0 },
+    infos: { html: null, codesScripts: [], scroll: 0 }
+};
+
+// ⭐ AJOUT : aiguillage paiement selon la formule
+function redirigerVersPaiement() {
+    const map = {
+        'decouverte': 'https://selar.com/2196rla528',
+        'pro':        'paiement-pro',
+        'pro-plus':   'paiement-pro-plus'
+    };
+    const cible = map[formuleActive] || 'paiement-decouverte';
+    window.location.href = cible;
+}
+window.redirigerVersPaiement = redirigerVersPaiement;
+
+function sauvegarderOngletCourant() {
+    if (!ongletActif) return;
+    const c = cacheOnglets[ongletActif];
+    if (!c) return;
+    c.html = contentArea.innerHTML;
+    c.scroll = contentArea.scrollTop;
+    if (ongletActif === 'creer') c.sousEcran = ecranActif || 'principal';
+    c.codesScripts = scriptsInjectes.map(function(s) { return s.textContent; });
+}
+
+function retirerTousScripts() {
+    scriptsInjectes.forEach(function(s) { try { s.remove(); } catch (e) {} });
+    scriptsInjectes = [];
+}
+
+function restaurerOnglet(nom) {
+    const c = cacheOnglets[nom];
+    if (!c || !c.html) return false;
+    retirerTousScripts();
+    contentArea.innerHTML = c.html;
+    c.codesScripts.forEach(function(code) {
+        const s = document.createElement('script');
+        s.textContent = code;
+        s.dataset.injecte = '1';
+        document.body.appendChild(s);
+        scriptsInjectes.push(s);
+    });
+    return true;
+}
+
+const ecranGuards = {};
+function enregistrerGarde(idEcran, fn) { ecranGuards[idEcran] = fn; }
+window.enregistrerGarde = enregistrerGarde;
+
+function updateMenuVisibility() {
+    const btn = document.getElementById('btn-menu');
+    if (!btn) return;
+    if (ongletActif === 'creer') {
+        btn.style.visibility = 'visible';
+        btn.style.pointerEvents = 'auto';
+    } else {
+        btn.style.visibility = 'hidden';
+        btn.style.pointerEvents = 'none';
+    }
+}
+
+window.addEventListener('formule-change', function(e) {
+    if (!e || !e.detail || !e.detail.formule) return;
+    const nouvelleFormule = e.detail.formule;
+    if (!FORMULES_META[nouvelleFormule]) return;
+
+    if (nouvelleFormule !== formuleActive) {
+        formuleActive = nouvelleFormule;
+        try { stockerNatif('formuleActive', nouvelleFormule); } catch (err) {}
+        try { mettreAJourFormuleDrawer(); } catch (err) {}
+        try { updateHeaderProBadge(); } catch (err) {}
+    }
+});
+
+async function playProTransition(chargementFn) {
+    var overlay = document.getElementById('proTransitionOverlay');
+    var loading = document.getElementById('ptLoading');
+    if (!overlay) { await chargementFn(); return; }
+
+    overlay.classList.remove('step-1');
+    loading.classList.remove('hidden');
+    overlay.classList.add('active');
+
+    await new Promise(function(r) { requestAnimationFrame(r); });
+    await chargementFn();
+    await new Promise(function(r) { setTimeout(r, 220); });
+
+    loading.classList.add('hidden');
+    await new Promise(function(r) { setTimeout(r, 240); });
+
+    overlay.classList.add('step-1');
+    await new Promise(function(r) { setTimeout(r, 2200); });
+    overlay.classList.remove('active');
+    setTimeout(function() {
+        overlay.classList.remove('step-1');
+        loading.classList.remove('hidden');
+    }, 400);
+}
+
+const DB_NAME = 'StockagePWA';
+const STORE_NAME = 'donnees';
+function ouvrirBase() {
+    return new Promise((resolve, reject) => {
+        const req = indexedDB.open(DB_NAME, 1);
+        req.onupgradeneeded = () => req.result.createObjectStore(STORE_NAME);
+        req.onsuccess = () => resolve(req.result);
+        req.onerror = () => reject(req.error);
+    });
+}
+async function stockerNatif(cle, valeur) {
+    const db = await ouvrirBase();
+    return new Promise((resolve, reject) => {
+        const tx = db.transaction(STORE_NAME, 'readwrite');
+        tx.objectStore(STORE_NAME).put(valeur, cle);
+        tx.oncomplete = () => resolve();
+        tx.onerror = () => reject(tx.error);
+    });
+}
+async function recupererNatif(cle) {
+    const db = await ouvrirBase();
+    return new Promise((resolve, reject) => {
+        const tx = db.transaction(STORE_NAME, 'readonly');
+        const req = tx.objectStore(STORE_NAME).get(cle);
+        req.onsuccess = () => resolve(req.result);
+        req.onerror = () => reject(req.error);
+    });
+}
+async function supprimerNatif(cle) {
+    const db = await ouvrirBase();
+    return new Promise((resolve, reject) => {
+        const tx = db.transaction(STORE_NAME, 'readwrite');
+        tx.objectStore(STORE_NAME).delete(cle);
+        tx.oncomplete = () => resolve();
+        tx.onerror = () => reject(tx.error);
+    });
+}
+
+function updateHeaderProBadge() {
+    const badge = document.getElementById('headerProBadge');
+    if (!badge) return;
+    const isPro = (formuleActive === 'pro' || formuleActive === 'pro-plus');
+    const inCreate = (headerTitle.textContent === 'Créer');
+    if (isPro && inCreate) {
+        if (formuleActive === 'pro-plus') {
+            badge.textContent = 'PRO+';
+        } else {
+            badge.textContent = 'PRO';
+        }
+        badge.classList.remove('hidden');
+    } else {
+        badge.classList.add('hidden');
+    }
+}
+
+async function chargerFichiers(token) {
+    if (_fichiersChargees) return true;
+
+    cacheFichiers = {};
+    nettoyerScripts();
+
+    if (token !== _navToken) return false;
+    contentArea.innerHTML = '<div class="chargement-bloc"><div class="chargement-spinner"></div><p class="chargement-texte">Chargement...</p><p class="chargement-hint">Veuillez patienter</p></div>';
+
+    const requetes = FICHIERS.map(function(nom) {
+        const chemin = 'creer/' + nom + '.html';
+        return fetch(chemin)
+            .then(function(res) { return res.ok ? res.text() : null; })
+            .then(function(texte) { return { nom: nom, texte: texte }; })
+            .catch(function() { return { nom: nom, texte: null }; });
+    });
+
+    const resultats = await Promise.all(requetes);
+
+    if (token !== _navToken) return false;
+
+    resultats.forEach(function(r) {
+        if (r.texte && r.texte.trim()) cacheFichiers[r.nom] = r.texte;
+    });
+
+    let htmlTotal = '';
+    const codesScripts = [];
+    for (const nom of FICHIERS) {
+        if (!cacheFichiers[nom]) continue;
+        const temp = document.createElement('div');
+        temp.innerHTML = cacheFichiers[nom];
+        temp.querySelectorAll('script').forEach(s => { codesScripts.push(s.textContent); s.remove(); });
+        htmlTotal += temp.innerHTML;
+    }
+    contentArea.innerHTML = htmlTotal;
+    for (const code of codesScripts) {
+        const s = document.createElement('script');
+        s.textContent = code;
+        s.dataset.injecte = '1';
+        document.body.appendChild(s);
+        scriptsInjectes.push(s);
+    }
+
+    _fichiersChargees = true;
+    cacheOnglets.creer.codesScripts = codesScripts.slice();
+    cacheOnglets.creer.html = contentArea.innerHTML;
+    cacheOnglets.creer.sousEcran = 'principal';
+    cacheOnglets.creer.scroll = 0;
+
+    return true;
+}
+
+function prechargerInfos() {
+    if (_infosPrecharge) return;
+    _infosPrecharge = fetch('infos/principal-infos.html')
+        .then(function(r) {
+            if (!r.ok) throw new Error('load');
+            return r.text();
+        })
+        .then(function(html) {
+            if (!cacheOnglets.infos.html) {
+                const temp = document.createElement('div');
+                temp.innerHTML = html;
+                const codesScripts = [];
+                temp.querySelectorAll('script').forEach(function(s) {
+                    codesScripts.push(s.textContent);
+                    s.remove();
+                });
+                cacheOnglets.infos.codesScripts = codesScripts.slice();
+                cacheOnglets.infos.html = temp.innerHTML;
+                cacheOnglets.infos.scroll = 0;
+            }
+            return html;
+        })
+        .catch(function() { _infosPrecharge = null; });
+}
+
+async function changerFormule(formule) {
+    if (formule === formuleActive) { closeFormuleDrawer(); closeUpgradeModal(false, false); return; }
+    if (!FORMULES_META[formule]) { closeFormuleDrawer(); closeUpgradeModal(false, false); return; }
+
+    closeFormuleDrawer(); closeUpgradeModal(false, false);
+
+    await playProTransition(async function() {
+        const startTime = Date.now();
+
+        if (!_fichiersChargees) {
+            await chargerFichiers(_navToken);
+        }
+
+        formuleActive = formule;
+        try { await stockerNatif('formuleActive', formule); } catch (e) {}
+
+        afficherEcran('principal');
+
+        contentArea.scrollTop = 0;
+        try { sessionStorage.setItem('principalScrollTop', '0'); } catch (e) {}
+
+        window.dispatchEvent(new CustomEvent('formule-change', {
+            detail: { formule: formule, resetSection: true }
+        }));
+
+        const elapsed = Date.now() - startTime;
+        const remaining = Math.max(0, DUREE_SPINNER - elapsed);
+        if (remaining > 0) {
+            await new Promise(function(r) { setTimeout(r, remaining); });
+        }
+    });
+
+    mettreAJourFormuleDrawer();
+    updateHeaderProBadge();
+    try { history.replaceState({ screen: 'principal' }, '', window.location.pathname); } catch (e) {}
+}
+window.changerFormule = changerFormule;
+
+async function switchFormule(formule) { await changerFormule(formule); }
+window.switchFormule = switchFormule;
+
+function nettoyerScripts() {
+    scriptsInjectes.forEach(s => { try { s.remove(); } catch (e) {} });
+    scriptsInjectes = [];
+    Object.keys(ecranGuards).forEach(k => delete ecranGuards[k]);
+}
+
+function afficherEcran(id) {
+    if (!document.getElementById(id)) id = 'principal';
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    const target = document.getElementById(id);
+    if (target) target.classList.add('active');
+    const inSub = (id !== 'principal');
+    if (inSub) {
+        document.body.classList.add('in-sub-screen');
+        contentArea.style.height = '100dvh';
+        contentArea.scrollTop = 0;
+    } else {
+        document.body.classList.remove('in-sub-screen');
+        contentArea.style.height = 'calc(100dvh - 137px)';
+    }
+    ecranActif = id;
+    if (cacheOnglets.creer) cacheOnglets.creer.sousEcran = id;
+    return true;
+}
+function openScreen(id) {
+    if (ecranActif && ecranActif !== id) {
+        const garde = ecranGuards[ecranActif];
+        if (typeof garde === 'function' && garde(id) === false) return;
+    }
+    afficherEcran(id);
+    history.pushState({ screen: id }, '', '#' + id);
+    const fn = window['init_' + id.replace(/-/g, '_')];
+    if (typeof fn === 'function') { try { fn(); } catch (e) { console.error(e); } }
+}
+function goBack() { history.back(); }
+
+window.addEventListener('popstate', function(e) {
+    if (_suppressPopstate) { _suppressPopstate = false; return; }
+    if (activeConfirmModal === 'icon') { closeConfirmDelete(true); return; }
+    if (activeConfirmModal === 'files') { closeConfirmDeleteAllFiles(true); return; }
+    if (isUpgradeModalOpen) { closeUpgradeModal(false, true); return; }
+    if (isDrawerOpen) { closeFormuleDrawer(true); return; }
+    if (isRefSheetOpen) { closeRefSheet(true); return; }        // ⭐ AJOUT
+    if (isRecapOpen) { closeRecap(false, true); return; }
+
+    const state = e.state || { screen: 'principal' };
+    const screenId = state.screen || 'principal';
+
+    if (ecranActif && ecranActif !== screenId) {
+        const garde = ecranGuards[ecranActif];
+        if (typeof garde === 'function' && garde(screenId) === false) {
+            _suppressPopstate = true;
+            try { history.go(1); }
+            catch (err) { _suppressPopstate = false; }
+            return;
+        }
+    }
+
+    afficherEcran(screenId);
+    const fn = window['init_' + screenId.replace(/-/g, '_')];
+    if (typeof fn === 'function') { try { fn(); } catch (err) { console.error(err); } }
+});
+
+const headerEl = document.getElementById('header');
+const contentArea = document.getElementById('content-area');
+const otherContainer = document.getElementById('other-container');
+const navbarContainer = document.getElementById('navbar-container');
+const headerTitle = document.getElementById('header-title');
+const btnHome = document.getElementById('btn-home');
+const btnCreate = document.getElementById('btn-create');
+const btnNotifications = document.getElementById('btn-notifications');
+const btnGuide = document.getElementById('btn-guide');
+const btnMenu = document.getElementById('btn-menu');
+const navigationButtons = [btnHome, btnCreate, btnNotifications, btnGuide];
+
+function setLinkActive(btn) { navigationButtons.forEach(b => b.classList.remove('active')); btn.classList.add('active'); }
+function showShell(show) { headerEl.style.display = show ? 'flex' : 'none'; navbarContainer.style.display = show ? 'block' : 'none'; }
+function comingSoonHTML() { return '<div class="coming-soon"><p class="coming-soon-text">Disponible prochainement</p></div>'; }
+function exitSubScreen() { document.body.classList.remove('in-sub-screen'); showShell(true); contentArea.style.height = 'calc(100dvh - 137px)'; }
+
+// ⭐ AJOUT : HTML de la page de connexion Google
+function loginPageHTML() {
+    return (
+        '<div class="login-page">' +
+            '<div class="login-illustration">' +
+                '<svg viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="14" rx="2"/><path d="M8 21h8"/><path d="M12 18v3"/></svg>' +
+            '</div>' +
+            '<h2 class="login-title">Connectez-vous pour continuer</h2>' +
+            '<p class="login-subtitle">Identifiez-vous avec votre compte Google pour accéder à vos projets et finaliser votre commande.</p>' +
+            '<button type="button" class="login-google-btn" id="googleLoginBtn">' +
+                '<svg viewBox="0 0 48 48">' +
+                    '<path fill="#FFC107" d="M43.611 20.083H42V20H24v8h11.303c-1.649 4.657-6.08 8-11.303 8-6.627 0-12-5.373-12-12s5.373-12 12-12c3.059 0 5.842 1.154 7.961 3.039l5.657-5.657C34.046 6.053 29.268 4 24 4 12.955 4 4 12.955 4 24s8.955 20 20 20 20-8.955 20-20c0-1.341-.138-2.65-.389-3.917z"/>' +
+                    '<path fill="#FF3D00" d="M6.306 14.691l6.571 4.819C14.655 15.108 18.961 12 24 12c3.059 0 5.842 1.154 7.961 3.039l5.657-5.657C34.046 6.053 29.268 4 24 4 16.318 4 9.656 8.337 6.306 14.691z"/>' +
+                    '<path fill="#4CAF50" d="M24 44c5.166 0 9.86-1.977 13.409-5.192l-6.19-5.238A11.91 11.91 0 0 1 24 36c-5.202 0-9.619-3.317-11.283-7.946l-6.522 5.025C9.505 39.556 16.227 44 24 44z"/>' +
+                    '<path fill="#1976D2" d="M43.611 20.083H42V20H24v8h11.303a12.04 12.04 0 0 1-4.087 5.571l.003-.002 6.19 5.238C36.971 39.205 44 34 44 24c0-1.341-.138-2.65-.389-3.917z"/>' +
+                '</svg>' +
+                'Se connecter avec Google' +
+            '</button>' +
+            '<p class="login-hint">La connexion est obligatoire pour continuer.</p>' +
+        '</div>'
+    );
+}
+
+// ⭐ AJOUT : Contenu de l'onglet Projets (login ou espace projets)
+function projetsHTML() {
+    if (window._authUser && window._authUser.email) {
+        return (
+            '<div class="projets-vide">' +
+                '<h2>Vos projets</h2>' +
+                '<p>Vos projets apparaîtront ici.</p>' +
+            '</div>'
+        );
+    }
+    return loginPageHTML();
+}
+
+function showOtherView(html) {
+    document.body.classList.remove('in-sub-screen');
+    showShell(true);
+    contentArea.style.display = 'none';
+    otherContainer.innerHTML = html;
+    otherContainer.style.display = 'block';
+    otherContainer.scrollTop = 0;
+}
+function hideOtherView() {
+    otherContainer.style.display = 'none';
+    otherContainer.innerHTML = '';
+    contentArea.style.display = 'block';
+}
+
+// ── MODIF : runHomeView affiche la page login ou l'espace projets ──
+function runHomeView() {
+    closeAllOverlays(); setLinkActive(btnHome); headerTitle.textContent = 'SiteLeap';
+    sauvegarderOngletCourant();
+    ongletActif = null;
+    updateMenuVisibility();
+    showOtherView(projetsHTML());
+    ecranActif = null;
+    updateHeaderProBadge();
+
+    // Attacher le listener du bouton Google (car le HTML vient d'être inséré)
+    const btnGoogle = document.getElementById('googleLoginBtn');
+    if (btnGoogle) {
+        btnGoogle.addEventListener('click', async function() {
+            if (typeof window.firebaseSignIn !== 'function') {
+                showNotification("Firebase n'est pas encore prêt. Réessayez dans un instant.", 'error');
+                return;
+            }
+            btnGoogle.disabled = true;
+            await window.firebaseSignIn();
+            btnGoogle.disabled = false;
+        });
+    }
+
+    try { history.replaceState({ screen: 'main' }, '', window.location.pathname); } catch (e) {}
+}
+
+// ⭐ AJOUT : rafraîchir Projets à chaque changement d'auth
+window.onAuthStateChangedCallback = function(user) {
+    const surProjets = btnHome && btnHome.classList.contains('active');
+    if (surProjets) {
+        // On est sur l'onglet Projets, on rafraîchit la vue
+        const htmlActuel = otherContainer.innerHTML || '';
+        const etaitSurLogin = htmlActuel.indexOf('googleLoginBtn') !== -1;
+        const maintenantConnecte = !!(user && user.email);
+        if ((etaitSurLogin && maintenantConnecte) || (!etaitSurLogin && !maintenantConnecte)) {
+            runHomeView();
+        }
+    }
+};
+
+function runCreateView() {
+    closeAllOverlays(); setLinkActive(btnCreate); headerTitle.textContent = 'Créer';
+    updateHeaderProBadge();
+    showShell(true); document.body.classList.remove('in-sub-screen'); contentArea.style.height = 'calc(100dvh - 137px)';
+
+    sauvegarderOngletCourant();
+    ongletActif = 'creer';
+    updateMenuVisibility();
+
+    hideOtherView();
+
+    const myToken = ++_navToken;
+
+    if (_fichiersChargees && contentArea.querySelector('#principal')) {
+        afficherEcran(cacheOnglets.creer.sousEcran || 'principal');
+        contentArea.scrollTop = cacheOnglets.creer.scroll || 0;
+        mettreAJourFormuleDrawer();
+        updateHeaderProBadge();
+        window.dispatchEvent(new CustomEvent('formule-change', {
+            detail: { formule: formuleActive, resetSection: false }
+        }));
+        return;
+    }
+
+    if (_fichiersChargees && cacheOnglets.creer.html) {
+        restaurerOnglet('creer');
+        afficherEcran(cacheOnglets.creer.sousEcran || 'principal');
+        contentArea.scrollTop = cacheOnglets.creer.scroll || 0;
+        mettreAJourFormuleDrawer();
+        updateHeaderProBadge();
+        window.dispatchEvent(new CustomEvent('formule-change', {
+            detail: { formule: formuleActive, resetSection: false }
+        }));
+        return;
+    }
+
+    chargerFichiers(myToken).then(function(ok) {
+        if (!ok) return;
+        if (myToken !== _navToken) return;
+        afficherEcran('principal');
+        mettreAJourFormuleDrawer();
+        updateHeaderProBadge();
+        window.dispatchEvent(new CustomEvent('formule-change', {
+            detail: { formule: formuleActive, resetSection: false }
+        }));
+    });
+}
+
+function runNotificationsView() {
+    closeAllOverlays(); setLinkActive(btnNotifications); headerTitle.textContent = 'Notifications';
+    sauvegarderOngletCourant();
+    ongletActif = null;
+    updateMenuVisibility();
+    showOtherView('<div style="max-width: 500px; margin: 20px 16px; background: #f0f9ff; padding: 20px; border-radius: 12px; border: 1px solid #0ea5e9; color: #0c4a6e;"><h2 style="font-size: 1.1rem; margin-bottom: 6px; font-weight: 600;">Notifications</h2><p style="font-size: 0.9rem; line-height: 1.5;">Aucune nouvelle notification pour le moment.</p></div>');
+    ecranActif = null;
+    updateHeaderProBadge();
+    try { history.replaceState({ screen: 'main' }, '', window.location.pathname); } catch (e) {}
+}
+
+async function runGuideView() {
+    closeAllOverlays();
+    exitSubScreen();
+    setLinkActive(btnGuide);
+    headerTitle.textContent = 'Infos';
+    ecranActif = null;
+    updateHeaderProBadge();
+
+    sauvegarderOngletCourant();
+    ongletActif = 'infos';
+    updateMenuVisibility();
+
+    hideOtherView();
+
+    const myToken = ++_navToken;
+
+    if (cacheOnglets.infos.html) {
+        restaurerOnglet('infos');
+        contentArea.scrollTop = cacheOnglets.infos.scroll || 0;
+        const fn = window['init_infos'];
+        if (typeof fn === 'function') { try { fn(); } catch (e) {} }
+        try { history.replaceState({ screen: 'main' }, '', window.location.pathname); } catch (e) {}
+        return;
+    }
+
+    retirerTousScripts();
+    contentArea.innerHTML = '<div class="chargement-bloc"><div class="chargement-spinner"></div><p class="chargement-texte">Chargement...</p><p class="chargement-hint">Veuillez patienter</p></div>';
+
+    if (_infosPrecharge) {
+        try { await _infosPrecharge; } catch (e) {}
+        if (myToken !== _navToken) return;
+        if (cacheOnglets.infos.html) {
+            restaurerOnglet('infos');
+            contentArea.scrollTop = cacheOnglets.infos.scroll || 0;
+            const fn = window['init_infos'];
+            if (typeof fn === 'function') { try { fn(); } catch (e) {} }
+            return;
+        }
+    }
+
+    fetch('infos/principal-infos.html')
+        .then(function(r) {
+            if (!r.ok) throw new Error('load');
+            return r.text();
+        })
+        .then(function(html) {
+            if (myToken !== _navToken) return;
+            contentArea.innerHTML = html;
+            const codesScripts = [];
+            contentArea.querySelectorAll('script').forEach(function(s) {
+                codesScripts.push(s.textContent);
+                s.remove();
+            });
+            codesScripts.forEach(function(code) {
+                const s = document.createElement('script');
+                s.textContent = code;
+                s.dataset.injecte = '1';
+                document.body.appendChild(s);
+                scriptsInjectes.push(s);
+            });
+            cacheOnglets.infos.codesScripts = codesScripts.slice();
+            cacheOnglets.infos.html = contentArea.innerHTML;
+            cacheOnglets.infos.scroll = 0;
+            const fn = window['init_infos'];
+            if (typeof fn === 'function') { try { fn(); } catch (e) {} }
+        })
+        .catch(function() {});
+
+    try { history.replaceState({ screen: 'main' }, '', window.location.pathname); } catch (e) {}
+}
+
+btnHome.addEventListener('click', runHomeView);
+btnCreate.addEventListener('click', runCreateView);
+btnNotifications.addEventListener('click', runNotificationsView);
+btnGuide.addEventListener('click', runGuideView);
+
+function getCarteHTML(f) {
+    if (f === 'pro') {
+        return `
+            <div class="plan-card" data-formule-card="pro">
+                <div class="plan-icon pro-icon"><svg viewBox="0 0 24 24"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg></div>
+                <div class="plan-head">
+                    <div class="plan-name">Pro</div>
+                    <div class="plan-price-row"><span class="plan-price">15</span><span class="plan-currency">€</span><span class="plan-period">/ mois</span></div>
+                </div>
+                <p class="plan-desc">Le contrôle visuel aux couleurs de votre marque.</p>
+                <div class="pack-included"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Tout le pack Découverte inclus</div>
+                <div class="plan-body"><div>
+                    <div class="plan-section-title">Évolutions</div>
+                    <ul class="plan-features">
+                        <li><span class="feature-check"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></span><div class="feature-text"><strong>Plein écran immersif</strong><span>Éliminer les distractions pour retenir l'utilisateur plus longtemps.</span></div></li>
+                        <li><span class="feature-check"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></span><div class="feature-text"><strong>Visuel de démarrage personnalisé</strong><span>Renforcer l'identité visuelle de votre marque dès l'ouverture.</span></div></li>
+                        <li><span class="feature-check"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></span><div class="feature-text"><strong>+ 4 autres fonctionnalités</strong></div></li>
+                    </ul>
+                </div></div>
+                <button class="plan-btn" type="button" onclick="switchFormule('pro')">Découvrir l'offre</button>
+            </div>`;
+    }
+    if (f === 'pro-plus') {
+        return `
+            <div class="plan-card" data-formule-card="pro-plus">
+                <div class="plan-icon proplus-icon"><svg viewBox="0 0 24 24"><path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 16.8 5.8 21.3l2.4-7.4L2 9.4h7.6z"/></svg></div>
+                <div class="plan-head">
+                    <div class="plan-name">Pro+</div>
+                    <div class="plan-price-row"><span class="plan-price">29</span><span class="plan-currency">€</span><span class="plan-period">/ mois</span></div>
+                </div>
+                <p class="plan-desc">La puissance du hors-ligne et du réseau maîtrisé.</p>
+                <div class="pack-included"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Tout le pack Pro inclus</div>
+                <div class="plan-body"><div>
+                    <div class="plan-section-title">Évolutions</div>
+                    <ul class="plan-features">
+                        <li><span class="feature-check"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></span><div class="feature-text"><strong>Performance et réseau</strong><span>Contrôlez précisément comment votre app accède au réseau.</span></div></li>
+                        <li><span class="feature-check"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></span><div class="feature-text"><strong>Cache intelligent</strong><span>Vos utilisateurs ne subissent plus jamais la latence.</span></div></li>
+                        <li><span class="feature-check"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></span><div class="feature-text"><strong>+ 4 autres fonctionnalités</strong></div></li>
+                    </ul>
+                </div></div>
+                <button class="plan-btn" type="button" onclick="switchFormule('pro-plus')">Découvrir l'offre</button>
+            </div>`;
+    }
+    if (f === 'decouverte') {
+        return `<div class="plan-card" data-formule-card="decouverte"><button class="plan-btn" type="button" onclick="switchFormule('decouverte')">Revenir à Découverte</button></div>`;
+    }
+    return '';
+}
+
+function construireFormuleDrawer() {
+    const list = document.getElementById('formuleList');
+    list.innerHTML = '';
+    FORMULES_ORDRE.forEach(f => {
+        const m = FORMULES_META[f];
+        const item = document.createElement('div');
+        item.className = 'formule-accordion-item';
+        item.dataset.formule = f;
+        const iconKey = f === 'decouverte' ? 'decouverte' : f === 'pro' ? 'pro' : 'proplus';
+        const svgIcon = f === 'decouverte'
+            ? '<svg viewBox="0 0 24 24"><path d="M12 2l2 6 6 1-4.5 4.5L17 20l-5-3-5 3 1.5-6.5L4 9l6-1z"/></svg>'
+            : f === 'pro'
+            ? '<svg viewBox="0 0 24 24"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>'
+            : '<svg viewBox="0 0 24 24"><path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 16.8 5.8 21.3l2.4-7.4L2 9.4h7.6z"/></svg>';
+        const badgeHtml = '<span class="formule-active-badge"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Active</span>';
+        const chevronHtml = '<span class="formule-trigger-chevron"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></span>';
+        item.innerHTML = `
+            <button type="button" class="formule-trigger" data-target="${f}">
+                <span class="formule-trigger-icon ${iconKey}-icon">${svgIcon}</span>
+                <span class="formule-trigger-label">Formule ${m.label}</span>
+                ${badgeHtml}
+                ${chevronHtml}
+            </button>
+            <div class="formule-panel"><div class="formule-panel-inner">${getCarteHTML(f)}</div></div>
+        `;
+        list.appendChild(item);
+    });
+    list.querySelectorAll('.formule-trigger').forEach(tr => {
+        tr.addEventListener('click', function() {
+            const item = this.closest('.formule-accordion-item');
+            const hasPanel = item.querySelector('.formule-panel');
+            if (!hasPanel) return;
+            const wasOpen = item.classList.contains('open');
+            list.querySelectorAll('.formule-accordion-item.open').forEach(i => i.classList.remove('open'));
+            if (!wasOpen) item.classList.add('open');
+        });
+    });
+    mettreAJourFormuleDrawer();
+}
+function mettreAJourFormuleDrawer() {
+    document.querySelectorAll('.formule-accordion-item').forEach(i => {
+        const isCurrent = (i.dataset.formule === formuleActive);
+        i.classList.toggle('is-current', isCurrent);
+    });
+}
+function openFormuleDrawer() {
+    if (isDrawerOpen) return;
+    if (ongletActif !== 'creer') return;
+    isDrawerOpen = true;
+    const overlay = document.getElementById('formuleDrawerOverlay');
+    const drawer = document.getElementById('formuleDrawer');
+    try { history.pushState({ drawer: true }, '', '#formules'); } catch (e) {}
+    overlay.classList.add('active'); drawer.classList.add('active');
+    drawer.setAttribute('aria-hidden', 'false');
+    document.body.classList.add('drawer-open');
+    mettreAJourFormuleDrawer();
+}
+function closeFormuleDrawer(fromPopstate) {
+    if (!isDrawerOpen) return;
+    isDrawerOpen = false;
+    const overlay = document.getElementById('formuleDrawerOverlay');
+    const drawer = document.getElementById('formuleDrawer');
+    overlay.classList.remove('active'); drawer.classList.remove('active');
+    drawer.setAttribute('aria-hidden', 'true');
+    document.body.classList.remove('drawer-open');
+    document.querySelectorAll('.formule-accordion-item.open').forEach(i => i.classList.remove('open'));
+    if (!fromPopstate) { _suppressPopstate = true; try { history.back(); } catch (e) { _suppressPopstate = false; } }
+}
+btnMenu.addEventListener('click', function() {
+    openFormuleDrawer();
+});
+
+function openUpgradeModal() {
+    if (isUpgradeModalOpen) return;
+    isUpgradeModalOpen = true;
+    const overlay = document.getElementById('upgradeModalOverlay');
+    const cardContainer = document.getElementById('upgradeModalCard');
+    cardContainer.innerHTML = getCarteHTML('pro');
+    try { history.pushState({ modal: true }, '', '#upgrade'); } catch (e) {}
+    overlay.classList.add('active');
+    document.body.classList.add('modal-open');
+}
+function closeUpgradeModal(redirect, fromPopstate) {
+    if (!isUpgradeModalOpen) return;
+    isUpgradeModalOpen = false;
+    const overlay = document.getElementById('upgradeModalOverlay');
+    if (overlay) overlay.classList.remove('active');
+    document.body.classList.remove('modal-open');
+    if (redirect) {
+        // ⭐ MODIF : aiguillage selon la formule
+        redirigerVersPaiement();
+        return;
+    }
+    if (!fromPopstate) {
+        _suppressPopstate = true;
+        try { history.back(); } catch (e) { _suppressPopstate = false; }
+    }
+}
+document.getElementById('upgradeModalClose').addEventListener('click', function() {
+    closeUpgradeModal(true, false);
+});
+
+function openConfirmDelete() { if (activeConfirmModal) return; activeConfirmModal = 'icon'; document.getElementById('confirmDeleteOverlay').classList.add('active'); }
+function closeConfirmDelete(fromPopstate) { if (activeConfirmModal !== 'icon') return; activeConfirmModal = null; document.getElementById('confirmDeleteOverlay').classList.remove('active'); }
+function openConfirmDeleteAllFiles() { if (activeConfirmModal) return; activeConfirmModal = 'files'; document.getElementById('confirmDeleteAllFilesOverlay').classList.add('active'); }
+function closeConfirmDeleteAllFiles(fromPopstate) { if (activeConfirmModal !== 'files') return; activeConfirmModal = null; document.getElementById('confirmDeleteAllFilesOverlay').classList.remove('active'); }
+function showNotification(message, type) {
+    type = type || 'error';
+    const overlay = document.getElementById('notificationOverlay');
+    const icon = document.getElementById('notificationIcon');
+    const title = document.getElementById('notificationTitle');
+    const msg = document.getElementById('notificationMessage');
+    if (type === 'success') { icon.textContent = '✓'; icon.className = 'icon success-icon'; title.textContent = 'Succès'; }
+    else { icon.textContent = '!'; icon.className = 'icon error-icon'; title.textContent = 'Erreur'; }
+    msg.textContent = message;
+    overlay.classList.add('active');
+}
+window.showNotification = showNotification;
+function closeNotification() { document.getElementById('notificationOverlay').classList.remove('active'); }
+function closeAllOverlays() {
+    if (isDrawerOpen) closeFormuleDrawer();
+    if (isUpgradeModalOpen) closeUpgradeModal(false, false);
+    if (activeConfirmModal === 'icon') closeConfirmDelete(true);
+    if (activeConfirmModal === 'files') closeConfirmDeleteAllFiles(true);
+    if (isRefSheetOpen) closeRefSheet(true);   // ⭐ AJOUT
+    if (isRecapOpen) closeRecap(false, true);
+}
+
+/* BOTTOM SHEET RÉCAPITULATIF — LOGIQUE */
+let isRecapOpen = false;
+
+const RECAP_FORMULES = {
+    decouverte: {
+        name: 'Découverte',
+        sub: "L'essentiel pour démarrer",
+        price: '10 € / mois',
+        total: '10 €',
+        iconClass: 'decouverte',
+        icon: '<svg viewBox="0 0 24 24"><path d="M12 2l2 6 6 1-4.5 4.5L17 20l-5-3-5 3 1.5-6.5L4 9l6-1z"/></svg>'
+    },
+    pro: {
+        name: 'Pro',
+        sub: 'Contrôle visuel personnalisé',
+        price: '15 € / mois',
+        total: '15 €',
+        iconClass: 'pro',
+        icon: '<svg viewBox="0 0 24 24"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>'
+    },
+    'pro-plus': {
+        name: 'Pro+',
+        sub: 'Performance et réseau',
+        price: '29 € / mois',
+        total: '29 €',
+        iconClass: 'pro-plus',
+        icon: '<svg viewBox="0 0 24 24"><path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 16.8 5.8 21.3l2.4-7.4L2 9.4h7.6z"/></svg>'
+    }
+};
+
+const RECAP_LABELS = {
+    display: { 'standalone': 'Mode application normal', 'fullscreen': 'Plein écran immersif' },
+    orientation: { 'portrait': 'Portrait (vertical)', 'landscape': 'Paysage (horizontal)' },
+    launchHandler: { 'navigate-existing': 'Réutiliser la fenêtre existante', 'navigate-new': 'Ouvrir une nouvelle fenêtre' },
+    accesReseau: { 'memoire': "Mémoire de l'appareil", 'priorite': 'Internet en priorité', 'internet': 'Internet uniquement' },
+    affichageIntelligent: { 'oui': 'Afficher progressivement', 'non': 'Attendre le chargement complet' },
+    typeOuverture: { 'normal': 'Normale', 'instantane': 'Instantané' }
+};
+
+const RECAP_CONFIGS_DEF = [
+    { key: 'display', requiert: 'pro', label: "Mode d'affichage",
+      icon: '<svg viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="14" rx="2"/><path d="M8 21h8"/><path d="M12 18v3"/></svg>',
+      format: v => RECAP_LABELS.display[v] || 'Mode application normal' },
+    { key: 'couleurFond', requiert: 'pro', label: "Couleur de l'écran au démarrage",
+      icon: '<svg viewBox="0 0 24 24"><path d="M12 3s6 6.5 6 11a6 6 0 0 1-12 0c0-4.5 6-11 6-11z"/></svg>',
+      isColor: true, format: v => v || '#ffffff' },
+    { key: 'themeColor', requiert: 'pro', label: 'Couleur de la barre de titre',
+      icon: '<svg viewBox="0 0 24 24"><circle cx="13.5" cy="6.5" r=".8"/><circle cx="17.5" cy="10.5" r=".8"/><circle cx="8.5" cy="7.5" r=".8"/><circle cx="6.5" cy="12.5" r=".8"/><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 0 1 1.668-1.668h1.996c3.051 0 5.555-2.503 5.555-5.554C21.965 6.012 17.461 2 12 2z"/></svg>',
+      isColor: true, format: v => v || '#ffffff' },
+    { key: 'orientation', requiert: 'pro', label: "Orientation de l'affichage",
+      icon: '<svg viewBox="0 0 24 24"><rect x="7" y="2" width="10" height="20" rx="2"/><path d="M12 18h.01"/><path d="M20 8l2 2-2 2"/></svg>',
+      format: v => RECAP_LABELS.orientation[v] || 'Portrait (vertical)' },
+    { key: 'translations', requiert: 'pro', label: "Nom du site selon l'appareil",
+      icon: '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.5 4 5.5 4 9s-1.5 6.5-4 9c-2.5-2.5-4-5.5-4-9s1.5-6.5 4-9z"/></svg>',
+      format: v => {
+          if (!Array.isArray(v) || v.length === 0) return 'Aucune langue';
+          const names = { fr: 'Français', en: 'Anglais', de: 'Allemand', es: 'Espagnol', it: 'Italien', pt: 'Portugais' };
+          return v.length + ' langue' + (v.length > 1 ? 's' : '') + ' (' + v.map(t => names[t.code] || t.code).join(', ') + ')';
+      } },
+    { key: 'launchHandler', requiert: 'pro', label: "Gestion de l'ouverture",
+      icon: '<svg viewBox="0 0 24 24"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/><path d="M12 15l-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/><path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0"/><path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"/></svg>',
+      format: v => RECAP_LABELS.launchHandler[v] || 'Réutiliser la fenêtre existante' },
+    { key: 'accesReseau', requiert: 'pro-plus', label: 'Accès réseau',
+      icon: '<svg viewBox="0 0 24 24"><path d="M5 12.55a11 11 0 0 1 14.08 0"/><path d="M1.42 9a16 16 0 0 1 21.16 0"/><path d="M8.53 16.11a6 6 0 0 1 6.95 0"/><line x1="12" y1="20" x2="12.01" y2="20"/></svg>',
+      format: v => RECAP_LABELS.accesReseau[v] || "Mémoire de l'appareil" },
+    { key: 'affichageIntelligent', requiert: 'pro-plus', label: 'Affichage intelligent',
+      icon: '<svg viewBox="0 0 24 24"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg>',
+      format: v => RECAP_LABELS.affichageIntelligent[v] || 'Afficher progressivement' },
+    { key: 'typeOuverture', requiert: 'pro-plus', label: "Type d'ouverture du site",
+      icon: '<svg viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>',
+      format: v => RECAP_LABELS.typeOuverture[v] || 'Instantané' }
+];
+
+const ORDRE_FORMULES_RECAP = ['decouverte', 'pro', 'pro-plus'];
+function niveauFormuleRecap(f) {
+    const i = ORDRE_FORMULES_RECAP.indexOf(f);
+    return i < 0 ? 0 : i;
+}
+
+function recapGet(cle) {
+    if (typeof window.recupererNatif === 'function') {
+        return window.recupererNatif(cle).catch(function() { return null; });
+    }
+    return Promise.resolve(null);
+}
+
+async function recapRemplirRecap() {
+    try {
+        const nom = await recapGet('nomApp');
+        document.getElementById('recapInfoNom').textContent = nom || 'Mon application';
+    } catch (e) { document.getElementById('recapInfoNom').textContent = 'Mon application'; }
+
+    try {
+        const logo = await recapGet('logo');
+        const el = document.getElementById('recapInfoIcone');
+        if (logo) {
+            el.innerHTML = '<svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Configurée';
+            el.className = 'recap-info-value ok';
+        } else {
+            el.textContent = 'Aucune';
+            el.className = 'recap-info-value';
+        }
+    } catch (e) {}
+
+    try {
+        const files = await recapGet('files_data') || [];
+        const n = files.length;
+        document.getElementById('recapInfoFiles').textContent = n === 0
+            ? 'Aucun fichier'
+            : n + ' fichier' + (n > 1 ? 's' : '') + ' importé' + (n > 1 ? 's' : '');
+    } catch (e) {}
+
+    let formuleId = 'decouverte';
+    try {
+        formuleId = (await recapGet('formuleActive')) || 'decouverte';
+    } catch (e) {}
+    const f = RECAP_FORMULES[formuleId] || RECAP_FORMULES.decouverte;
+
+    document.getElementById('recapFormulaName').textContent = f.name;
+    document.getElementById('recapFormulaSub').textContent = f.sub;
+    document.getElementById('recapFormulaPrice').textContent = f.price;
+    document.getElementById('recapTotalAmount').textContent = f.total;
+    const iconEl = document.getElementById('recapFormulaIcon');
+    iconEl.className = 'recap-formula-icon ' + f.iconClass;
+    iconEl.innerHTML = f.icon;
+
+    const seeDetailsBtn = document.getElementById('recapSeeDetails');
+    if (formuleId === 'decouverte') {
+        seeDetailsBtn.classList.add('hidden');
+    } else {
+        seeDetailsBtn.classList.remove('hidden');
+    }
+
+    return formuleId;
+}
+
+async function recapRemplirDetails(formuleId) {
+    const niveauActuel = niveauFormuleRecap(formuleId);
+    const configsDisponibles = RECAP_CONFIGS_DEF.filter(c => niveauFormuleRecap(c.requiert) <= niveauActuel);
+
+    let html = '';
+    for (const c of configsDisponibles) {
+        let rawValue = null;
+        try { rawValue = await recapGet(c.key); } catch (e) {}
+        const displayValue = c.format(rawValue);
+        const valueHtml = c.isColor
+            ? '<span class="recap-detail-item-value color"><span class="recap-color-dot" style="background:' + displayValue + '"></span>' + displayValue + '</span>'
+            : '<span class="recap-detail-item-value">' + displayValue + '</span>';
+        html +=
+            '<div class="recap-detail-item">' +
+                '<div class="recap-detail-item-icon">' + c.icon + '</div>' +
+                '<div class="recap-detail-item-body">' +
+                    '<div class="recap-detail-item-label">' + c.label + '</div>' +
+                    valueHtml +
+                '</div>' +
+            '</div>';
+    }
+    document.getElementById('recapDetailsList').innerHTML = html;
+}
+
+function recapAllerVersDetails() {
+    document.getElementById('recapTrack').classList.add('show-details');
+    const panel = document.getElementById('recapPanelDetails');
+    const body = panel.querySelector('.recap-body');
+    if (body) body.scrollTop = 0;
+}
+function recapRevenirAuRecap() {
+    document.getElementById('recapTrack').classList.remove('show-details');
+    const panel = document.getElementById('recapPanelRecap');
+    const body = panel.querySelector('.recap-body');
+    if (body) body.scrollTop = 0;
+}
+
+async function openRecap() {
+    if (isRecapOpen) return;
+    isRecapOpen = true;
+
+    const formuleId = await recapRemplirRecap();
+    await recapRemplirDetails(formuleId);
+    recapRevenirAuRecap();
+
+    const overlay = document.getElementById('recapOverlay');
+    const sheet = document.getElementById('recapSheet');
+    overlay.classList.add('active');
+    sheet.classList.add('active');
+    sheet.setAttribute('aria-hidden', 'false');
+    document.body.classList.add('modal-open');
+}
+function closeRecap(redirect, fromPopstate) {
+    if (!isRecapOpen) return;
+    isRecapOpen = false;
+    const overlay = document.getElementById('recapOverlay');
+    const sheet = document.getElementById('recapSheet');
+    overlay.classList.remove('active');
+    sheet.classList.remove('active');
+    sheet.setAttribute('aria-hidden', 'true');
+    document.body.classList.remove('modal-open');
+    setTimeout(recapRevenirAuRecap, 400);
+    if (redirect) {
+        // ⭐ MODIF : aiguillage selon la formule
+        redirigerVersPaiement();
+    }
+}
+
+window.addEventListener('demande-paiement-recap', function() {
+    openRecap();
+});
+window.addEventListener('ouvrir-recap', function() {
+    openRecap();
+});
+
+document.getElementById('recapOverlay').addEventListener('click', function() {
+    closeRecap(false, false);
+});
+document.getElementById('recapSeeDetails').addEventListener('click', recapAllerVersDetails);
+document.getElementById('recapBack').addEventListener('click', recapRevenirAuRecap);
+document.getElementById('recapAction').addEventListener('click', function() {
+    closeRecap(true, false);
+});
+
+(function recapSetupDrag() {
+    const handleWrap = document.getElementById('recapHandleWrap');
+    if (!handleWrap) return;
+    let startY = 0, dragging = false;
+    function onStart(e) {
+        startY = e.touches ? e.touches[0].clientY : e.clientY;
+        dragging = true;
+        document.getElementById('recapSheet').classList.add('dragging');
+        document.addEventListener('touchmove', onMove, { passive: false });
+        document.addEventListener('touchend', onEnd);
+        document.addEventListener('mousemove', onMove);
+        document.addEventListener('mouseup', onEnd);
+    }
+    function onMove(e) {
+        if (!dragging) return;
+        const y = e.touches ? e.touches[0].clientY : e.clientY;
+        const delta = Math.max(0, y - startY);
+        const isDesktop = window.innerWidth >= 520;
+        const sheet = document.getElementById('recapSheet');
+        sheet.style.transform = isDesktop
+            ? 'translate(-50%, ' + delta + 'px)'
+            : 'translateY(' + delta + 'px)';
+        if (e.cancelable) e.preventDefault();
+    }
+    function onEnd(e) {
+        if (!dragging) return;
+        dragging = false;
+        document.getElementById('recapSheet').classList.remove('dragging');
+        const y = e.changedTouches ? e.changedTouches[0].clientY : e.clientY;
+        const delta = Math.max(0, y - startY);
+        document.getElementById('recapSheet').style.transform = '';
+        if (delta > 40) closeRecap(false, false);
+        document.removeEventListener('touchmove', onMove);
+        document.removeEventListener('touchend', onEnd);
+        document.removeEventListener('mousemove', onMove);
+        document.removeEventListener('mouseup', onEnd);
+    }
+    handleWrap.addEventListener('touchstart', onStart, { passive: true });
+    handleWrap.addEventListener('mousedown', onStart);
+})();
+
+/* ⭐ AJOUT : BOTTOM SHEET DE SAISIE DU NUMÉRO DE RÉFÉRENCE */
+let isRefSheetOpen = false;
+
+function openRefSheet() {
+    if (isRefSheetOpen) return;
+    isRefSheetOpen = true;
+    const overlay = document.getElementById('refsheetOverlay');
+    const sheet   = document.getElementById('refsheetSheet');
+    const input   = document.getElementById('referenceSelarInput');
+    const result  = document.getElementById('refsheetResult');
+    const error   = document.getElementById('refsheetError');
+    if (input)  input.value = '';
+    if (result) { result.classList.remove('show', 'true', 'false'); result.textContent = ''; }
+    if (error)  error.classList.remove('show');
+    overlay.classList.add('active');
+    sheet.classList.add('active');
+    sheet.setAttribute('aria-hidden', 'false');
+    document.body.classList.add('modal-open');
+    setTimeout(function() { if (input) input.focus(); }, 420);
+}
+
+function closeRefSheet(fromPopstate) {
+    if (!isRefSheetOpen) return;
+    isRefSheetOpen = false;
+    const overlay = document.getElementById('refsheetOverlay');
+    const sheet   = document.getElementById('refsheetSheet');
+    overlay.classList.remove('active');
+    sheet.classList.remove('active');
+    sheet.setAttribute('aria-hidden', 'true');
+    document.body.classList.remove('modal-open');
+}
+
+// ── Fonction : rassemble le colis à envoyer au serveur ──
+async function recupererDonneesCompletes() {
+    const email = (window.currentUserEmail || '').trim();
+    if (!email) {
+        showNotification("Vous devez être connecté avec Google.", 'error');
+        return null;
+    }
+
+    const manifestData = {};
+    try {
+        manifestData.nomApp        = await recupererNatif('nomApp');
+        manifestData.nomCourt      = await recupererNatif('nomCourt');
+        manifestData.couleurFond   = await recupererNatif('couleurFond');
+        manifestData.themeColor    = await recupererNatif('themeColor');
+        manifestData.display       = await recupererNatif('display');
+        manifestData.orientation   = await recupererNatif('orientation');
+        manifestData.translations  = await recupererNatif('translations');
+        manifestData.launchHandler = await recupererNatif('launchHandler');
+    } catch (e) {}
+
+    const input = document.getElementById('referenceSelarInput');
+    const referenceSelar = input ? input.value.trim() : '';
+    if (!referenceSelar) {
+        const err = document.getElementById('refsheetError');
+        if (err) err.classList.add('show');
+        return null;
+    }
+
+    return {
+        email: email,
+        manifestData: manifestData,
+        referenceSelar: referenceSelar
+    };
+}
+
+// ── MODIFIÉ : Envoi à la fonction unique Netlify et lecture directe du résultat ──
+async function envoyerReference() {
+    const btn = document.getElementById('refsheetAction');
+    const errorEl = document.getElementById('refsheetError');
+    if (errorEl) errorEl.classList.remove('show');
+
+    const colis = await recupererDonneesCompletes();
+    if (!colis) return;
+
+    if (btn) { btn.disabled = true; btn.textContent = 'Envoi en cours...'; }
+
+    try {
+        const response = await fetch('/.netlify/functions/verifier-paiement', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(colis)
+        });
+
+        const resultat = await response.json();
+        const estAutorise = (resultat.verified === true);
+
+        // Enregistrement local du statut retourné par le serveur unique
+        localStorage.setItem('statut_utilisateur', estAutorise ? 'true' : 'false');
+
+        const result = document.getElementById('refsheetResult');
+        if (result) {
+            result.classList.remove('true', 'false');
+            result.classList.add('show');
+            result.classList.add(estAutorise ? 'true' : 'false');
+            result.textContent = estAutorise ? 'true' : 'false';
+        }
+
+        if (!estAutorise && resultat.message) {
+            showNotification(resultat.message, 'error');
+        }
+
+    } catch (e) {
+        console.error('Erreur réseau lors de la vérification :', e);
+        showNotification("Erreur de connexion avec le serveur.", 'error');
+    } finally {
+        if (btn) { btn.disabled = false; btn.textContent = 'Envoyer'; }
+    }
+}
+
+// ── Drag de la refSheet ──
+(function refSheetSetupDrag() {
+    const handleWrap = document.getElementById('refsheetHandleWrap');
+    if (!handleWrap) return;
+    let startY = 0, dragging = false;
+    function onStart(e) {
+        startY = e.touches ? e.touches[0].clientY : e.clientY;
+        dragging = true;
+        document.getElementById('refsheetSheet').classList.add('dragging');
+        document.addEventListener('touchmove', onMove, { passive: false });
+        document.addEventListener('touchend', onEnd);
+        document.addEventListener('mousemove', onMove);
+        document.addEventListener('mouseup', onEnd);
+    }
+    function onMove(e) {
+        if (!dragging) return;
+        const y = e.touches ? e.touches[0].clientY : e.clientY;
+        const delta = Math.max(0, y - startY);
+        const isDesktop = window.innerWidth >= 520;
+        const sheet = document.getElementById('refsheetSheet');
+        sheet.style.transform = isDesktop
+            ? 'translate(-50%, ' + delta + 'px)'
+            : 'translateY(' + delta + 'px)';
+        if (e.cancelable) e.preventDefault();
+    }
+    function onEnd(e) {
+        if (!dragging) return;
+        dragging = false;
+        document.getElementById('refsheetSheet').classList.remove('dragging');
+        const y = e.changedTouches ? e.changedTouches[0].clientY : e.clientY;
+        const delta = Math.max(0, y - startY);
+        document.getElementById('refsheetSheet').style.transform = '';
+        if (delta > 40) closeRefSheet(true);
+        document.removeEventListener('touchmove', onMove);
+        document.removeEventListener('touchend', onEnd);
+        document.removeEventListener('mousemove', onMove);
+        document.removeEventListener('mouseup', onEnd);
+    }
+    handleWrap.addEventListener('touchstart', onStart, { passive: true });
+    handleWrap.addEventListener('mousedown', onStart);
+})();
+
+document.getElementById('refsheetOverlay').addEventListener('click', function() {
+    closeRefSheet(true);
+});
+document.getElementById('refsheetAction').addEventListener('click', envoyerReference);
+document.getElementById('referenceSelarInput').addEventListener('input', function() {
+    const err = document.getElementById('refsheetError');
+    if (err) err.classList.remove('show');
+});
+
+// ── Détection du retour depuis Selar ──
+async function detecterRetourSelar() {
+    let user = null;
+    try {
+        user = await Promise.race([
+            window.attendreAuth(),
+            new Promise(function(r) { setTimeout(function() { r(window._authUser || null); }, 2500); })
+        ]);
+    } catch (e) { user = null; }
+
+    if (!user || !user.email) {
+        console.log('[Selar] Utilisateur non connecté, détection ignorée.');
+        return;
+    }
+
+    const provenance = document.referrer || '';
+    const vientDeSelar = provenance.includes('selar.co') || provenance.includes('selar.com');
+
+    if (!vientDeSelar) return;
+
+    console.log('[Selar] Retour de paiement détecté :', provenance);
+
+    runHomeView();
+    setTimeout(function() { openRefSheet(); }, 350);
+}
+
+window.addEventListener('DOMContentLoaded', async function() {
+    try { history.replaceState({ screen: 'main' }, '', window.location.pathname); } catch (e) {}
+    try {
+        const saved = await recupererNatif('formuleActive');
+        if (saved && FORMULES_META[saved]) formuleActive = saved;
+    } catch (e) {}
+
+    try {
+        await Promise.race([
+            window.attendreAuth ? window.attendreAuth() : Promise.resolve(null),
+            new Promise(function(r) { setTimeout(r, 2500); })
+        ]);
+    } catch (e) {}
+
+    construireFormuleDrawer();
+    runHomeView();
+    updateHeaderProBadge();
+
+    detecterRetourSelar();
+
+    prechargerInfos();
+    setTimeout(function() {
+        if (!_fichiersChargees) {
+            const requetes = FICHIERS.map(function(nom) {
+                return fetch('creer/' + nom + '.html')
+                    .then(function(res) { return res.ok ? res.text() : null; })
+                    .then(function(texte) { return { nom: nom, texte: texte }; })
+                    .catch(function() { return { nom: nom, texte: null }; });
+            });
+            Promise.all(requetes).then(function(resultats) {
+                cacheFichiers = {};
+                resultats.forEach(function(r) {
+                    if (r.texte && r.texte.trim()) cacheFichiers[r.nom] = r.texte;
+                });
+                let htmlTotal = '';
+                const codesScripts = [];
+                for (const nom of FICHIERS) {
+                    if (!cacheFichiers[nom]) continue;
+                    const temp = document.createElement('div');
+                    temp.innerHTML = cacheFichiers[nom];
+                    temp.querySelectorAll('script').forEach(function(s) { codesScripts.push(s.textContent); s.remove(); });
+                    htmlTotal += temp.innerHTML;
+                }
+                cacheOnglets.creer.html = htmlTotal;
+                cacheOnglets.creer.codesScripts = codesScripts.slice();
+                cacheOnglets.creer.sousEcran = 'principal';
+                cacheOnglets.creer.scroll = 0;
+                _fichiersChargees = true;
+            }).catch(function() {});
+        }
+    }, 200);
+});
+</script>
+</body>
+</html>
