@@ -1,0 +1,538 @@
+<div id="orientation" class="screen">
+    <div class="page-header">
+        <button class="back-btn" onclick="goBack()"><svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg></button>
+        <div class="page-title-wrap">
+            <h1 class="page-title">Orientation</h1>
+            <p class="page-sub">Sens d'affichage par défaut</p>
+        </div>
+    </div>
+
+    <p class="state-intro">Choisissez l'orientation par défaut de votre application.</p>
+
+    <div class="dm-phone-wrap" id="orientPhoneWrap">
+        <div class="dm-phone" id="orientPhone">
+            <div class="dm-titlebar" id="orientTitlebar">
+                <span class="dm-time">9:41</span>
+                <div class="dm-status-icons">
+                    <svg class="dm-icon" viewBox="0 0 18 12"><rect x="0" y="9" width="3" height="3" rx="0.6"/><rect x="5" y="6" width="3" height="6" rx="0.6"/><rect x="10" y="3" width="3" height="9" rx="0.6"/><rect x="15" y="0" width="3" height="12" rx="0.6"/></svg>
+                    <svg class="dm-icon" viewBox="0 0 16 12"><path d="M1 4.3C3 2.5 5.4 1.3 8 1.3s5 1.2 7 3" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round"/><path d="M3.3 7.3C4.6 6.2 6.2 5.5 8 5.5s3.4.7 4.7 1.8" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round"/><circle cx="8" cy="10" r="1.05"/></svg>
+                    <svg class="dm-icon" viewBox="0 0 24 12"><rect x="0.6" y="0.6" width="20" height="10.8" rx="2.4" stroke="currentColor" stroke-width="1.1" fill="none"/><rect x="2.4" y="2.4" width="15" height="7.2" rx="1"/><rect x="22" y="3.6" width="1.6" height="4.8" rx="0.7"/></svg>
+                </div>
+            </div>
+            <div class="dm-screen" id="orientScreen">
+                <div class="dm-empty" id="orientEmptyMsg">Aucun fichier source configuré</div>
+                <!-- L'iframe est insérée dynamiquement -->
+            </div>
+        </div>
+    </div>
+
+    <div class="option-list">
+        <label class="option-card">
+            <input type="radio" name="orientationOption" value="portrait">
+            <span class="option-radio"></span>
+            <div class="option-content">
+                <div class="option-title">Portrait (vertical)</div>
+                <div class="option-desc">L'écran reste en mode vertical, idéal pour la plupart des applications et sites internet</div>
+            </div>
+        </label>
+        <label class="option-card">
+            <input type="radio" name="orientationOption" value="landscape">
+            <span class="option-radio"></span>
+            <div class="option-content">
+                <div class="option-title">Paysage (horizontal)</div>
+                <div class="option-desc">L'écran reste en mode horizontal, idéal pour les jeux vidéo et les vidéos</div>
+            </div>
+        </label>
+    </div>
+</div>
+
+<style>
+.screen { display: none; }
+.screen.active { display: block; }
+#orientation {
+    max-width: 640px;
+    width: 100%;
+    margin: 0 auto;
+    padding: 0 16px 0;
+    min-height: 100%;
+}
+#orientation.active {
+    display: flex;
+    flex-direction: column;
+    min-height: 100%;
+}
+
+/* ============================================
+   EN-TÊTE — cohérent avec les autres pages
+   ============================================ */
+.page-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 0 22px;
+    position: sticky;
+    top: 0;
+    background: #fff;
+    z-index: 10;
+    flex-shrink: 0;
+}
+.back-btn {
+    width: 40px; height: 40px;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    color: #0b1220;
+    transition: background-color .15s ease;
+}
+.back-btn:hover { background: #f1f5f9; }
+.back-btn:active { transform: scale(.95); }
+.back-btn svg {
+    width: 24px; height: 24px;
+    stroke: currentColor; fill: none;
+    stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round;
+}
+.page-title-wrap {
+    flex: 1;
+    min-width: 0;
+    border-left: 2px solid #10b981;
+    padding-left: 14px;
+}
+.page-title {
+    font-size: 1.15rem;
+    font-weight: 800;
+    color: #0b1220;
+    line-height: 1.15;
+    letter-spacing: -0.025em;
+    margin: 0 0 2px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.page-sub {
+    font-size: 0.78rem;
+    font-weight: 450;
+    color: #64748b;
+    line-height: 1.35;
+    margin: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* ============================================
+   INTRO
+   ============================================ */
+.state-intro {
+    font-size: 0.88rem;
+    color: #64748b;
+    margin: 4px 0 14px;
+    line-height: 1.5;
+    text-align: center;
+    flex-shrink: 0;
+}
+
+/* ============================================
+   ZONE DU TÉLÉPHONE
+   ============================================ */
+.dm-phone-wrap {
+    flex: 1 1 auto;
+    min-height: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 12px 0 16px;
+    position: relative;
+}
+
+.dm-phone {
+    display: flex;
+    flex-direction: column;
+    height: 340px;
+    aspect-ratio: 9 / 16;
+    border-radius: 18px;
+    overflow: hidden;
+    background: #ffffff;
+    box-shadow:
+        0 25px 45px -18px rgba(15,23,42,.4),
+        0 0 0 3px #1e293b,
+        0 0 0 3.5px #0f172a;
+    transform-origin: center center;
+    transform: rotate(0deg);
+    flex-shrink: 0;
+    will-change: transform;
+}
+.dm-titlebar {
+    height: 26px;
+    flex-shrink: 0;
+    background: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 10px;
+    color: #0f172a;
+    overflow: hidden;
+    transition: background-color .15s ease, color .15s ease;
+    border-bottom: 1px solid rgba(15,23,42,.08);
+}
+.dm-phone.fullscreen .dm-titlebar { display: none; }
+.dm-time {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: .01em;
+    line-height: 1;
+}
+.dm-status-icons { display: flex; gap: 3px; align-items: center; }
+.dm-icon {
+    width: 11px; height: 8px;
+    stroke: currentColor;
+    fill: currentColor;
+    flex-shrink: 0;
+    display: block;
+}
+
+.dm-screen {
+    flex: 1;
+    background: #ffffff;
+    position: relative;
+    overflow: hidden;
+    min-height: 0;
+}
+.dm-iframe {
+    position: absolute;
+    border: none;
+    background: #ffffff;
+    pointer-events: none;
+    display: block;
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-user-drag: none;
+}
+.dm-iframe.hidden { display: none !important; }
+.dm-empty {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #94a3b8;
+    font-size: .68rem;
+    font-weight: 500;
+    text-align: center;
+    padding: 16px;
+    line-height: 1.4;
+}
+.dm-empty.hidden { display: none !important; }
+
+/* ============================================
+   CARTES D'OPTION — style identique aux autres pages
+   ============================================ */
+.option-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    flex-shrink: 0;
+    margin-top: auto;
+    padding-bottom: calc(16px + env(safe-area-inset-bottom, 0px));
+}
+.option-card {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 16px 16px;
+    background: #ffffff;
+    border: 1px solid #f1f5f9;
+    border-radius: 16px;
+    cursor: pointer;
+    box-shadow:
+        0 8px 20px -14px rgba(15,23,42,.14),
+        0 2px 6px -2px rgba(15,23,42,.04);
+    transition: border-color .18s ease, box-shadow .18s ease, transform .18s ease;
+}
+.option-card:hover {
+    transform: translateY(-1px);
+    box-shadow:
+        0 14px 26px -16px rgba(15,23,42,.22),
+        0 2px 6px -2px rgba(15,23,42,.05);
+}
+.option-card input[type="radio"] { display: none; }
+.option-radio {
+    flex-shrink: 0;
+    width: 22px; height: 22px;
+    border: 2px solid #cbd5e1;
+    border-radius: 50%;
+    position: relative;
+    transition: border-color .15s ease;
+}
+.option-card input[type="radio"]:checked + .option-radio {
+    border-color: #10b981;
+}
+.option-card input[type="radio"]:checked + .option-radio::after {
+    content: "";
+    position: absolute;
+    inset: 3px;
+    background: #10b981;
+    border-radius: 50%;
+}
+.option-card input[type="radio"]:checked ~ .option-content .option-title {
+    color: #047857;
+}
+.option-content { flex: 1; min-width: 0; }
+.option-title {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: #0b1220;
+    margin-bottom: 3px;
+    line-height: 1.3;
+    letter-spacing: -0.015em;
+    transition: color .15s ease;
+}
+.option-desc {
+    font-size: 0.8rem;
+    color: #64748b;
+    line-height: 1.4;
+}
+
+/* ============================================
+   GRAND ÉCRAN
+   ============================================ */
+@media (min-width: 520px) {
+    .page-title { font-size: 1.3rem; }
+    .option-title { font-size: 1rem; }
+    .option-desc { font-size: 0.83rem; }
+}
+
+.hidden { display: none !important; }
+</style>
+
+<script>
+(function() {
+
+    let orientCurrentMode = 'portrait';
+    let orientIsAnimating = false;
+    const ORIENT_ROTATION_MS = 500;
+
+    function orientSleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+    function contrastColor(hex) {
+        hex = hex.replace('#', '');
+        if (hex.length === 3) hex = hex.split('').map(c => c + c).join('');
+        const r = parseInt(hex.substring(0, 2), 16);
+        const g = parseInt(hex.substring(2, 4), 16);
+        const b = parseInt(hex.substring(4, 6), 16);
+        const lum = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+        return lum > 0.55 ? '#0f172a' : '#ffffff';
+    }
+
+    /* ⭐ Iframe neuve */
+    function creerIframeNeuve() {
+        const container = document.getElementById('orientScreen');
+        if (!container) return null;
+        const ancienne = document.getElementById('orientIframe');
+        if (ancienne) ancienne.remove();
+        const iframe = document.createElement('iframe');
+        iframe.id = 'orientIframe';
+        iframe.className = 'dm-iframe hidden';
+        iframe.setAttribute('sandbox', 'allow-same-origin');
+        container.appendChild(iframe);
+        return iframe;
+    }
+
+    function fitOrientIframe() {
+        const screenEl = document.getElementById('orientScreen');
+        const iframe = document.getElementById('orientIframe');
+        if (!screenEl || !iframe) return;
+        if (iframe.classList.contains('hidden')) return;
+        const screenW = screenEl.clientWidth;
+        const screenH = screenEl.clientHeight;
+        if (screenW <= 0 || screenH <= 0) return;
+
+        const siteW = 375, siteH = 812;
+        iframe.style.position = 'absolute';
+        iframe.style.width = siteW + 'px';
+        iframe.style.height = siteH + 'px';
+        iframe.style.left = '0';
+        iframe.style.top = '0';
+        iframe.style.transformOrigin = 'top left';
+        iframe.style.border = 'none';
+        iframe.style.pointerEvents = 'none';
+        iframe.style.display = 'block';
+        iframe.style.background = '#ffffff';
+
+        if (orientCurrentMode === 'landscape') {
+            const s = screenW / siteW;
+            iframe.style.transform = 'scale(' + s + ')';
+        } else {
+            const sx = screenW / siteW;
+            const sy = screenH / siteH;
+            iframe.style.transform = 'scale(' + sx + ', ' + sy + ')';
+        }
+    }
+
+    /* ⭐ Applique le mode sans changer la taille visuelle du téléphone */
+    function applyOrientMode(mode, animate) {
+        const phoneEl = document.getElementById('orientPhone');
+        if (!phoneEl) return;
+        const targetAspect = (mode === 'landscape') ? '16 / 9' : '9 / 16';
+        const targetHeight = (mode === 'landscape') ? '191px' : '340px';
+
+        if (!animate) {
+            phoneEl.style.transition = 'none';
+            phoneEl.style.transform = 'rotate(0deg)';
+            phoneEl.style.aspectRatio = targetAspect;
+            phoneEl.style.height = targetHeight;
+            void phoneEl.offsetWidth;
+            phoneEl.style.transition = '';
+            orientCurrentMode = mode;
+            setTimeout(fitOrientIframe, 60);
+            setTimeout(fitOrientIframe, 200);
+            return;
+        }
+
+        (async () => {
+            if (orientIsAnimating || orientCurrentMode === mode) return;
+            orientIsAnimating = true;
+
+            const angle = (mode === 'landscape') ? -90 : 90;
+
+            phoneEl.style.transition = 'transform ' + ORIENT_ROTATION_MS + 'ms cubic-bezier(0.34, 1, 0.64, 1)';
+            phoneEl.style.transform = 'rotate(' + angle + 'deg)';
+
+            await orientSleep(ORIENT_ROTATION_MS + 30);
+
+            phoneEl.style.transition = 'none';
+            phoneEl.style.transform = 'rotate(0deg)';
+            phoneEl.style.aspectRatio = targetAspect;
+            phoneEl.style.height = targetHeight;
+            void phoneEl.offsetWidth;
+            phoneEl.style.transition = '';
+
+            orientCurrentMode = mode;
+            orientIsAnimating = false;
+            setTimeout(fitOrientIframe, 60);
+            setTimeout(fitOrientIframe, 200);
+        })();
+    }
+
+    function guessMime(name) {
+        const ext = (name.split('.').pop() || '').toLowerCase();
+        const map = { 'html':'text/html','htm':'text/html','css':'text/css','js':'application/javascript','mjs':'application/javascript','json':'application/json','svg':'image/svg+xml','png':'image/png','jpg':'image/jpeg','jpeg':'image/jpeg','gif':'image/gif','webp':'image/webp','bmp':'image/bmp','ico':'image/x-icon','woff':'font/woff','woff2':'font/woff2','ttf':'font/ttf','otf':'font/otf','eot':'application/vnd.ms-fontobject','mp4':'video/mp4','webm':'video/webm','mp3':'audio/mpeg','wav':'audio/wav','ogg':'audio/ogg' };
+        return map[ext] || 'application/octet-stream';
+    }
+
+    async function buildSiteBlobUrl() {
+        const files = await recupererNatif('files_data') || [];
+        if (files.length === 0) return null;
+
+        let mainFile = null;
+        const prefIndex = await recupererNatif('indexPrefere');
+        if (prefIndex !== null && prefIndex !== undefined && files[prefIndex] && files[prefIndex].name.toLowerCase().endsWith('.html')) {
+            mainFile = files[prefIndex];
+        } else {
+            const htmlFiles = files.filter(f => f.name.toLowerCase().endsWith('.html'));
+            if (htmlFiles.length === 0) return null;
+            mainFile = htmlFiles.find(f => /^index\.html?$/i.test(f.name)) || htmlFiles[0];
+        }
+
+        const mainDir = mainFile.webkitRelativePath ? mainFile.webkitRelativePath.split('/').slice(0, -1).join('/') + '/' : '';
+        const urlMap = new Map();
+        function addUrl(key, url) { if (key) urlMap.set(key, url); }
+
+        for (const f of files) {
+            const mime = f.type || guessMime(f.name);
+            const blob = new Blob([f.buffer], { type: mime });
+            const url = URL.createObjectURL(blob);
+            addUrl(f.name, url);
+            if (f.webkitRelativePath) {
+                addUrl(f.webkitRelativePath, url);
+                if (mainDir && f.webkitRelativePath.startsWith(mainDir)) addUrl(f.webkitRelativePath.substring(mainDir.length), url);
+                const parts = f.webkitRelativePath.split('/');
+                if (parts.length > 1) addUrl(parts.slice(1).join('/'), url);
+            }
+        }
+
+        function resolveUrl(path, baseDir) {
+            if (!path) return null;
+            if (/^(https?:|data:|blob:|#|mailto:|tel:|javascript:|\/\/)/i.test(path)) return null;
+            let clean = path.replace(/^\.\//, '').replace(/^\//, '');
+            if (baseDir) { const withBase = baseDir + clean; if (urlMap.has(withBase)) return urlMap.get(withBase); }
+            if (urlMap.has(clean)) return urlMap.get(clean);
+            const basename = clean.split('/').pop();
+            if (urlMap.has(basename)) return urlMap.get(basename);
+            return null;
+        }
+
+        const htmlText = new TextDecoder().decode(mainFile.buffer);
+        const rewrittenHtml = htmlText.replace(/(\s(?:src|href|poster|data-src)\s*=\s*)(["'])([^"']+)\2/gi, (match, prefix, quote, path) => {
+            const url = resolveUrl(path, mainDir);
+            if (url) return prefix + quote + url + quote;
+            return match;
+        });
+
+        const finalBlob = new Blob([rewrittenHtml], { type: 'text/html' });
+        return URL.createObjectURL(finalBlob);
+    }
+
+    async function initOrientation() {
+        const display = (await recupererNatif('display')) || 'standalone';
+        const phoneEl = document.getElementById('orientPhone');
+        if (phoneEl) {
+            if (display === 'fullscreen') phoneEl.classList.add('fullscreen');
+            else phoneEl.classList.remove('fullscreen');
+        }
+        const themeColor = (await recupererNatif('themeColor')) || '#ffffff';
+        const titlebar = document.getElementById('orientTitlebar');
+        if (titlebar) {
+            titlebar.style.background = themeColor;
+            titlebar.style.color = contrastColor(themeColor);
+        }
+
+        const saved = (await recupererNatif('orientation')) || 'portrait';
+        const radio = document.querySelector('input[name="orientationOption"][value="' + saved + '"]');
+        if (radio) radio.checked = true;
+        applyOrientMode(saved, false);
+
+        const emptyMsg = document.getElementById('orientEmptyMsg');
+
+        const iframe = creerIframeNeuve();
+        const url = await buildSiteBlobUrl();
+        if (url) {
+            if (emptyMsg) emptyMsg.classList.add('hidden');
+            iframe.src = url;
+            iframe.classList.remove('hidden');
+            setTimeout(fitOrientIframe, 200);
+            setTimeout(fitOrientIframe, 500);
+        } else {
+            if (emptyMsg) emptyMsg.classList.remove('hidden');
+            iframe.classList.add('hidden');
+        }
+    }
+
+    document.querySelectorAll('input[name="orientationOption"]').forEach(r => {
+        r.addEventListener('change', async function() {
+            await stockerNatif('orientation', this.value);
+            applyOrientMode(this.value, true);
+
+            /* ⭐ Mise à jour immédiate de la ligne dans l'écran principal */
+            const el = document.getElementById('orientationValue');
+            if (el) {
+                el.textContent = this.value === 'landscape'
+                    ? 'Paysage (horizontal)'
+                    : 'Portrait (vertical)';
+            }
+        });
+    });
+
+    window.addEventListener('resize', function() {
+        const el = document.getElementById('orientation');
+        if (el && el.classList.contains('active')) {
+            fitOrientIframe();
+        }
+    });
+
+    window.init_orientation = initOrientation;
+
+})();
+</script>
