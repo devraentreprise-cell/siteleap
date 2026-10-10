@@ -71,7 +71,7 @@ export async function handler(event, context) {
         // 2. Interrogation de l'API officielle Selar
         const SELAR_API_KEY = "sat_2e99417j2bjl1782n18z1f78977xxa2p2y817";
 
-        const responseAPI = await fetch(`https://api.selar.co/v1/orders/${encodeURIComponent(referenceSelar)}`, {
+        const responseAPI = await fetch(`https://api.selar.com/v1/orders/${encodeURIComponent(referenceSelar)}`, {
             method: "GET",
             headers: {
                 "Authorization": `Bearer ${SELAR_API_KEY}`,
@@ -79,7 +79,12 @@ export async function handler(event, context) {
             }
         });
 
-        const paymentData = await responseAPI.json();
+        const texteAPI = await responseAPI.text();
+        console.log("[Selar] Code HTTP :", responseAPI.status);
+        console.log("[Selar] Réponse :", texteAPI);
+
+        let paymentData = {};
+        try { paymentData = JSON.parse(texteAPI); } catch (e) {}
 
         // 3. Analyse du statut de paiement
         const isPaid = responseAPI.ok && (
