@@ -60,7 +60,7 @@ body.drawer-open .main-content, body.modal-open .main-content { overflow: hidden
 .coming-soon { display: flex; align-items: center; justify-content: center; height: 100%; min-height: calc(100dvh - 260px); padding: 20px; }
 .coming-soon-text { font-size: 1.1rem; font-weight: 500; color: #64748b; text-align: center; letter-spacing: 0.02em; }
 
-/* ⭐ AJOUT : Page de connexion Google */
+/* ⭐ Page de connexion Google */
 .login-page {
     display: flex; flex-direction: column; align-items: center; justify-content: center;
     min-height: calc(100dvh - 260px); padding: 40px 24px; text-align: center;
@@ -87,15 +87,6 @@ body.drawer-open .main-content, body.modal-open .main-content { overflow: hidden
 .login-google-btn:disabled { opacity: .55; cursor: not-allowed; }
 .login-google-btn svg { width: 20px; height: 20px; flex-shrink: 0; }
 .login-hint { font-size: 0.78rem; color: var(--muted-2); margin-top: 18px; line-height: 1.5; }
-
-/* ⭐ AJOUT : Espace Projets (utilisateur connecté) */
-.projets-vide {
-    display: flex; flex-direction: column; align-items: center; justify-content: center;
-    min-height: calc(100dvh - 260px); padding: 40px 24px; text-align: center;
-    max-width: 440px; margin: 0 auto;
-}
-.projets-vide h2 { font-size: 1.25rem; font-weight: 700; color: var(--ink); margin-bottom: 8px; }
-.projets-vide p { font-size: 0.9rem; color: var(--muted); line-height: 1.55; }
 
 .formule-drawer-overlay { position: fixed; inset: 0; background: rgba(15,23,42,.45); -webkit-backdrop-filter: blur(2px); backdrop-filter: blur(2px); opacity: 0; visibility: hidden; transition: opacity .28s ease, visibility 0s linear .28s; z-index: 10000; }
 .formule-drawer-overlay.active { opacity: 1; visibility: visible; transition: opacity .28s ease, visibility 0s; }
@@ -260,6 +251,7 @@ body.drawer-open .main-content, body.modal-open .main-content { overflow: hidden
 .recap-action { width: 100%; padding: 16px 18px; background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: #ffffff; border: none; border-radius: 12px; font-family: inherit; font-size: 1rem; font-weight: 700; letter-spacing: 0.005em; line-height: 1.3; cursor: pointer; box-shadow: 0 12px 24px -10px rgba(16,185,129,.7), inset 0 1px 0 rgba(255,255,255,.18); transition: transform .18s ease, box-shadow .18s ease, filter .18s ease; text-align: center; margin-top: auto; }
 .recap-action:hover { transform: translateY(-1px); filter: brightness(1.03); box-shadow: 0 16px 30px -10px rgba(16,185,129,.78), inset 0 1px 0 rgba(255,255,255,.22); }
 .recap-action:active { transform: scale(.98); }
+.recap-action:disabled { opacity: .6; cursor: not-allowed; }
 .recap-details-list { display: flex; flex-direction: column; gap: 10px; padding-bottom: 4px; }
 .recap-detail-item { display: flex; align-items: flex-start; gap: 14px; padding: 16px 16px; background: #f8fafc; border: 1px solid #f1f5f9; border-radius: 14px; }
 .recap-detail-item-icon { flex-shrink: 0; width: 38px; height: 38px; border-radius: 10px; background: #dbeafe; color: #1e40af; display: flex; align-items: center; justify-content: center; }
@@ -274,7 +266,7 @@ body.drawer-open .main-content, body.modal-open .main-content { overflow: hidden
     .recap-sheet.active { transform: translate(-50%, 0); }
 }
 
-/* ⭐ AJOUT : BOTTOM SHEET DE SAISIE DU NUMÉRO DE RÉFÉRENCE */
+/* BOTTOM SHEET DE SAISIE DU NUMÉRO DE RÉFÉRENCE */
 .refsheet-overlay {
     position: fixed; inset: 0; background: rgba(15,23,42,.55);
     -webkit-backdrop-filter: blur(4px); backdrop-filter: blur(4px);
@@ -507,7 +499,7 @@ body.drawer-open .main-content, body.modal-open .main-content { overflow: hidden
                     </span>
                 </div>
 
-                <button type="button" class="recap-action" id="recapAction">Procéder au paiement</button>
+                <button type="button" class="recap-action" id="recapAction">Créer maintenant - Payer après</button>
             </div>
         </div>
 
@@ -529,7 +521,7 @@ body.drawer-open .main-content, body.modal-open .main-content { overflow: hidden
     </div>
 </div>
 
-<!-- ⭐ AJOUT : BOTTOM SHEET DE SAISIE DU NUMÉRO DE RÉFÉRENCE -->
+<!-- BOTTOM SHEET DE SAISIE DU NUMÉRO DE RÉFÉRENCE -->
 <div class="refsheet-overlay" id="refsheetOverlay"></div>
 <div class="refsheet-sheet" id="refsheetSheet" role="dialog" aria-modal="true" aria-hidden="true">
     <div class="refsheet-handle-wrap" id="refsheetHandleWrap">
@@ -549,7 +541,7 @@ body.drawer-open .main-content, body.modal-open .main-content { overflow: hidden
     </div>
 </div>
 
-<!-- ⭐ AJOUT : Module Firebase (ES module, chargé en defer) -->
+<!-- Module Firebase -->
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged }
@@ -570,7 +562,6 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const provider = new GoogleAuthProvider();
 
-// ── Système d'attente / notification de l'état d'auth ──
 window._authReady = false;
 window._authUser  = null;
 window._authWaiters = [];
@@ -590,7 +581,6 @@ window.attendreAuth = function() {
     return new Promise(function(resolve) { window._authWaiters.push(resolve); });
 };
 
-// Reconnaissance automatique à chaque changement d'état
 onAuthStateChanged(auth, function(user) {
     window.resoudreAuth(user);
     if (user && user.email) {
@@ -598,13 +588,11 @@ onAuthStateChanged(auth, function(user) {
     } else {
         console.log("Aucun utilisateur connecté.");
     }
-    // Notifie le Shell (s'il est prêt) pour rafraîchir l'onglet Projets
     if (typeof window.onAuthStateChangedCallback === "function") {
         try { window.onAuthStateChangedCallback(user); } catch (e) {}
     }
 });
 
-// Exposé au Shell : déclenchement manuel de la pop-up Google
 window.firebaseSignIn = async function() {
     try {
         const result = await signInWithPopup(auth, provider);
@@ -652,11 +640,11 @@ let _infosPrecharge = null;
 
 let ongletActif = null;
 const cacheOnglets = {
-    creer: { html: null, codesScripts: [], sousEcran: 'principal', scroll: 0 },
-    infos: { html: null, codesScripts: [], scroll: 0 }
+    creer:   { html: null, codesScripts: [], sousEcran: 'principal', scroll: 0 },
+    infos:   { html: null, codesScripts: [], scroll: 0 },
+    projets: { html: null, codesScripts: [], scroll: 0 }
 };
 
-// ⭐ AJOUT : aiguillage paiement selon la formule
 function redirigerVersPaiement() {
     const map = {
         'decouverte': 'https://selar.com/2196rla528',
@@ -789,6 +777,86 @@ async function supprimerNatif(cle) {
         tx.onerror = () => reject(tx.error);
     });
 }
+
+// ⭐ Fonction : redimensionne une image en PNG 512x512
+async function redimensionnerImage(source) {
+    const TAILLE = 512;
+
+    let url = null;
+    let aLiberer = false;
+    if (typeof source === 'string') {
+        url = source;
+    } else {
+        url = URL.createObjectURL(source);
+        aLiberer = true;
+    }
+
+    try {
+        const img = await new Promise(function(resolve, reject) {
+            const i = new Image();
+            i.onload = function() { resolve(i); };
+            i.onerror = function() { reject(new Error('Image illisible')); };
+            i.src = url;
+        });
+
+        const canvas = document.createElement('canvas');
+        canvas.width = TAILLE;
+        canvas.height = TAILLE;
+        const ctx = canvas.getContext('2d');
+
+        const ratio = Math.min(TAILLE / img.width, TAILLE / img.height);
+        const w = Math.round(img.width * ratio);
+        const h = Math.round(img.height * ratio);
+        ctx.drawImage(img, Math.round((TAILLE - w) / 2), Math.round((TAILLE - h) / 2), w, h);
+
+        return canvas.toDataURL('image/png');
+    } finally {
+        if (aLiberer) URL.revokeObjectURL(url);
+    }
+}
+window.redimensionnerImage = redimensionnerImage;
+
+// ⭐ Fonction : crée le projet côté serveur
+async function creerProjet(manifeste, formule, source) {
+    if (!window._authUser) {
+        showNotification("Vous devez être connecté avec Google.", 'error');
+        return null;
+    }
+
+    try {
+        const image = await redimensionnerImage(source);
+        const jeton = await window._authUser.getIdToken();
+
+        const response = await fetch('/.netlify/functions/creer-projet', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                jeton: jeton,
+                manifeste: manifeste,
+                projet: {
+                    formule: formule,
+                    image: image
+                }
+            })
+        });
+
+        let resultat = null;
+        try { resultat = await response.json(); } catch (e) {}
+
+        if (!resultat || !resultat.success) {
+            showNotification((resultat && resultat.message) || "Erreur lors de la création du projet.", 'error');
+            return null;
+        }
+
+        return resultat.id;
+
+    } catch (e) {
+        console.error('Erreur lors de la création du projet :', e);
+        showNotification("Erreur de connexion avec le serveur.", 'error');
+        return null;
+    }
+}
+window.creerProjet = creerProjet;
 
 function updateHeaderProBadge() {
     const badge = document.getElementById('headerProBadge');
@@ -967,7 +1035,7 @@ window.addEventListener('popstate', function(e) {
     if (activeConfirmModal === 'files') { closeConfirmDeleteAllFiles(true); return; }
     if (isUpgradeModalOpen) { closeUpgradeModal(false, true); return; }
     if (isDrawerOpen) { closeFormuleDrawer(true); return; }
-    if (isRefSheetOpen) { closeRefSheet(true); return; }        // ⭐ AJOUT
+    if (isRefSheetOpen) { closeRefSheet(true); return; }
     if (isRecapOpen) { closeRecap(false, true); return; }
 
     const state = e.state || { screen: 'principal' };
@@ -1005,7 +1073,7 @@ function showShell(show) { headerEl.style.display = show ? 'flex' : 'none'; navb
 function comingSoonHTML() { return '<div class="coming-soon"><p class="coming-soon-text">Disponible prochainement</p></div>'; }
 function exitSubScreen() { document.body.classList.remove('in-sub-screen'); showShell(true); contentArea.style.height = 'calc(100dvh - 137px)'; }
 
-// ⭐ AJOUT : HTML de la page de connexion Google
+// HTML de la page de connexion Google
 function loginPageHTML() {
     return (
         '<div class="login-page">' +
@@ -1028,19 +1096,6 @@ function loginPageHTML() {
     );
 }
 
-// ⭐ AJOUT : Contenu de l'onglet Projets (login ou espace projets)
-function projetsHTML() {
-    if (window._authUser && window._authUser.email) {
-        return (
-            '<div class="projets-vide">' +
-                '<h2>Vos projets</h2>' +
-                '<p>Vos projets apparaîtront ici.</p>' +
-            '</div>'
-        );
-    }
-    return loginPageHTML();
-}
-
 function showOtherView(html) {
     document.body.classList.remove('in-sub-screen');
     showShell(true);
@@ -1055,42 +1110,105 @@ function hideOtherView() {
     contentArea.style.display = 'block';
 }
 
-// ── MODIF : runHomeView affiche la page login ou l'espace projets ──
-function runHomeView() {
-    closeAllOverlays(); setLinkActive(btnHome); headerTitle.textContent = 'SiteLeap';
-    sauvegarderOngletCourant();
-    ongletActif = null;
-    updateMenuVisibility();
-    showOtherView(projetsHTML());
-    ecranActif = null;
-    updateHeaderProBadge();
-
-    // Attacher le listener du bouton Google (car le HTML vient d'être inséré)
-    const btnGoogle = document.getElementById('googleLoginBtn');
-    if (btnGoogle) {
-        btnGoogle.addEventListener('click', async function() {
-            if (typeof window.firebaseSignIn !== 'function') {
-                showNotification("Firebase n'est pas encore prêt. Réessayez dans un instant.", 'error');
-                return;
-            }
-            btnGoogle.disabled = true;
-            await window.firebaseSignIn();
-            btnGoogle.disabled = false;
-        });
+// ⭐ Charge le fichier de la partie Projets et l'injecte
+async function chargerProjets() {
+    if (cacheOnglets.projets && cacheOnglets.projets.html) {
+        restaurerOnglet('projets');
+        const fn = window['init_projets'];
+        if (typeof fn === 'function') { try { fn(); } catch (e) {} }
+        return;
     }
+
+    retirerTousScripts();
+    contentArea.innerHTML = '<div class="chargement-bloc"><div class="chargement-spinner"></div><p class="chargement-texte">Chargement...</p><p class="chargement-hint">Veuillez patienter</p></div>';
+    contentArea.scrollTop = 0;
+
+    try {
+        const r = await fetch('projets/principal-projets.html');
+        if (!r.ok) throw new Error('load');
+        const html = await r.text();
+
+        const temp = document.createElement('div');
+        temp.innerHTML = html;
+        const codesScripts = [];
+        temp.querySelectorAll('script').forEach(function(s) {
+            codesScripts.push(s.textContent);
+            s.remove();
+        });
+
+        contentArea.innerHTML = temp.innerHTML;
+        contentArea.scrollTop = 0;
+
+        codesScripts.forEach(function(code) {
+            const s = document.createElement('script');
+            s.textContent = code;
+            s.dataset.injecte = '1';
+            document.body.appendChild(s);
+            scriptsInjectes.push(s);
+        });
+
+        cacheOnglets.projets.html = contentArea.innerHTML;
+        cacheOnglets.projets.codesScripts = codesScripts.slice();
+        cacheOnglets.projets.scroll = 0;
+
+        const fn = window['init_projets'];
+        if (typeof fn === 'function') { try { fn(); } catch (e) {} }
+    } catch (e) {
+        contentArea.innerHTML = '<div class="coming-soon"><p class="coming-soon-text">Erreur de chargement</p></div>';
+    }
+}
+window.chargerProjets = chargerProjets;
+
+// ⭐ runHomeView : login si pas connecté, sinon charge la partie Projets
+async function runHomeView() {
+    closeAllOverlays();
+    setLinkActive(btnHome);
+    headerTitle.textContent = 'SiteLeap';
+    sauvegarderOngletCourant();
+    ongletActif = 'projets';
+    updateMenuVisibility();
+    updateHeaderProBadge();
+    hideOtherView();
+
+    // ⛔ Si pas connecté → page login (bloquant)
+    if (!window._authUser || !window._authUser.email) {
+        retirerTousScripts();
+        contentArea.innerHTML = loginPageHTML();
+        contentArea.scrollTop = 0;
+        ecranActif = null;
+
+        const btnGoogle = document.getElementById('googleLoginBtn');
+        if (btnGoogle) {
+            btnGoogle.addEventListener('click', async function() {
+                if (typeof window.firebaseSignIn !== 'function') {
+                    showNotification("Firebase n'est pas encore prêt. Réessayez.", 'error');
+                    return;
+                }
+                btnGoogle.disabled = true;
+                await window.firebaseSignIn();
+                btnGoogle.disabled = false;
+            });
+        }
+
+        try { history.replaceState({ screen: 'main' }, '', window.location.pathname); } catch (e) {}
+        return;
+    }
+
+    // ✅ Connecté → charger la partie Projets depuis son fichier
+    await chargerProjets();
 
     try { history.replaceState({ screen: 'main' }, '', window.location.pathname); } catch (e) {}
 }
 
-// ⭐ AJOUT : rafraîchir Projets à chaque changement d'auth
+// ⭐ rafraîchir Projets à chaque changement d'auth
 window.onAuthStateChangedCallback = function(user) {
     const surProjets = btnHome && btnHome.classList.contains('active');
     if (surProjets) {
-        // On est sur l'onglet Projets, on rafraîchit la vue
-        const htmlActuel = otherContainer.innerHTML || '';
-        const etaitSurLogin = htmlActuel.indexOf('googleLoginBtn') !== -1;
-        const maintenantConnecte = !!(user && user.email);
-        if ((etaitSurLogin && maintenantConnecte) || (!etaitSurLogin && !maintenantConnecte)) {
+        const connecte = !!(user && user.email);
+        const ancienEtat = window._etaitConnecte;
+        window._etaitConnecte = connecte;
+        if (ancienEtat !== connecte) {
+            cacheOnglets.projets.html = null;
             runHomeView();
         }
     }
@@ -1226,10 +1344,20 @@ async function runGuideView() {
     try { history.replaceState({ screen: 'main' }, '', window.location.pathname); } catch (e) {}
 }
 
+// ⭐ Navigation bloquée si pas connecté
 btnHome.addEventListener('click', runHomeView);
-btnCreate.addEventListener('click', runCreateView);
-btnNotifications.addEventListener('click', runNotificationsView);
-btnGuide.addEventListener('click', runGuideView);
+btnCreate.addEventListener('click', function() {
+    if (!window._authUser || !window._authUser.email) { runHomeView(); return; }
+    runCreateView();
+});
+btnNotifications.addEventListener('click', function() {
+    if (!window._authUser || !window._authUser.email) { runHomeView(); return; }
+    runNotificationsView();
+});
+btnGuide.addEventListener('click', function() {
+    if (!window._authUser || !window._authUser.email) { runHomeView(); return; }
+    runGuideView();
+});
 
 function getCarteHTML(f) {
     if (f === 'pro') {
@@ -1369,7 +1497,6 @@ function closeUpgradeModal(redirect, fromPopstate) {
     if (overlay) overlay.classList.remove('active');
     document.body.classList.remove('modal-open');
     if (redirect) {
-        // ⭐ MODIF : aiguillage selon la formule
         redirigerVersPaiement();
         return;
     }
@@ -1404,11 +1531,11 @@ function closeAllOverlays() {
     if (isUpgradeModalOpen) closeUpgradeModal(false, false);
     if (activeConfirmModal === 'icon') closeConfirmDelete(true);
     if (activeConfirmModal === 'files') closeConfirmDeleteAllFiles(true);
-    if (isRefSheetOpen) closeRefSheet(true);   // ⭐ AJOUT
+    if (isRefSheetOpen) closeRefSheet(true);
     if (isRecapOpen) closeRecap(false, true);
 }
 
-/* BOTTOM SHEET RÉCAPITULATIF — LOGIQUE */
+/* BOTTOM SHEET RÉCAPITULATIF */
 let isRecapOpen = false;
 
 const RECAP_FORMULES = {
@@ -1607,7 +1734,6 @@ function closeRecap(redirect, fromPopstate) {
     document.body.classList.remove('modal-open');
     setTimeout(recapRevenirAuRecap, 400);
     if (redirect) {
-        // ⭐ MODIF : aiguillage selon la formule
         redirigerVersPaiement();
     }
 }
@@ -1624,8 +1750,117 @@ document.getElementById('recapOverlay').addEventListener('click', function() {
 });
 document.getElementById('recapSeeDetails').addEventListener('click', recapAllerVersDetails);
 document.getElementById('recapBack').addEventListener('click', recapRevenirAuRecap);
+
+// ⭐ Construit le manifeste complet à partir d'IndexedDB
+async function construireManifeste() {
+    const nomApp         = (await recupererNatif('nomApp'))         || '';
+    const nomCourt       = (await recupererNatif('nomCourt'))       || '';
+    const themeColor     = (await recupererNatif('themeColor'))     || '#ffffff';
+    const couleurFond    = (await recupererNatif('couleurFond'))    || '#ffffff';
+    const display        = (await recupererNatif('display'))        || 'standalone';
+    const orientation    = (await recupererNatif('orientation'))    || 'portrait';
+    const launchHandler  = (await recupererNatif('launchHandler'))  || 'navigate-existing';
+    const translations   = (await recupererNatif('translations'))   || [];
+
+    const displayOverride = (display === 'fullscreen')
+        ? ['window-controls-overlay', 'fullscreen']
+        : ['window-controls-overlay', 'standalone'];
+
+    const nameLocalized = {};
+    const shortNameLocalized = {};
+    if (Array.isArray(translations)) {
+        translations.forEach(function(t) {
+            if (t && t.code && t.name) {
+                nameLocalized[t.code] = t.name;
+                shortNameLocalized[t.code] = t.name;
+            }
+        });
+    }
+
+    return {
+        id: "/",
+        name: nomApp,
+        short_name: nomCourt,
+        scope: "/",
+        start_url: "/",
+        display: display,
+        display_override: displayOverride,
+        orientation: orientation,
+        theme_color: themeColor,
+        background_color: couleurFond,
+        icons: [
+            { src: "/icons/android/icon-192.png",          sizes: "192x192", type: "image/png", purpose: "any" },
+            { src: "/icons/android/icon-512.png",          sizes: "512x512", type: "image/png", purpose: "any" },
+            { src: "/icons/android/icon-192-maskable.png", sizes: "192x192", type: "image/png", purpose: "maskable" },
+            { src: "/icons/android/icon-512-maskable.png", sizes: "512x512", type: "image/png", purpose: "maskable" }
+        ],
+        lang: "fr",
+        dir: "ltr",
+        launch_handler: { client_mode: launchHandler },
+        name_localized: nameLocalized,
+        short_name_localized: shortNameLocalized
+    };
+}
+
+// ⭐ Animation courte de transition vers Projets
+async function animerTransitionVersProjets() {
+    const overlay = document.getElementById('proTransitionOverlay');
+    const loading = document.getElementById('ptLoading');
+    if (!overlay) return;
+
+    overlay.classList.remove('step-1');
+    if (loading) loading.classList.remove('hidden');
+    overlay.classList.add('active');
+
+    await new Promise(function(r) { setTimeout(r, 900); });
+
+    if (loading) loading.classList.add('hidden');
+    await new Promise(function(r) { setTimeout(r, 200); });
+
+    overlay.classList.remove('active');
+    if (loading) loading.classList.remove('hidden');
+}
+
+// ⭐ Lance la création du projet au clic sur le bouton récap
+async function lancerCreationProjet() {
+    const btn = document.getElementById('recapAction');
+
+    let logoBlob = null;
+    try { logoBlob = await recupererNatif('logo'); } catch (e) {}
+    if (!logoBlob) {
+        showNotification("Veuillez d'abord configurer une icône.", 'error');
+        return;
+    }
+
+    let manifeste;
+    try { manifeste = await construireManifeste(); }
+    catch (e) {
+        showNotification("Erreur lors de la préparation du manifeste.", 'error');
+        return;
+    }
+
+    let formule = 'decouverte';
+    try { formule = (await recupererNatif('formuleActive')) || 'decouverte'; } catch (e) {}
+
+    if (btn) { btn.disabled = true; btn.textContent = 'Création en cours...'; }
+
+    const idProjet = await window.creerProjet(manifeste, formule, logoBlob);
+
+    if (btn) { btn.disabled = false; btn.textContent = 'Créer maintenant - Payer après'; }
+
+    if (!idProjet) return;
+
+    closeRecap(false, true);
+
+    await animerTransitionVersProjets();
+
+    cacheOnglets.projets.html = null;
+    retirerTousScripts();
+    await runHomeView();
+}
+
 document.getElementById('recapAction').addEventListener('click', function() {
-    closeRecap(true, false);
+    lancerCreationProjet();
 });
 
 (function recapSetupDrag() {
@@ -1669,7 +1904,7 @@ document.getElementById('recapAction').addEventListener('click', function() {
     handleWrap.addEventListener('mousedown', onStart);
 })();
 
-/* ⭐ AJOUT : BOTTOM SHEET DE SAISIE DU NUMÉRO DE RÉFÉRENCE */
+/* BOTTOM SHEET DE SAISIE DU NUMÉRO DE RÉFÉRENCE */
 let isRefSheetOpen = false;
 
 function openRefSheet() {
@@ -1701,7 +1936,6 @@ function closeRefSheet(fromPopstate) {
     document.body.classList.remove('modal-open');
 }
 
-// ── Fonction : rassemble le colis à envoyer au serveur ──
 async function recupererDonneesCompletes() {
     const email = (window.currentUserEmail || '').trim();
     if (!email) {
@@ -1736,7 +1970,6 @@ async function recupererDonneesCompletes() {
     };
 }
 
-// ── MODIFIÉ : Envoi à la fonction unique Netlify et lecture directe du résultat ──
 async function envoyerReference() {
     const btn = document.getElementById('refsheetAction');
     const errorEl = document.getElementById('refsheetError');
@@ -1757,7 +1990,6 @@ async function envoyerReference() {
         const resultat = await response.json();
         const estAutorise = (resultat.verified === true);
 
-        // Enregistrement local du statut retourné par le serveur unique
         localStorage.setItem('statut_utilisateur', estAutorise ? 'true' : 'false');
 
         const result = document.getElementById('refsheetResult');
@@ -1780,7 +2012,6 @@ async function envoyerReference() {
     }
 }
 
-// ── Drag de la refSheet ──
 (function refSheetSetupDrag() {
     const handleWrap = document.getElementById('refsheetHandleWrap');
     if (!handleWrap) return;
@@ -1831,7 +2062,6 @@ document.getElementById('referenceSelarInput').addEventListener('input', functio
     if (err) err.classList.remove('show');
 });
 
-// ── Détection du retour depuis Selar ──
 async function detecterRetourSelar() {
     let user = null;
     try {
@@ -1870,6 +2100,8 @@ window.addEventListener('DOMContentLoaded', async function() {
             new Promise(function(r) { setTimeout(r, 2500); })
         ]);
     } catch (e) {}
+
+    window._etaitConnecte = !!(window._authUser && window._authUser.email);
 
     construireFormuleDrawer();
     runHomeView();
