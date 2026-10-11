@@ -1,201 +1,308 @@
 <div id="projets" class="screen active">
 
-    <div class="pj-welcome">
-        <div class="pj-welcome-top">
-            <div class="pj-avatar" id="pjAvatar">MD</div>
-            <div class="pj-welcome-texts">
-                <div class="pj-greeting" id="pjGreeting">Bonjour 👋</div>
-                <div class="pj-name" id="pjName">Utilisateur</div>
+    <!-- ZONE D'ACCUEIL -->
+    <div class="accueil">
+        <div class="accueil-top">
+            <div class="accueil-avatar" id="accueilAvatar">?</div>
+            <div class="accueil-texts">
+                <div class="accueil-salut" id="accueilSalut">Bonjour 👋</div>
+                <div class="accueil-nom" id="accueilNom">Utilisateur</div>
             </div>
         </div>
 
-        <button type="button" class="pj-btn-create" id="pjBtnCreate">
-            <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-            Créer un projet
+        <button type="button" class="btn-creer-projet" id="btnCreerProjet">
+            <svg viewBox="0 0 24 24">
+                <line x1="12" y1="5" x2="12" y2="19"></line>
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+            </svg>
+            <span id="btnCreerProjetLabel">Créer un projet</span>
         </button>
     </div>
 
-    <div class="pj-section-bar">
-        <span class="pj-section-titre">Vos projets</span>
-        <span class="pj-section-compteur" id="pjCompteur">0</span>
+    <!-- SECTION -->
+    <div class="section-bar">
+        <span class="section-titre">Vos projets</span>
+        <span class="section-compteur" id="sectionCompteur">0</span>
     </div>
 
-    <div id="pjConteneur"></div>
+    <!-- RECHERCHE -->
+    <div class="recherche" id="rechercheWrap" style="display:none;">
+        <div class="recherche-wrap">
+            <span class="recherche-icone">
+                <svg viewBox="0 0 24 24">
+                    <circle cx="11" cy="11" r="8"></circle>
+                    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                </svg>
+            </span>
+            <input type="text" id="rechercheInput" placeholder="Rechercher un projet...">
+        </div>
+    </div>
+
+    <!-- CONTENEUR (liste ou vide ou chargement) -->
+    <div id="projetsConteneur"></div>
 
 </div>
 
 <style>
-#projets { max-width: 640px; width: 100%; margin: 0 auto; padding: 0 0 24px; }
+.screen { display: none; }
+.screen.active { display: block; }
 
-/* ─── ACCUEIL ─── */
-.pj-welcome { padding: 22px 16px 18px; display: flex; flex-direction: column; gap: 18px; }
-.pj-welcome-top { display: flex; align-items: center; gap: 14px; }
-.pj-avatar {
-    flex-shrink: 0; width: 52px; height: 52px; border-radius: 50%;
-    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-    color: #fff; display: flex; align-items: center; justify-content: center;
-    font-size: 1.05rem; font-weight: 800; text-transform: uppercase;
-    overflow: hidden;
-    box-shadow: 0 4px 12px -4px rgba(16,185,129,.55);
+#projets {
+    max-width: 640px;
+    width: 100%;
+    margin: 0 auto;
+    padding: 0 0 24px;
 }
-.pj-avatar img { width: 100%; height: 100%; object-fit: cover; }
-.pj-welcome-texts { flex: 1; min-width: 0; }
-.pj-greeting { font-size: 0.82rem; color: #64748b; font-weight: 500; margin-bottom: 3px; }
-.pj-name {
-    font-size: 1.1rem; font-weight: 800; color: #0b1220;
-    letter-spacing: -0.02em; line-height: 1.25;
+
+/* ═══ ACCUEIL ═══ */
+.accueil {
+    padding: 22px 16px 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+.accueil-top { display: flex; align-items: center; gap: 14px; }
+
+.accueil-avatar {
+    flex-shrink: 0;
+    width: 52px; height: 52px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    color: #ffffff;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.05rem; font-weight: 800;
+    letter-spacing: 0.02em;
+    box-shadow: 0 4px 12px -4px rgba(16,185,129,.55);
+    overflow: hidden;
+    text-transform: uppercase;
+    user-select: none;
+}
+.accueil-avatar.has-image { background: #f1f5f9; box-shadow: 0 2px 8px -2px rgba(15,23,42,.15); }
+.accueil-avatar img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+.accueil-texts { flex: 1; min-width: 0; }
+.accueil-salut {
+    font-size: 0.82rem;
+    color: #64748b;
+    font-weight: 500;
+    margin-bottom: 3px;
+}
+.accueil-nom {
+    font-size: 1.1rem; font-weight: 800;
+    color: #0b1220; letter-spacing: -0.02em;
+    line-height: 1.25;
     white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
-.pj-btn-create {
-    display: flex; align-items: center; justify-content: center; gap: 10px;
+
+.btn-creer-projet {
+    display: flex; align-items: center; justify-content: center;
+    gap: 10px;
     width: 100%; padding: 15px 18px;
     background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-    color: #fff; border: none; border-radius: 14px;
+    color: #ffffff;
+    border: none; border-radius: 14px;
     font-family: inherit; font-size: 0.95rem; font-weight: 700;
-    cursor: pointer;
+    letter-spacing: 0.005em; cursor: pointer;
     box-shadow: 0 12px 24px -10px rgba(16,185,129,.5), inset 0 1px 0 rgba(255,255,255,.18);
-    transition: transform .18s ease, filter .18s ease;
+    transition: transform .18s ease, box-shadow .18s ease, filter .18s ease;
 }
-.pj-btn-create:hover { transform: translateY(-1px); filter: brightness(1.03); }
-.pj-btn-create:active { transform: scale(.98); }
-.pj-btn-create svg {
-    width: 20px; height: 20px; stroke: currentColor; fill: none;
+.btn-creer-projet:hover {
+    transform: translateY(-1px); filter: brightness(1.03);
+    box-shadow: 0 16px 30px -10px rgba(16,185,129,.55), inset 0 1px 0 rgba(255,255,255,.22);
+}
+.btn-creer-projet:active { transform: scale(.98); }
+.btn-creer-projet svg {
+    width: 20px; height: 20px;
+    stroke: currentColor; fill: none;
     stroke-width: 2.6; stroke-linecap: round; stroke-linejoin: round;
 }
 
-/* ─── BARRE SECTION ─── */
-.pj-section-bar {
-    padding: 0 16px 12px; display: flex; align-items: center; gap: 10px;
+/* ═══ SECTION ═══ */
+.section-bar {
+    padding: 0 16px 12px;
+    display: flex; align-items: center; gap: 10px;
 }
-.pj-section-titre {
-    font-size: 0.72rem; font-weight: 800; color: #64748b;
+.section-titre {
+    font-size: 0.72rem; font-weight: 800;
+    color: #64748b;
     letter-spacing: 0.1em; text-transform: uppercase;
+    white-space: nowrap;
 }
-.pj-section-compteur {
+.section-compteur {
     display: inline-flex; align-items: center; justify-content: center;
     min-width: 22px; height: 20px; padding: 0 7px;
     background: #f1f5f9; color: #64748b;
     font-size: 0.7rem; font-weight: 800; border-radius: 6px;
 }
 
-/* ─── LISTE PROJETS (style WhatsApp) ─── */
-.pj-list { display: flex; flex-direction: column; width: 100%; }
-.pj-item {
+/* ═══ RECHERCHE ═══ */
+.recherche { padding: 0 16px 14px; }
+.recherche-wrap { position: relative; width: 100%; height: 44px; }
+.recherche-icone {
+    position: absolute;
+    left: 14px; top: 0; bottom: 0;
+    display: flex; align-items: center; justify-content: center;
+    width: 18px; height: 18px; margin: auto 0;
+    color: #94a3b8; pointer-events: none; z-index: 2;
+}
+.recherche-icone svg {
+    width: 100%; height: 100%;
+    stroke: currentColor; fill: none;
+    stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round;
+}
+.recherche input {
+    position: relative;
+    width: 100%; height: 44px;
+    padding: 0 14px 0 40px;
+    border: 1px solid #e2e8f0; border-radius: 11px;
+    background: #f8fafc;
+    font-family: inherit; font-size: 0.9rem; color: #0b1220;
+    outline: none;
+    transition: border-color .15s ease, background-color .15s ease;
+}
+.recherche input:focus { border-color: #10b981; background: #ffffff; }
+.recherche input::placeholder { color: #94a3b8; }
+
+/* ═══ LISTE PROJETS ═══ */
+.projets-list {
+    display: flex; flex-direction: column;
+    width: 100%; padding-bottom: 16px;
+}
+.projet-item {
     display: flex; align-items: center; gap: 14px;
     width: 100%; padding: 12px 16px;
-    background: #fff; border: none; border-bottom: 1px solid #f1f5f9;
+    background: #ffffff; border: none;
+    border-bottom: 1px solid #f1f5f9;
     font-family: inherit; text-align: left; color: #0b1220;
     cursor: pointer;
     transition: background-color .15s ease;
     -webkit-appearance: none; appearance: none; outline: none;
 }
-.pj-item:last-child { border-bottom: none; }
-.pj-item:hover { background-color: #f8fafc; }
-.pj-item:active { background-color: #f1f5f9; }
+.projet-item:last-child { border-bottom: none; }
+.projet-item:hover { background-color: #f8fafc; }
+.projet-item:active { background-color: #f1f5f9; }
 
-.pj-icon {
-    flex-shrink: 0; width: 52px; height: 52px; border-radius: 14px;
-    overflow: hidden; background: #f1f5f9;
+.projet-avatar {
+    flex-shrink: 0;
+    width: 52px; height: 52px;
+    border-radius: 14px; overflow: hidden;
+    background: #f1f5f9;
     display: flex; align-items: center; justify-content: center;
 }
-.pj-icon img { width: 100%; height: 100%; object-fit: cover; display: block; }
-
-.pj-body { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 3px; }
-.pj-top {
+.projet-avatar img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.projet-body { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 3px; }
+.projet-top {
     display: flex; align-items: center; justify-content: space-between;
     gap: 8px; min-width: 0;
 }
-.pj-nom {
+.projet-nom {
     font-size: 0.98rem; font-weight: 700; color: #0b1220;
     letter-spacing: -0.008em; line-height: 1.25;
     white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
     min-width: 0;
 }
-.pj-badge {
-    flex-shrink: 0; display: inline-flex; align-items: center; justify-content: center;
-    padding: 2px 7px; font-size: 0.58rem; font-weight: 900;
-    letter-spacing: 0.06em; border-radius: 5px; line-height: 1.4; white-space: nowrap;
+.formule-badge {
+    flex-shrink: 0;
+    display: inline-flex; align-items: center; justify-content: center;
+    padding: 2px 7px;
+    font-size: 0.58rem; font-weight: 900;
+    letter-spacing: 0.06em; border-radius: 5px;
+    line-height: 1.4; white-space: nowrap;
 }
-.pj-badge.decouverte { background: #f1f5f9; color: #64748b; border: 1px solid #e2e8f0; }
-.pj-badge.pro        { background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); color: #92400e; border: 1px solid #fcd34d; }
-.pj-badge.pro-plus   { background: #ecfdf5; color: #047857; border: 1px solid #a7f3d0; }
+.formule-badge.decouverte { background: #f1f5f9; color: #64748b; border: 1px solid #e2e8f0; }
+.formule-badge.pro {
+    background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+    color: #92400e; border: 1px solid #fcd34d;
+}
+.formule-badge.proplus { background: #ecfdf5; color: #047857; border: 1px solid #a7f3d0; }
 
-.pj-bottom { display: flex; align-items: center; gap: 10px; min-width: 0; }
-.pj-statut {
+.projet-bottom { display: flex; align-items: center; gap: 10px; min-width: 0; }
+.projet-statut {
     display: inline-flex; align-items: center; gap: 5px;
     font-size: 0.78rem; font-weight: 600; white-space: nowrap;
 }
-.pj-statut .dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
-.pj-statut.en-attente { color: #b45309; }
-.pj-statut.en-attente .dot { background: #f59e0b; }
-.pj-statut.actif { color: #047857; }
-.pj-statut.actif .dot { background: #10b981; box-shadow: 0 0 0 3px rgba(16,185,129,.18); }
-.pj-statut.expire { color: #64748b; }
-.pj-statut.expire .dot { background: #94a3b8; }
+.projet-statut .dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+.projet-statut.en-attente { color: #b45309; }
+.projet-statut.en-attente .dot { background: #f59e0b; }
+.projet-statut.actif { color: #047857; }
+.projet-statut.actif .dot { background: #10b981; box-shadow: 0 0 0 3px rgba(16,185,129,.18); }
+.projet-statut.expire { color: #64748b; }
+.projet-statut.expire .dot { background: #94a3b8; }
 
-.pj-sep { width: 3px; height: 3px; border-radius: 50%; background: #cbd5e1; flex-shrink: 0; }
-.pj-date { font-size: 0.78rem; font-weight: 500; color: #94a3b8; white-space: nowrap; }
-
-/* ─── ÉTAT VIDE ─── */
-.pj-empty {
-    padding: 40px 24px 60px; display: flex; flex-direction: column;
-    align-items: center; justify-content: center; text-align: center;
-    max-width: 400px; margin: 0 auto;
+.projet-sep { width: 3px; height: 3px; border-radius: 50%; background: #cbd5e1; flex-shrink: 0; }
+.projet-date {
+    font-size: 0.78rem; font-weight: 500; color: #94a3b8;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
-.pj-empty-illustration {
+
+/* ═══ ÉTAT VIDE ═══ */
+.empty-state {
+    padding: 40px 24px 60px;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    text-align: center; max-width: 400px; margin: 0 auto;
+}
+.empty-illustration {
     width: 120px; height: 120px; border-radius: 50%;
     background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%);
     display: flex; align-items: center; justify-content: center;
     margin-bottom: 24px; position: relative;
     box-shadow: 0 20px 40px -20px rgba(16,185,129,.35), inset 0 0 0 1px rgba(16,185,129,.12);
 }
-.pj-empty-illustration::before,
-.pj-empty-illustration::after {
+.empty-illustration::before,
+.empty-illustration::after {
     content: ""; position: absolute; border-radius: 50%;
     background: #10b981; opacity: .15;
 }
-.pj-empty-illustration::before { width: 16px; height: 16px; top: 8px; right: 10px; }
-.pj-empty-illustration::after { width: 10px; height: 10px; bottom: 12px; left: 14px; opacity: .25; }
-.pj-empty-illustration svg {
-    width: 52px; height: 52px; stroke: #10b981; fill: none;
+.empty-illustration::before { width: 16px; height: 16px; top: 8px; right: 10px; }
+.empty-illustration::after { width: 10px; height: 10px; bottom: 12px; left: 14px; opacity: .25; }
+.empty-illustration svg {
+    width: 52px; height: 52px;
+    stroke: #10b981; fill: none;
     stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round;
     position: relative; z-index: 2;
 }
-.pj-empty-title {
+.empty-title {
     font-size: 1.25rem; font-weight: 800; color: #0b1220;
     letter-spacing: -0.025em; line-height: 1.3; margin-bottom: 8px;
 }
-.pj-empty-subtitle {
+.empty-subtitle {
     font-size: 0.9rem; font-weight: 500; color: #64748b;
     line-height: 1.6; margin-bottom: 26px; max-width: 300px;
 }
-.pj-empty-hint {
+.empty-hint {
     display: inline-flex; align-items: center; gap: 6px;
     font-size: 0.78rem; font-weight: 600; color: #94a3b8;
     padding: 8px 14px; background: #f8fafc;
     border-radius: 20px; border: 1px solid #f1f5f9;
 }
-.pj-empty-hint svg {
+.empty-hint svg {
     width: 14px; height: 14px; stroke: currentColor; fill: none;
     stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round;
 }
 
-/* ─── CHARGEMENT ─── */
-.pj-loading {
+/* ═══ CHARGEMENT ═══ */
+.loading-bloc {
     display: flex; flex-direction: column; align-items: center; justify-content: center;
     padding: 60px 20px; gap: 16px;
 }
-.pj-loading-spinner {
-    width: 40px; height: 40px; border: 3px solid #e5e5ea;
-    border-top-color: #10b981; border-radius: 50%;
+.loading-spinner {
+    width: 40px; height: 40px;
+    border: 3px solid #e5e5ea;
+    border-top-color: #10b981;
+    border-radius: 50%;
     animation: pjSpin .8s linear infinite;
 }
 @keyframes pjSpin { to { transform: rotate(360deg); } }
-.pj-loading-text { font-size: 0.9rem; color: #64748b; font-weight: 500; }
+.loading-text { font-size: 0.9rem; color: #64748b; font-weight: 500; }
 </style>
 
 <script>
 (function() {
+
+    // ─── État local ───
+    let tousLesProjets = [];
+    let rechercheActive = '';
 
     // ─── Message d'accueil selon l'heure ───
     function getGreeting() {
@@ -206,7 +313,7 @@
         return 'Bonne nuit 🌙';
     }
 
-    // ─── Initiales (2 premières lettres des 2 premiers mots) ───
+    // ─── Initiales : 1ère lettre du 1er mot + 1ère lettre du 2e mot ───
     function initiales(str) {
         if (!str) return '?';
         const parties = str.trim().split(/\s+/).filter(Boolean);
@@ -227,34 +334,28 @@
         } catch (e) { return ''; }
     }
 
-    // ─── Label statut ───
+    // ─── Statut : classe + label ───
     function statutInfo(statut) {
-        if (statut === 'actif' || statut === 'actif_')   return { cls: 'actif',      label: 'Actif' };
-        if (statut === 'expire' || statut === 'expiré')  return { cls: 'expire',     label: 'Expiré' };
+        if (statut === 'actif')  return { cls: 'actif',      label: 'Actif' };
+        if (statut === 'expire' || statut === 'expiré') return { cls: 'expire', label: 'Expiré' };
         return { cls: 'en-attente', label: 'En attente' };
     }
 
-    // ─── Label formule pour badge ───
-    function formuleBadgeClass(f) {
-        if (f === 'pro')      return 'pro';
-        if (f === 'pro-plus') return 'pro-plus';
-        return 'decouverte';
-    }
-    function formuleBadgeLabel(f) {
-        if (f === 'pro')      return 'PRO';
-        if (f === 'pro-plus') return 'PRO+';
-        return 'DÉCOUVERTE';
+    // ─── Formule : classe CSS + label ───
+    function formuleInfo(f) {
+        if (f === 'pro')      return { cls: 'pro',        label: 'PRO' };
+        if (f === 'pro-plus') return { cls: 'proplus',    label: 'PRO+' };
+        return { cls: 'decouverte', label: 'DÉCOUVERTE' };
     }
 
     // ─── Injecter les infos utilisateur ───
     function injecterUtilisateur() {
         const user = window._authUser;
-        const greetEl = document.getElementById('pjGreeting');
-        const nameEl  = document.getElementById('pjName');
-        const avEl    = document.getElementById('pjAvatar');
+        const greetEl = document.getElementById('accueilSalut');
+        const nameEl  = document.getElementById('accueilNom');
+        const avEl    = document.getElementById('accueilAvatar');
 
         if (greetEl) greetEl.textContent = getGreeting();
-
         if (!user) return;
 
         const nomComplet = user.displayName || (user.email ? user.email.split('@')[0] : 'Utilisateur');
@@ -262,13 +363,27 @@
         if (avEl)   avEl.textContent = initiales(nomComplet);
     }
 
-    // ─── Afficher l'état vide ───
+    // ─── Adapter le bouton selon le nombre de projets ───
+    function adapterBouton(nbProjets) {
+        const label = document.getElementById('btnCreerProjetLabel');
+        if (!label) return;
+        label.textContent = (nbProjets > 0) ? 'Créer un nouveau projet' : 'Créer un projet';
+    }
+
+    // ─── Afficher / masquer la barre de recherche ───
+    function majRecherche(nbProjets) {
+        const wrap = document.getElementById('rechercheWrap');
+        if (!wrap) return;
+        wrap.style.display = (nbProjets > 0) ? 'block' : 'none';
+    }
+
+    // ─── État vide ───
     function afficherVide() {
-        const c = document.getElementById('pjConteneur');
+        const c = document.getElementById('projetsConteneur');
         if (!c) return;
         c.innerHTML =
-            '<div class="pj-empty">' +
-                '<div class="pj-empty-illustration">' +
+            '<div class="empty-state">' +
+                '<div class="empty-illustration">' +
                     '<svg viewBox="0 0 24 24">' +
                         '<rect x="3" y="3" width="7" height="7" rx="1.5"/>' +
                         '<rect x="14" y="3" width="7" height="7" rx="1.5"/>' +
@@ -277,40 +392,69 @@
                         '<line x1="14" y1="17.5" x2="21" y2="17.5"/>' +
                     '</svg>' +
                 '</div>' +
-                '<h2 class="pj-empty-title">Aucun projet pour le moment</h2>' +
-                '<p class="pj-empty-subtitle">Créez votre 1<sup>er</sup> site installable. Et retrouvez-le ici. Avec toutes ces statistiques.</p>' +
-                '<div class="pj-empty-hint">' +
+                '<h2 class="empty-title">Aucun projet pour le moment</h2>' +
+                '<p class="empty-subtitle">Créez votre 1<sup>er</sup> site installable. Et retrouvez-le ici. Avec toutes ces statistiques.</p>' +
+                '<div class="empty-hint">' +
                     '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>' +
                     'Commencez par le bouton ci-dessus' +
                 '</div>' +
             '</div>';
     }
 
+    // ─── État de chargement ───
+    function afficherChargement() {
+        const c = document.getElementById('projetsConteneur');
+        if (!c) return;
+        c.innerHTML =
+            '<div class="loading-bloc">' +
+                '<div class="loading-spinner"></div>' +
+                '<p class="loading-text">Chargement de vos projets...</p>' +
+            '</div>';
+    }
+
+    // ─── Filtre par recherche ───
+    function filtrerProjets(projets, terme) {
+        if (!terme) return projets;
+        const t = terme.toLowerCase().trim();
+        return projets.filter(function(p) {
+            return (p.nom || '').toLowerCase().indexOf(t) !== -1;
+        });
+    }
+
     // ─── Afficher la liste des projets ───
     function afficherListe(projets) {
-        const c = document.getElementById('pjConteneur');
+        const c = document.getElementById('projetsConteneur');
         if (!c) return;
 
-        let html = '<div class="pj-list">';
-        projets.forEach(function(p) {
+        const filtres = filtrerProjets(projets, rechercheActive);
+
+        if (filtres.length === 0) {
+            c.innerHTML =
+                '<div style="padding: 40px 20px; text-align: center; color: #94a3b8; font-size: 0.9rem;">' +
+                    'Aucun projet ne correspond à votre recherche.' +
+                '</div>';
+            return;
+        }
+
+        let html = '<div class="projets-list">';
+        filtres.forEach(function(p) {
             const st = statutInfo(p.statut);
-            const badgeCls = formuleBadgeClass(p.formule);
-            const badgeLbl = formuleBadgeLabel(p.formule);
+            const fi = formuleInfo(p.formule);
             const dateStr = formatDate(p.creeLe);
 
             html +=
-                '<button type="button" class="pj-item" data-id="' + p.id + '">' +
-                    '<div class="pj-icon">' +
+                '<button type="button" class="projet-item" data-id="' + p.id + '">' +
+                    '<div class="projet-avatar">' +
                         (p.imageUrl ? '<img src="' + p.imageUrl + '" alt="">' : '') +
                     '</div>' +
-                    '<div class="pj-body">' +
-                        '<div class="pj-top">' +
-                            '<div class="pj-nom">' + (p.nom || 'Sans nom') + '</div>' +
-                            '<span class="pj-badge ' + badgeCls + '">' + badgeLbl + '</span>' +
+                    '<div class="projet-body">' +
+                        '<div class="projet-top">' +
+                            '<div class="projet-nom">' + (p.nom || 'Sans nom') + '</div>' +
+                            '<span class="formule-badge ' + fi.cls + '">' + fi.label + '</span>' +
                         '</div>' +
-                        '<div class="pj-bottom">' +
-                            '<span class="pj-statut ' + st.cls + '"><span class="dot"></span>' + st.label + '</span>' +
-                            (dateStr ? '<span class="pj-sep"></span><span class="pj-date">' + dateStr + '</span>' : '') +
+                        '<div class="projet-bottom">' +
+                            '<span class="projet-statut ' + st.cls + '"><span class="dot"></span>' + st.label + '</span>' +
+                            (dateStr ? '<span class="projet-sep"></span><span class="projet-date">' + dateStr + '</span>' : '') +
                         '</div>' +
                     '</div>' +
                 '</button>';
@@ -318,8 +462,8 @@
         html += '</div>';
         c.innerHTML = html;
 
-        // Clic sur un projet → (à venir : ouvrir les statistiques)
-        c.querySelectorAll('.pj-item').forEach(function(btn) {
+        // Clic sur une carte projet
+        c.querySelectorAll('.projet-item').forEach(function(btn) {
             btn.addEventListener('click', function() {
                 const id = this.dataset.id;
                 console.log('[Projets] Clic sur projet :', id);
@@ -328,20 +472,16 @@
         });
     }
 
-    // ─── Charger les projets depuis le serveur ───
+    // ─── Charger depuis lister-projets ───
     async function chargerListeProjets() {
-        const c = document.getElementById('pjConteneur');
-        const compteur = document.getElementById('pjCompteur');
+        afficherChargement();
 
         if (!window._authUser) {
             afficherVide();
-            if (compteur) compteur.textContent = '0';
+            document.getElementById('sectionCompteur').textContent = '0';
+            adapterBouton(0);
+            majRecherche(0);
             return;
-        }
-
-        // Afficher un état de chargement
-        if (c) {
-            c.innerHTML = '<div class="pj-loading"><div class="pj-loading-spinner"></div><p class="pj-loading-text">Chargement de vos projets...</p></div>';
         }
 
         try {
@@ -359,41 +499,60 @@
                 if (typeof window.showNotification === 'function') {
                     window.showNotification((resultat && resultat.message) || "Erreur lors du chargement des projets.", 'error');
                 }
+                tousLesProjets = [];
                 afficherVide();
-                if (compteur) compteur.textContent = '0';
+                document.getElementById('sectionCompteur').textContent = '0';
+                adapterBouton(0);
+                majRecherche(0);
                 return;
             }
 
-            const projets = resultat.projets || [];
+            tousLesProjets = resultat.projets || [];
+            const nb = tousLesProjets.length;
 
-            if (projets.length === 0) {
+            document.getElementById('sectionCompteur').textContent = String(nb);
+            adapterBouton(nb);
+            majRecherche(nb);
+
+            if (nb === 0) {
                 afficherVide();
             } else {
-                afficherListe(projets);
+                afficherListe(tousLesProjets);
             }
-            if (compteur) compteur.textContent = String(projets.length);
 
         } catch (e) {
             console.error('[Projets] Erreur :', e);
+            tousLesProjets = [];
             afficherVide();
-            if (compteur) compteur.textContent = '0';
+            document.getElementById('sectionCompteur').textContent = '0';
+            adapterBouton(0);
+            majRecherche(0);
         }
     }
 
-    // ─── Init (appelé par le Shell) ───
+    // ─── Init (appelé par le Shell à l'injection) ───
     async function init_projets() {
         injecterUtilisateur();
 
-        // Attacher le bouton "Créer un projet" → bascule vers l'onglet Créer
-        const btnCreate = document.getElementById('pjBtnCreate');
-        if (btnCreate) {
-            btnCreate.addEventListener('click', function() {
+        // Bouton "Créer un projet" → bascule vers l'onglet Créer
+        const btn = document.getElementById('btnCreerProjet');
+        if (btn) {
+            btn.addEventListener('click', function() {
                 const btnNav = document.getElementById('btn-create');
                 if (btnNav) btnNav.click();
             });
         }
 
-        // Charger la liste
+        // Barre de recherche : filtre en temps réel
+        const input = document.getElementById('rechercheInput');
+        if (input) {
+            input.addEventListener('input', function() {
+                rechercheActive = this.value;
+                afficherListe(tousLesProjets);
+            });
+        }
+
+        // Charger les projets depuis lister-projets
         await chargerListeProjets();
     }
 
