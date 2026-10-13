@@ -1,289 +1,334 @@
-<div id="projets" class="screen active">
+<!-- ========================================== -->
+<!-- MODULE PROJETS : LISTE & STATISTIQUES        -->
+<!-- ========================================== -->
 
-    <!-- ZONE D'ACCUEIL -->
-    <div class="accueil">
-        <div class="accueil-top">
-            <div class="accueil-avatar" id="accueilAvatar">?</div>
-            <div class="accueil-texts">
-                <div class="accueil-salut" id="accueilSalut">Bonjour 👋</div>
-                <div class="accueil-nom" id="accueilNom">Utilisateur</div>
+<div id="projets-module-root" class="projets-module-root">
+
+    <!-- ÉCRAN 1 : LISTE DES PROJETS -->
+    <div id="screen-list-projets" class="sub-screen active">
+        <div class="header">
+            <div class="header-left">
+                <div class="header-title">SiteLeap</div>
+            </div>
+            <div class="header-icons">
+                <button class="header-icon-btn" aria-label="Menu">
+                    <svg viewBox="0 0 24 24"><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+                </button>
             </div>
         </div>
 
-        <button type="button" class="btn-creer-projet" id="btnCreerProjet">
-            <svg viewBox="0 0 24 24">
-                <line x1="12" y1="5" x2="12" y2="19"></line>
-                <line x1="5" y1="12" x2="19" y2="12"></line>
-            </svg>
-            <span id="btnCreerProjetLabel">Créer un projet</span>
-        </button>
+        <main class="main-content">
+            <div class="accueil">
+                <div class="accueil-top">
+                    <div class="accueil-avatar" id="accueilAvatar">?</div>
+                    <div class="accueil-texts">
+                        <div class="accueil-salut" id="accueilSalut">Bonjour 👋</div>
+                        <div class="accueil-nom" id="accueilNom">Utilisateur</div>
+                    </div>
+                </div>
+                <button type="button" class="btn-creer-projet" id="btnCreerProjet">
+                    <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                    <span id="btnCreerProjetLabel">Créer un projet</span>
+                </button>
+            </div>
+
+            <div class="section-bar">
+                <span class="section-titre">Vos projets</span>
+                <span class="section-compteur" id="sectionCompteur">0</span>
+            </div>
+
+            <div class="recherche" id="rechercheWrap" style="display:none;">
+                <div class="recherche-wrap">
+                    <span class="recherche-icone">
+                        <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                    </span>
+                    <input type="text" id="rechercheInput" placeholder="Rechercher un projet...">
+                </div>
+            </div>
+
+            <div id="projetsConteneur"></div>
+        </main>
     </div>
 
-    <!-- SECTION -->
-    <div class="section-bar">
-        <span class="section-titre">Vos projets</span>
-        <span class="section-compteur" id="sectionCompteur">0</span>
-    </div>
+    <!-- ÉCRAN 2 : STATISTIQUES D'UN PROJET -->
+    <div id="screen-stats-projets" class="sub-screen" style="display:none;">
+        <div class="top-bar">
+            <div class="top-row">
+                <button type="button" class="top-back" id="btnBackStats" aria-label="Retour">
+                    <svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg>
+                </button>
+                <div class="top-title-wrap">
+                    <h1 class="top-title" id="topNom">Mon site web</h1>
+                    <p class="top-sub">Statistiques de votre site web</p>
+                </div>
+                <span class="top-formule-badge decouverte" id="topFormuleBadge">DÉCOUVERTE</span>
+            </div>
+        </div>
 
-    <!-- RECHERCHE -->
-    <div class="recherche" id="rechercheWrap" style="display:none;">
-        <div class="recherche-wrap">
-            <span class="recherche-icone">
-                <svg viewBox="0 0 24 24">
-                    <circle cx="11" cy="11" r="8"></circle>
-                    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-                </svg>
-            </span>
-            <input type="text" id="rechercheInput" placeholder="Rechercher un projet...">
+        <div class="tabs-wrap">
+            <nav class="tabs">
+                <button class="tab active" data-view="installations">Installations</button>
+                <button class="tab" data-view="usage">Usage</button>
+                <button class="tab" data-view="appareils">Appareils</button>
+                <button class="tab" data-view="pays">Pays</button>
+            </nav>
+        </div>
+
+        <div class="container">
+            <!-- INSTALLATIONS -->
+            <section class="view active" id="view-installations">
+                <div class="overview-heading">
+                    <div>
+                        <div class="overview-title">Vue d'ensemble</div>
+                        <div class="overview-description">Suivez les installations de votre site web.</div>
+                    </div>
+                    <div class="live-indicator"><span class="live-dot"></span>Statistiques</div>
+                </div>
+                <div class="card hero">
+                    <div class="eyebrow">Installations totales</div>
+                    <div class="hero-number">
+                        <span id="numInstalls">0</span><span class="u">installations</span>
+                    </div>
+                    <div class="hero-sub">
+                        <span class="pill" id="heroToday">+0</span>
+                        <span id="heroTodayLabel">par rapport à hier</span>
+                    </div>
+                    <svg class="hero-spark" viewBox="0 0 200 60" preserveAspectRatio="none" aria-hidden="true">
+                        <path d="M0 55 C30 50 40 40 60 42 S100 25 120 28 S160 10 200 4" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round"/>
+                    </svg>
+                </div>
+                <div class="card">
+                    <div class="card-heading">
+                        <span class="eyebrow">Évolution des installations</span>
+                        <span class="heading-note">7 jours</span>
+                    </div>
+                    <div class="evo-chart" id="evoChart"></div>
+                    <div class="diagram-caption" id="installInsight">—</div>
+                </div>
+            </section>
+
+            <!-- USAGE -->
+            <section class="view" id="view-usage">
+                <div class="formule-mention" id="mentionUsage" style="display:none;">
+                    Disponible uniquement avec la formule <span class="mention-badge badge-pro">PRO</span>
+                </div>
+                <div class="card">
+                    <div class="eyebrow">Nombre d'ouvertures</div>
+                    <div class="usage-compare">
+                        <div class="compare-figures">
+                            <div class="cf-figure cf-app">
+                                <div class="cf-label"><i></i>écran d'accueil</div>
+                                <div class="cf-value" id="valOpenApp">0</div>
+                            </div>
+                            <div class="cf-figure cf-web">
+                                <div class="cf-label">Navigateur<i></i></div>
+                                <div class="cf-value" id="valOpenWeb">0</div>
+                            </div>
+                        </div>
+                        <div class="compare-split">
+                            <div class="cs-seg cs-app" id="segOpenApp"></div>
+                            <div class="cs-seg cs-web" id="segOpenWeb"></div>
+                        </div>
+                    </div>
+                    <div class="diagram-caption" id="explainOpen">—</div>
+                </div>
+                <div class="card">
+                    <div class="eyebrow">Durée moyenne d'une session</div>
+                    <div class="usage-compare">
+                        <div class="compare-figures">
+                            <div class="cf-figure cf-app">
+                                <div class="cf-label"><i></i>écran d'accueil</div>
+                                <div class="cf-value" id="valTimeApp">0</div>
+                            </div>
+                            <div class="cf-figure cf-web">
+                                <div class="cf-label">Navigateur<i></i></div>
+                                <div class="cf-value" id="valTimeWeb">0</div>
+                            </div>
+                        </div>
+                        <div class="compare-split">
+                            <div class="cs-seg cs-app" id="segTimeApp"></div>
+                            <div class="cs-seg cs-web" id="segTimeWeb"></div>
+                        </div>
+                    </div>
+                    <div class="diagram-caption" id="explainTime">—</div>
+                </div>
+                <div class="card">
+                    <div class="eyebrow">Fréquence d'utilisation</div>
+                    <div class="freq-display">
+                        <span class="freq-num" id="freqNumber">0</span>
+                        <span class="freq-unit">fois / jour</span>
+                    </div>
+                    <div class="diagram-caption" id="explainFreq">—</div>
+                </div>
+            </section>
+
+            <!-- APPAREILS -->
+            <section class="view" id="view-appareils">
+                <div class="formule-mention" id="mentionAppareils" style="display:none;">
+                    Disponible uniquement avec la formule <span class="mention-badge badge-proplus">PRO+</span>
+                </div>
+                <div class="card">
+                    <div class="eyebrow">Répartition par système</div>
+                    <div class="donut-big">
+                        <svg viewBox="0 0 140 140">
+                            <circle cx="70" cy="70" r="56" fill="none" stroke="#f1f5f9" stroke-width="16"/>
+                            <circle class="donut-segment big-seg" data-k="a" cx="70" cy="70" r="56" stroke="#10b981" stroke-dasharray="0 400"/>
+                            <circle class="donut-segment big-seg" data-k="i" cx="70" cy="70" r="56" stroke="#6366f1" stroke-dasharray="0 400"/>
+                            <circle class="donut-segment big-seg" data-k="p" cx="70" cy="70" r="56" stroke="#3b82f6" stroke-dasharray="0 400"/>
+                        </svg>
+                        <div class="donut-center">
+                            <div class="big" id="donutTotal">0</div>
+                            <div class="eyebrow" style="margin-top:4px">appareils</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="rows" id="deviceRows"></div>
+                    <div class="diagram-caption" id="explainDevices">—</div>
+                </div>
+            </section>
+
+            <!-- PAYS -->
+            <section class="view" id="view-pays">
+                <div class="pays-heading">
+                    <div class="pays-title">Répartition géographique</div>
+                    <div class="pays-description" id="mentionPays" style="display:none;">
+                        Disponible uniquement avec la formule <span class="mention-badge badge-proplus">PRO+</span>
+                    </div>
+                </div>
+                <div class="map-viewport">
+                    <div class="map-spinner" id="mapSpinner"></div>
+                    <div class="map-rotator" id="mapRotator">
+                        <svg id="worldMap" viewBox="0 0 600 300" preserveAspectRatio="xMidYMid meet" aria-label="Carte du monde des utilisateurs"></svg>
+                    </div>
+                </div>
+            </section>
         </div>
     </div>
 
-    <!-- CONTENEUR (liste ou vide ou chargement) -->
-    <div id="projetsConteneur"></div>
+    <!-- MODAL SORTIE (Projets en attente) -->
+    <div class="modal-overlay" id="modalSortie" aria-hidden="true">
+        <div class="modal-card" role="dialog">
+            <button type="button" class="modal-close" id="modalClose">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/></svg>
+            </button>
+            <h2 class="modal-title">Votre projet n'est pas encore en ligne</h2>
+            <p class="modal-text">Les chiffres affichés sont une démonstration. Finalisez votre projet et vos vraies statistiques commenceront à se remplir.</p>
+            <div class="modal-actions">
+                <button type="button" class="modal-btn modal-btn-primary" id="modalFinaliser">Finaliser mon projet</button>
+                <button type="button" class="modal-btn modal-btn-secondary" id="modalPlusTard">Plus tard</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL SUSPENDU (Projets suspendus) -->
+    <div class="modal-overlay" id="modalSuspendu" aria-hidden="true">
+        <div class="modal-card" role="dialog">
+            <button type="button" class="modal-close" id="modalSuspenduClose">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/></svg>
+            </button>
+            <h2 class="modal-title">Projet suspendu</h2>
+            <p class="modal-text">L'accès à ce projet est momentanément bloqué. Effectuez le paiement pour le réactiver immédiatement.</p>
+            <div class="modal-actions">
+                <button type="button" class="modal-btn modal-btn-primary" id="modalDebloquer" style="background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); box-shadow: 0 12px 24px -10px rgba(239,68,68,.7);">Débloquer maintenant</button>
+                <button type="button" class="modal-btn modal-btn-secondary" id="modalSuspenduPlusTard">Plus tard</button>
+            </div>
+        </div>
+    </div>
 
 </div>
 
 <style>
-.screen { display: none; }
-.screen.active { display: block; }
+.projets-module-root { width: 100%; position: relative; }
+.sub-screen { display: none; }
+.sub-screen.active { display: block; }
 
-#projets {
-    max-width: 640px;
-    width: 100%;
-    margin: 0 auto;
-    padding: 0 0 24px;
-}
-
-/* ═══ ACCUEIL ═══ */
-.accueil {
-    padding: 22px 16px 18px;
-    display: flex;
-    flex-direction: column;
-    gap: 18px;
-}
+/* ─── ACCUEIL & LISTE ─── */
+.accueil { padding: 22px 16px 18px; display: flex; flex-direction: column; gap: 18px; }
 .accueil-top { display: flex; align-items: center; gap: 14px; }
-
 .accueil-avatar {
-    flex-shrink: 0;
-    width: 52px; height: 52px;
-    border-radius: 50%;
+    flex-shrink: 0; width: 52px; height: 52px; border-radius: 50%;
     background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-    color: #ffffff;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 1.05rem; font-weight: 800;
-    letter-spacing: 0.02em;
-    box-shadow: 0 4px 12px -4px rgba(16,185,129,.55);
-    overflow: hidden;
-    text-transform: uppercase;
-    user-select: none;
+    color: #ffffff; display: flex; align-items: center; justify-content: center;
+    font-size: 1.05rem; font-weight: 800; letter-spacing: 0.02em;
+    box-shadow: 0 4px 12px -4px rgba(16,185,129,.55); text-transform: uppercase; user-select: none;
 }
-.accueil-avatar.has-image { background: #f1f5f9; box-shadow: 0 2px 8px -2px rgba(15,23,42,.15); }
-.accueil-avatar img { width: 100%; height: 100%; object-fit: cover; display: block; }
-
 .accueil-texts { flex: 1; min-width: 0; }
-.accueil-salut {
-    font-size: 0.82rem;
-    color: #64748b;
-    font-weight: 500;
-    margin-bottom: 3px;
+.accueil-salut { font-size: 0.82rem; color: #64748b; font-weight: 500; margin-bottom: 3px; }
+.accueil-nom { font-size: 1.1rem; font-weight: 800; color: #0b1220; letter-spacing: -0.02em; line-height: 1.25; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+.header {
+    background: #ffffff; padding: 16px; border-bottom: 1px solid #e5e5ea;
+    display: flex; justify-content: space-between; align-items: center;
 }
-.accueil-nom {
-    font-size: 1.1rem; font-weight: 800;
-    color: #0b1220; letter-spacing: -0.02em;
-    line-height: 1.25;
-    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-}
+.header-title { font-size: 1.4rem; font-weight: 700; color: #000; }
+.header-icon-btn { background: none; border: none; cursor: pointer; padding: 8px; }
+.header-icon-btn svg { width: 24px; height: 24px; stroke: #000; fill: none; stroke-width: 2; }
 
 .btn-creer-projet {
-    display: flex; align-items: center; justify-content: center;
-    gap: 10px;
+    display: flex; align-items: center; justify-content: center; gap: 10px;
     width: 100%; padding: 15px 18px;
     background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-    color: #ffffff;
-    border: none; border-radius: 14px;
-    font-family: inherit; font-size: 0.95rem; font-weight: 700;
-    letter-spacing: 0.005em; cursor: pointer;
-    box-shadow: 0 12px 24px -10px rgba(16,185,129,.5), inset 0 1px 0 rgba(255,255,255,.18);
-    transition: transform .18s ease, box-shadow .18s ease, filter .18s ease;
-}
-.btn-creer-projet:hover {
-    transform: translateY(-1px); filter: brightness(1.03);
-    box-shadow: 0 16px 30px -10px rgba(16,185,129,.55), inset 0 1px 0 rgba(255,255,255,.22);
+    color: #ffffff; border: none; border-radius: 14px;
+    font-family: inherit; font-size: 0.95rem; font-weight: 700; cursor: pointer;
+    box-shadow: 0 12px 24px -10px rgba(16,185,129,.5);
 }
 .btn-creer-projet:active { transform: scale(.98); }
-.btn-creer-projet svg {
-    width: 20px; height: 20px;
-    stroke: currentColor; fill: none;
-    stroke-width: 2.6; stroke-linecap: round; stroke-linejoin: round;
-}
+.btn-creer-projet svg { width: 20px; height: 20px; stroke: currentColor; fill: none; stroke-width: 2.6; stroke-linecap: round; }
 
-/* ═══ SECTION ═══ */
-.section-bar {
-    padding: 0 16px 12px;
-    display: flex; align-items: center; gap: 10px;
-}
-.section-titre {
-    font-size: 0.72rem; font-weight: 800;
-    color: #64748b;
-    letter-spacing: 0.1em; text-transform: uppercase;
-    white-space: nowrap;
-}
-.section-compteur {
-    display: inline-flex; align-items: center; justify-content: center;
-    min-width: 22px; height: 20px; padding: 0 7px;
-    background: #f1f5f9; color: #64748b;
-    font-size: 0.7rem; font-weight: 800; border-radius: 6px;
-}
+.section-bar { padding: 0 16px 12px; display: flex; align-items: center; gap: 10px; }
+.section-titre { font-size: 0.72rem; font-weight: 800; color: #64748b; letter-spacing: 0.1em; text-transform: uppercase; }
+.section-compteur { display: inline-flex; align-items: center; justify-content: center; min-width: 22px; height: 20px; padding: 0 7px; background: #f1f5f9; color: #64748b; font-size: 0.7rem; font-weight: 800; border-radius: 6px; }
 
-/* ═══ RECHERCHE ═══ */
 .recherche { padding: 0 16px 14px; }
 .recherche-wrap { position: relative; width: 100%; height: 44px; }
-.recherche-icone {
-    position: absolute;
-    left: 14px; top: 0; bottom: 0;
-    display: flex; align-items: center; justify-content: center;
-    width: 18px; height: 18px; margin: auto 0;
-    color: #94a3b8; pointer-events: none; z-index: 2;
-}
-.recherche-icone svg {
-    width: 100%; height: 100%;
-    stroke: currentColor; fill: none;
-    stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round;
-}
-.recherche input {
-    position: relative;
-    width: 100%; height: 44px;
-    padding: 0 14px 0 40px;
-    border: 1px solid #e2e8f0; border-radius: 11px;
-    background: #f8fafc;
-    font-family: inherit; font-size: 0.9rem; color: #0b1220;
-    outline: none;
-    transition: border-color .15s ease, background-color .15s ease;
-}
+.recherche-icone { position: absolute; left: 14px; top: 0; bottom: 0; display: flex; align-items: center; justify-content: center; width: 18px; height: 18px; margin: auto 0; color: #94a3b8; }
+.recherche-icone svg { width: 100%; height: 100%; stroke: currentColor; fill: none; stroke-width: 2.2; }
+.recherche input { width: 100%; height: 44px; padding: 0 14px 0 40px; border: 1px solid #e2e8f0; border-radius: 11px; background: #f8fafc; font-family: inherit; font-size: 0.9rem; color: #0b1220; outline: none; }
 .recherche input:focus { border-color: #10b981; background: #ffffff; }
-.recherche input::placeholder { color: #94a3b8; }
 
-/* ═══ LISTE PROJETS ═══ */
-.projets-list {
-    display: flex; flex-direction: column;
-    width: 100%; padding-bottom: 16px;
-}
+.projets-list { display: flex; flex-direction: column; width: 100%; padding-bottom: 16px; }
 .projet-item {
-    display: flex; align-items: center; gap: 14px;
-    width: 100%; padding: 12px 16px;
-    background: #ffffff; border: none;
-    border-bottom: 1px solid #f1f5f9;
-    font-family: inherit; text-align: left; color: #0b1220;
-    cursor: pointer;
-    transition: background-color .15s ease;
-    -webkit-appearance: none; appearance: none; outline: none;
+    display: flex; align-items: center; gap: 14px; width: 100%; padding: 12px 16px;
+    background: #ffffff; border: none; border-bottom: 1px solid #f1f5f9;
+    font-family: inherit; text-align: left; color: #0b1220; cursor: pointer; outline: none;
 }
-.projet-item:last-child { border-bottom: none; }
 .projet-item:hover { background-color: #f8fafc; }
-.projet-item:active { background-color: #f1f5f9; }
-
-.projet-avatar {
-    flex-shrink: 0;
-    width: 52px; height: 52px;
-    border-radius: 14px; overflow: hidden;
-    background: #f1f5f9;
-    display: flex; align-items: center; justify-content: center;
-}
+.projet-avatar { flex-shrink: 0; width: 52px; height: 52px; border-radius: 14px; overflow: hidden; background: #f1f5f9; display: flex; align-items: center; justify-content: center; }
 .projet-avatar img { width: 100%; height: 100%; object-fit: cover; display: block; }
 .projet-body { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 3px; }
-.projet-top {
-    display: flex; align-items: center; justify-content: space-between;
-    gap: 8px; min-width: 0;
-}
-.projet-nom {
-    font-size: 0.98rem; font-weight: 700; color: #0b1220;
-    letter-spacing: -0.008em; line-height: 1.25;
-    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-    min-width: 0;
-}
-.formule-badge {
-    flex-shrink: 0;
-    display: inline-flex; align-items: center; justify-content: center;
-    padding: 2px 7px;
-    font-size: 0.58rem; font-weight: 900;
-    letter-spacing: 0.06em; border-radius: 5px;
-    line-height: 1.4; white-space: nowrap;
-}
+.projet-top { display: flex; align-items: center; justify-content: space-between; gap: 8px; min-width: 0; }
+.projet-nom { font-size: 0.98rem; font-weight: 700; color: #0b1220; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+.formule-badge { flex-shrink: 0; display: inline-flex; align-items: center; justify-content: center; padding: 2px 7px; font-size: 0.58rem; font-weight: 900; letter-spacing: 0.06em; border-radius: 5px; }
 .formule-badge.decouverte { background: #f1f5f9; color: #64748b; border: 1px solid #e2e8f0; }
-.formule-badge.pro {
-    background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
-    color: #92400e; border: 1px solid #fcd34d;
-}
+.formule-badge.pro { background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); color: #92400e; border: 1px solid #fcd34d; }
 .formule-badge.proplus { background: #ecfdf5; color: #047857; border: 1px solid #a7f3d0; }
 
 .projet-bottom { display: flex; align-items: center; gap: 10px; min-width: 0; }
-.projet-statut {
-    display: inline-flex; align-items: center; gap: 5px;
-    font-size: 0.78rem; font-weight: 600; white-space: nowrap;
-}
+.projet-statut { display: inline-flex; align-items: center; gap: 5px; font-size: 0.78rem; font-weight: 600; white-space: nowrap; }
 .projet-statut .dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
-.projet-statut.en-attente { color: #b45309; }
-.projet-statut.en-attente .dot { background: #f59e0b; }
-.projet-statut.actif { color: #047857; }
-.projet-statut.actif .dot { background: #10b981; box-shadow: 0 0 0 3px rgba(16,185,129,.18); }
-.projet-statut.expire { color: #64748b; }
-.projet-statut.expire .dot { background: #94a3b8; }
-
+.projet-statut.en-attente { color: #b45309; } .projet-statut.en-attente .dot { background: #f59e0b; }
+.projet-statut.actif { color: #047857; } .projet-statut.actif .dot { background: #10b981; box-shadow: 0 0 0 3px rgba(16,185,129,.18); }
+.projet-statut.suspendu { color: #b91c1c; } .projet-statut.suspendu .dot { background: #ef4444; box-shadow: 0 0 0 3px rgba(239,68,68,.15); }
 .projet-sep { width: 3px; height: 3px; border-radius: 50%; background: #cbd5e1; flex-shrink: 0; }
-.projet-date {
-    font-size: 0.78rem; font-weight: 500; color: #94a3b8;
-    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-}
+.projet-date { font-size: 0.78rem; font-weight: 500; color: #94a3b8; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
-/* ═══ ÉTAT VIDE ═══ */
-.empty-state {
-    padding: 40px 24px 60px;
-    display: flex; flex-direction: column;
-    align-items: center; justify-content: center;
-    text-align: center; max-width: 400px; margin: 0 auto;
-}
-.empty-illustration {
-    width: 120px; height: 120px; border-radius: 50%;
-    background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%);
-    display: flex; align-items: center; justify-content: center;
-    margin-bottom: 24px; position: relative;
-    box-shadow: 0 20px 40px -20px rgba(16,185,129,.35), inset 0 0 0 1px rgba(16,185,129,.12);
-}
-.empty-illustration::before,
-.empty-illustration::after {
-    content: ""; position: absolute; border-radius: 50%;
-    background: #10b981; opacity: .15;
-}
-.empty-illustration::before { width: 16px; height: 16px; top: 8px; right: 10px; }
-.empty-illustration::after { width: 10px; height: 10px; bottom: 12px; left: 14px; opacity: .25; }
-.empty-illustration svg {
-    width: 52px; height: 52px;
-    stroke: #10b981; fill: none;
-    stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round;
-    position: relative; z-index: 2;
-}
-.empty-title {
-    font-size: 1.25rem; font-weight: 800; color: #0b1220;
-    letter-spacing: -0.025em; line-height: 1.3; margin-bottom: 8px;
-}
-.empty-subtitle {
-    font-size: 0.9rem; font-weight: 500; color: #64748b;
-    line-height: 1.6; margin-bottom: 26px; max-width: 300px;
-}
-.empty-hint {
-    display: inline-flex; align-items: center; gap: 6px;
-    font-size: 0.78rem; font-weight: 600; color: #94a3b8;
-    padding: 8px 14px; background: #f8fafc;
-    border-radius: 20px; border: 1px solid #f1f5f9;
-}
-.empty-hint svg {
-    width: 14px; height: 14px; stroke: currentColor; fill: none;
-    stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round;
-}
+/* ─── ÉCRAN STATISTIQUES ─── */
+#screen-stats-projets { background: #ffffff; min-height: 100%; padding-bottom: 40px; }
+.top-bar { position: sticky; top: 0; z-index: 30; background: rgba(255,255,255,.91); backdrop-filter: blur(16px); padding: 12px 16px 10px; border-bottom: 1px solid #e5e5ea; }
+.top-row { display: flex; align-items: center; gap: 12px; max-width: 620px; margin: 0 auto; }
+.top-back { width: 40px; height: 40px; border: none; background: transparent; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; color: #0b1220; }
+.top-back svg { width: 24px; height: 24px; stroke: currentColor; fill: none; stroke-width: 2.2; }
+.top-title-wrap { flex: 1; min-width: 0; border-left: 2px solid #10b981; padding-left: 14px; }
+.top-title { font-size: 1.15rem; font-weight: 800; color: #0b1220; margin: 0 0 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.top-sub { font-size: 0.78rem; color: #64748b; margin: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.top-formule-badge { flex-shrink: 0; padding: 3px 8px; font-size: 0.58rem; font-weight: 900; letter-spacing: 0.06em; border-radius: 5px; }
+.top-formule-badge.decouverte { background: #f1f5f9; color: #64748b; border: 1px solid #e2e8f0; }
+.top-formule-badge.pro { background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); color: #92400e; border: 1px solid #fcd34d; }
+.top-formule-badge.proplus { background: #ecfdf5; color: #047857; border: 1px solid #a7f3d0; }
 
-/* ═══ CHARGEMENT ═══ */
-.loading-bloc {
-    display: flex; flex-direction: column; align-items: center; justify-content: center;
+.tabs-wrflex; flex-direction: column; align-items: center; justify-content: center;
     padding: 60px 20px; gap: 16px;
 }
 .loading-spinner {
