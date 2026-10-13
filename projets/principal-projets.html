@@ -6,17 +6,6 @@
 
     <!-- ÉCRAN 1 : LISTE DES PROJETS -->
     <div id="screen-list-projets" class="sub-screen active">
-        <div class="header">
-            <div class="header-left">
-                <div class="header-title">SiteLeap</div>
-            </div>
-            <div class="header-icons">
-                <button class="header-icon-btn" aria-label="Menu">
-                    <svg viewBox="0 0 24 24"><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
-                </button>
-            </div>
-        </div>
-
         <main class="main-content">
             <div class="accueil">
                 <div class="accueil-top">
@@ -27,8 +16,11 @@
                     </div>
                 </div>
                 <button type="button" class="btn-creer-projet" id="btnCreerProjet">
-                    <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
-                    <span id="btnCreerProjetLabel">Créer un projet</span>
+                    <svg viewBox="0 0 24 24">
+                        <line x1="12" y1="5" x2="12" y2="19"></line>
+                        <line x1="5" y1="12" x2="19" y2="12"></line>
+                    </svg>
+                    Créer un nouveau projet
                 </button>
             </div>
 
@@ -37,10 +29,13 @@
                 <span class="section-compteur" id="sectionCompteur">0</span>
             </div>
 
-            <div class="recherche" id="rechercheWrap" style="display:none;">
+            <div class="recherche">
                 <div class="recherche-wrap">
                     <span class="recherche-icone">
-                        <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                        <svg viewBox="0 0 24 24">
+                            <circle cx="11" cy="11" r="8"></circle>
+                            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                        </svg>
                     </span>
                     <input type="text" id="rechercheInput" placeholder="Rechercher un projet...">
                 </div>
@@ -51,7 +46,8 @@
     </div>
 
     <!-- ÉCRAN 2 : STATISTIQUES D'UN PROJET -->
-    <div id="screen-stats-projets" class="sub-screen" style="display:none;">
+    <div id="screen-stats-projets" class="sub-screen">
+
         <div class="top-bar">
             <div class="top-row">
                 <button type="button" class="top-back" id="btnBackStats" aria-label="Retour">
@@ -109,7 +105,7 @@
 
             <!-- USAGE -->
             <section class="view" id="view-usage">
-                <div class="formule-mention" id="mentionUsage" style="display:none;">
+                <div class="formule-mention">
                     Disponible uniquement avec la formule <span class="mention-badge badge-pro">PRO</span>
                 </div>
                 <div class="card">
@@ -164,7 +160,7 @@
 
             <!-- APPAREILS -->
             <section class="view" id="view-appareils">
-                <div class="formule-mention" id="mentionAppareils" style="display:none;">
+                <div class="formule-mention">
                     Disponible uniquement avec la formule <span class="mention-badge badge-proplus">PRO+</span>
                 </div>
                 <div class="card">
@@ -187,32 +183,35 @@
                     <div class="diagram-caption" id="explainDevices">—</div>
                 </div>
             </section>
-
-            <!-- PAYS -->
-            <section class="view" id="view-pays">
-                <div class="pays-heading">
-                    <div class="pays-title">Répartition géographique</div>
-                    <div class="pays-description" id="mentionPays" style="display:none;">
-                        Disponible uniquement avec la formule <span class="mention-badge badge-proplus">PRO+</span>
-                    </div>
-                </div>
-                <div class="map-viewport">
-                    <div class="map-spinner" id="mapSpinner"></div>
-                    <div class="map-rotator" id="mapRotator">
-                        <svg id="worldMap" viewBox="0 0 600 300" preserveAspectRatio="xMidYMid meet" aria-label="Carte du monde des utilisateurs"></svg>
-                    </div>
-                </div>
-            </section>
         </div>
+
+        <!-- PAYS -->
+        <section class="view" id="view-pays">
+            <div class="pays-heading">
+                <div class="pays-title">Répartition géographique</div>
+                <div class="pays-description">
+                    Disponible uniquement avec la formule <span class="mention-badge badge-proplus">PRO+</span>
+                </div>
+            </div>
+            <div class="map-viewport">
+                <div class="map-spinner" id="mapSpinner"></div>
+                <div class="map-rotator" id="mapRotator">
+                    <svg id="worldMap" viewBox="0 0 600 300" preserveAspectRatio="xMidYMid meet" aria-label="Carte du monde des utilisateurs"></svg>
+                </div>
+            </div>
+        </section>
     </div>
 
-    <!-- MODAL SORTIE (Projets en attente) -->
+    <!-- MODAL SORTIE (projets EN ATTENTE) -->
     <div class="modal-overlay" id="modalSortie" aria-hidden="true">
-        <div class="modal-card" role="dialog">
-            <button type="button" class="modal-close" id="modalClose">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/></svg>
+        <div class="modal-card" role="dialog" aria-labelledby="modalTitle">
+            <button type="button" class="modal-close" id="modalClose" aria-label="Fermer">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="6" y1="6" x2="18" y2="18"/>
+                    <line x1="18" y1="6" x2="6" y2="18"/>
+                </svg>
             </button>
-            <h2 class="modal-title">Votre projet n'est pas encore en ligne</h2>
+            <h2 class="modal-title" id="modalTitle">Votre projet n'est pas encore en ligne</h2>
             <p class="modal-text">Les chiffres affichés sont une démonstration. Finalisez votre projet et vos vraies statistiques commenceront à se remplir.</p>
             <div class="modal-actions">
                 <button type="button" class="modal-btn modal-btn-primary" id="modalFinaliser">Finaliser mon projet</button>
@@ -221,16 +220,19 @@
         </div>
     </div>
 
-    <!-- MODAL SUSPENDU (Projets suspendus) -->
+    <!-- MODAL SUSPENDU (projets SUSPENDUS) -->
     <div class="modal-overlay" id="modalSuspendu" aria-hidden="true">
-        <div class="modal-card" role="dialog">
-            <button type="button" class="modal-close" id="modalSuspenduClose">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/></svg>
+        <div class="modal-card" role="dialog" aria-labelledby="modalSuspenduTitle">
+            <button type="button" class="modal-close" id="modalSuspenduClose" aria-label="Fermer">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="6" y1="6" x2="18" y2="18"/>
+                    <line x1="18" y1="6" x2="6" y2="18"/>
+                </svg>
             </button>
-            <h2 class="modal-title">Projet suspendu</h2>
+            <h2 class="modal-title" id="modalSuspenduTitle">Projet suspendu</h2>
             <p class="modal-text">L'accès à ce projet est momentanément bloqué. Effectuez le paiement pour le réactiver immédiatement.</p>
             <div class="modal-actions">
-                <button type="button" class="modal-btn modal-btn-primary" id="modalDebloquer" style="background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); box-shadow: 0 12px 24px -10px rgba(239,68,68,.7);">Débloquer maintenant</button>
+                <button type="button" class="modal-btn modal-btn-primary" id="modalDebloquer" style="background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); box-shadow: 0 12px 24px -10px rgba(239,68,68,.7), inset 0 1px 0 rgba(255,255,255,.18);">Débloquer maintenant</button>
                 <button type="button" class="modal-btn modal-btn-secondary" id="modalSuspenduPlusTard">Plus tard</button>
             </div>
         </div>
@@ -239,11 +241,34 @@
 </div>
 
 <style>
-.projets-module-root { width: 100%; position: relative; }
+.projets-module-root, .projets-module-root *, .projets-module-root *::before, .projets-module-root *::after {
+    margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent;
+}
+
+.projets-module-root {
+    --green: #10b981; --green-dark: #059669; --green-deep: #047857;
+    --green-soft: #ecfdf5; --green-glow: rgba(16,185,129,.28);
+    --ink: #0b1220; --ink-soft: #1e293b;
+    --muted: #64748b; --muted-2: #94a3b8;
+    --line: #e2e8f0; --line-soft: #f1f5f9;
+    --bg: #ffffff;
+    --card: #fff;
+    --purple: #8b5cf6; --purple-soft: #f5f3ff; --purple-deep: #5b21b6;
+    --blue: #3b82f6; --blue-deep: #1d4ed8;
+    --radius: 22px;
+    width: 100%; position: relative;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Helvetica, Arial, sans-serif;
+    color: var(--ink);
+    -webkit-font-smoothing: antialiased;
+}
+.projets-module-root button { font-family: inherit; }
+
 .sub-screen { display: none; }
 .sub-screen.active { display: block; }
 
-/* ─── ACCUEIL & LISTE ─── */
+/* ═══════ ÉCRAN 1 — LISTE ═══════ */
+.main-content { width: 100%; }
+
 .accueil { padding: 22px 16px 18px; display: flex; flex-direction: column; gap: 18px; }
 .accueil-top { display: flex; align-items: center; gap: 14px; }
 .accueil-avatar {
@@ -251,255 +276,745 @@
     background: linear-gradient(135deg, #10b981 0%, #059669 100%);
     color: #ffffff; display: flex; align-items: center; justify-content: center;
     font-size: 1.05rem; font-weight: 800; letter-spacing: 0.02em;
-    box-shadow: 0 4px 12px -4px rgba(16,185,129,.55); text-transform: uppercase; user-select: none;
+    box-shadow: 0 4px 12px -4px rgba(16,185,129,.55);
+    overflow: hidden; text-transform: uppercase; user-select: none;
 }
+.accueil-avatar img { width: 100%; height: 100%; object-fit: cover; display: block; }
 .accueil-texts { flex: 1; min-width: 0; }
-.accueil-salut { font-size: 0.82rem; color: #64748b; font-weight: 500; margin-bottom: 3px; }
-.accueil-nom { font-size: 1.1rem; font-weight: 800; color: #0b1220; letter-spacing: -0.02em; line-height: 1.25; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-
-.header {
-    background: #ffffff; padding: 16px; border-bottom: 1px solid #e5e5ea;
-    display: flex; justify-content: space-between; align-items: center;
+.accueil-salut { font-size: 0.82rem; color: var(--muted); font-weight: 500; margin-bottom: 3px; }
+.accueil-nom {
+    font-size: 1.1rem; font-weight: 800; color: var(--ink);
+    letter-spacing: -0.02em; line-height: 1.25;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
-.header-title { font-size: 1.4rem; font-weight: 700; color: #000; }
-.header-icon-btn { background: none; border: none; cursor: pointer; padding: 8px; }
-.header-icon-btn svg { width: 24px; height: 24px; stroke: #000; fill: none; stroke-width: 2; }
 
 .btn-creer-projet {
-    display: flex; align-items: center; justify-content: center; gap: 10px;
-    width: 100%; padding: 15px 18px;
+    display: flex; align-items: center; justify-content: center;
+    gap: 10px; width: 100%; padding: 15px 18px;
     background: linear-gradient(135deg, #10b981 0%, #059669 100%);
     color: #ffffff; border: none; border-radius: 14px;
-    font-family: inherit; font-size: 0.95rem; font-weight: 700; cursor: pointer;
-    box-shadow: 0 12px 24px -10px rgba(16,185,129,.5);
+    font-family: inherit; font-size: 0.95rem; font-weight: 700;
+    cursor: pointer;
+    box-shadow: 0 12px 24px -10px var(--green-glow), inset 0 1px 0 rgba(255,255,255,.18);
+    transition: transform .18s ease, box-shadow .18s ease, filter .18s ease;
 }
 .btn-creer-projet:active { transform: scale(.98); }
-.btn-creer-projet svg { width: 20px; height: 20px; stroke: currentColor; fill: none; stroke-width: 2.6; stroke-linecap: round; }
+.btn-creer-projet svg {
+    width: 20px; height: 20px; stroke: currentColor; fill: none;
+    stroke-width: 2.6; stroke-linecap: round; stroke-linejoin: round;
+}
 
 .section-bar { padding: 0 16px 12px; display: flex; align-items: center; gap: 10px; }
-.section-titre { font-size: 0.72rem; font-weight: 800; color: #64748b; letter-spacing: 0.1em; text-transform: uppercase; }
-.section-compteur { display: inline-flex; align-items: center; justify-content: center; min-width: 22px; height: 20px; padding: 0 7px; background: #f1f5f9; color: #64748b; font-size: 0.7rem; font-weight: 800; border-radius: 6px; }
+.section-titre {
+    font-size: 0.72rem; font-weight: 800; color: var(--muted);
+    letter-spacing: 0.1em; text-transform: uppercase; white-space: nowrap;
+}
+.section-compteur {
+    display: inline-flex; align-items: center; justify-content: center;
+    min-width: 22px; height: 20px; padding: 0 7px;
+    background: #f1f5f9; color: var(--muted);
+    font-size: 0.7rem; font-weight: 800; border-radius: 6px;
+}
 
 .recherche { padding: 0 16px 14px; }
 .recherche-wrap { position: relative; width: 100%; height: 44px; }
-.recherche-icone { position: absolute; left: 14px; top: 0; bottom: 0; display: flex; align-items: center; justify-content: center; width: 18px; height: 18px; margin: auto 0; color: #94a3b8; }
-.recherche-icone svg { width: 100%; height: 100%; stroke: currentColor; fill: none; stroke-width: 2.2; }
-.recherche input { width: 100%; height: 44px; padding: 0 14px 0 40px; border: 1px solid #e2e8f0; border-radius: 11px; background: #f8fafc; font-family: inherit; font-size: 0.9rem; color: #0b1220; outline: none; }
-.recherche input:focus { border-color: #10b981; background: #ffffff; }
+.recherche-icone {
+    position: absolute; left: 14px; top: 0; bottom: 0;
+    display: flex; align-items: center; justify-content: center;
+    width: 18px; height: 18px; margin: auto 0;
+    color: var(--muted-2); pointer-events: none; z-index: 2;
+}
+.recherche-icone svg {
+    width: 100%; height: 100%; stroke: currentColor; fill: none;
+    stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round;
+}
+.recherche input {
+    position: relative; width: 100%; height: 44px;
+    padding: 0 14px 0 40px;
+    border: 1px solid #e2e8f0; border-radius: 11px;
+    background: #f8fafc;
+    font-family: inherit; font-size: 0.9rem; color: var(--ink);
+    outline: none;
+}
+.recherche input:focus { border-color: var(--green); background: #ffffff; }
+.recherche input::placeholder { color: var(--muted-2); }
 
 .projets-list { display: flex; flex-direction: column; width: 100%; padding-bottom: 16px; }
 .projet-item {
-    display: flex; align-items: center; gap: 14px; width: 100%; padding: 12px 16px;
-    background: #ffffff; border: none; border-bottom: 1px solid #f1f5f9;
-    font-family: inherit; text-align: left; color: #0b1220; cursor: pointer; outline: none;
+    display: flex; align-items: center; gap: 14px;
+    width: 100%; padding: 12px 16px;
+    background: #ffffff; border: none;
+    border-bottom: 1px solid #f1f5f9;
+    font-family: inherit; text-align: left; color: var(--ink);
+    cursor: pointer; transition: background-color .2s ease;
+    -webkit-appearance: none; appearance: none; outline: none;
 }
+.projet-item:last-child { border-bottom: none; }
 .projet-item:hover { background-color: #f8fafc; }
-.projet-avatar { flex-shrink: 0; width: 52px; height: 52px; border-radius: 14px; overflow: hidden; background: #f1f5f9; display: flex; align-items: center; justify-content: center; }
+.projet-item:active { background-color: #f1f5f9; }
+.projet-item.selected { background-color: #e2e8f0; }
+.projet-item.selected:hover { background-color: #dbe2ea; }
+.projet-item.selected:active { background-color: #cbd5e1; }
+
+.projet-avatar {
+    flex-shrink: 0; width: 52px; height: 52px;
+    border-radius: 14px; overflow: hidden; background: #f1f5f9;
+    display: flex; align-items: center; justify-content: center;
+}
 .projet-avatar img { width: 100%; height: 100%; object-fit: cover; display: block; }
 .projet-body { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 3px; }
-.projet-top { display: flex; align-items: center; justify-content: space-between; gap: 8px; min-width: 0; }
-.projet-nom { font-size: 0.98rem; font-weight: 700; color: #0b1220; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-
-.formule-badge { flex-shrink: 0; display: inline-flex; align-items: center; justify-content: center; padding: 2px 7px; font-size: 0.58rem; font-weight: 900; letter-spacing: 0.06em; border-radius: 5px; }
+.projet-top {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 8px; min-width: 0;
+}
+.projet-nom {
+    font-size: 0.98rem; font-weight: 700; color: var(--ink);
+    letter-spacing: -0.008em; line-height: 1.25;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0;
+}
+.formule-badge {
+    flex-shrink: 0; display: inline-flex; align-items: center; justify-content: center;
+    padding: 2px 7px; font-size: 0.58rem; font-weight: 900;
+    letter-spacing: 0.06em; border-radius: 5px;
+    line-height: 1.4; white-space: nowrap;
+}
 .formule-badge.decouverte { background: #f1f5f9; color: #64748b; border: 1px solid #e2e8f0; }
 .formule-badge.pro { background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); color: #92400e; border: 1px solid #fcd34d; }
-.formule-badge.proplus { background: #ecfdf5; color: #047857; border: 1px solid #a7f3d0; }
+.formule-badge.proplus { background: var(--green-soft); color: var(--green-deep); border: 1px solid #a7f3d0; }
 
 .projet-bottom { display: flex; align-items: center; gap: 10px; min-width: 0; }
-.projet-statut { display: inline-flex; align-items: center; gap: 5px; font-size: 0.78rem; font-weight: 600; white-space: nowrap; }
+.projet-statut {
+    display: inline-flex; align-items: center; gap: 5px;
+    font-size: 0.78rem; font-weight: 600; white-space: nowrap;
+}
 .projet-statut .dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
-.projet-statut.en-attente { color: #b45309; } .projet-statut.en-attente .dot { background: #f59e0b; }
-.projet-statut.actif { color: #047857; } .projet-statut.actif .dot { background: #10b981; box-shadow: 0 0 0 3px rgba(16,185,129,.18); }
-.projet-statut.suspendu { color: #b91c1c; } .projet-statut.suspendu .dot { background: #ef4444; box-shadow: 0 0 0 3px rgba(239,68,68,.15); }
+.projet-statut.en-attente { color: #b45309; }
+.projet-statut.en-attente .dot { background: #f59e0b; }
+.projet-statut.actif { color: #047857; }
+.projet-statut.actif .dot { background: #10b981; box-shadow: 0 0 0 3px rgba(16,185,129,.18); }
+.projet-statut.suspendu { color: #b91c1c; }
+.projet-statut.suspendu .dot { background: #ef4444; box-shadow: 0 0 0 3px rgba(239,68,68,.15); }
 .projet-sep { width: 3px; height: 3px; border-radius: 50%; background: #cbd5e1; flex-shrink: 0; }
-.projet-date { font-size: 0.78rem; font-weight: 500; color: #94a3b8; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.projet-date { font-size: 0.78rem; font-weight: 500; color: var(--muted-2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
-/* ─── ÉCRAN STATISTIQUES ─── */
-#screen-stats-projets { background: #ffffff; min-height: 100%; padding-bottom: 40px; }
-.top-bar { position: sticky; top: 0; z-index: 30; background: rgba(255,255,255,.91); backdrop-filter: blur(16px); padding: 12px 16px 10px; border-bottom: 1px solid #e5e5ea; }
-.top-row { display: flex; align-items: center; gap: 12px; max-width: 620px; margin: 0 auto; }
-.top-back { width: 40px; height: 40px; border: none; background: transparent; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; color: #0b1220; }
-.top-back svg { width: 24px; height: 24px; stroke: currentColor; fill: none; stroke-width: 2.2; }
-.top-title-wrap { flex: 1; min-width: 0; border-left: 2px solid #10b981; padding-left: 14px; }
-.top-title { font-size: 1.15rem; font-weight: 800; color: #0b1220; margin: 0 0 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.top-sub { font-size: 0.78rem; color: #64748b; margin: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.top-formule-badge { flex-shrink: 0; padding: 3px 8px; font-size: 0.58rem; font-weight: 900; letter-spacing: 0.06em; border-radius: 5px; }
+/* États de chargement et vide */
+.loading-bloc { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 60px 20px; gap: 16px; }
+.loading-spinner { width: 40px; height: 40px; border: 3px solid #e5e5ea; border-top-color: #10b981; border-radius: 50%; animation: pjSpin .8s linear infinite; }
+@keyframes pjSpin { to { transform: rotate(360deg); } }
+.loading-text { font-size: 0.9rem; color: var(--muted); font-weight: 500; }
+.empty-state { padding: 40px 24px 60px; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; max-width: 400px; margin: 0 auto; }
+.empty-illustration { width: 120px; height: 120px; border-radius: 50%; background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%); display: flex; align-items: center; justify-content: center; margin-bottom: 24px; box-shadow: 0 20px 40px -20px rgba(16,185,129,.35); }
+.empty-illustration svg { width: 52px; height: 52px; stroke: #10b981; fill: none; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+.empty-title { font-size: 1.25rem; font-weight: 800; color: var(--ink); margin-bottom: 8px; }
+.empty-subtitle { font-size: 0.9rem; color: var(--muted); line-height: 1.6; }
+.aucun-resultat { padding: 40px 20px; text-align: center; color: var(--muted-2); font-size: 0.9rem; }
+
+/* ═══════ ÉCRAN 2 — STATISTIQUES ═══════ */
+#screen-stats-projets {
+    background: var(--bg);
+    min-height: 100%;
+    padding-bottom: 40px;
+}
+
+.top-bar {
+    position: sticky; top: 0; z-index: 30;
+    background: rgba(255,255,255,.91);
+    backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+    padding: 12px 16px 10px;
+}
+.top-row {
+    display: flex; align-items: center; gap: 12px;
+    max-width: 620px; margin: 0 auto;
+}
+.top-back {
+    width: 40px; height: 40px; border: none; background: transparent;
+    border-radius: 50%; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    color: var(--ink); flex-shrink: 0; padding: 0;
+}
+.top-back:active { transform: scale(.95); }
+.top-back svg {
+    width: 24px; height: 24px; stroke: currentColor; fill: none;
+    stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round;
+}
+.top-title-wrap { flex: 1; min-width: 0; border-left: 2px solid var(--green); padding-left: 14px; }
+.top-title {
+    font-size: 1.15rem; font-weight: 800; color: var(--ink);
+    line-height: 1.15; letter-spacing: -0.025em; margin: 0 0 2px;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.top-sub {
+    font-size: 0.78rem; color: var(--muted);
+    line-height: 1.35; margin: 0;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.top-formule-badge {
+    flex-shrink: 0; display: inline-flex; align-items: center; justify-content: center;
+    padding: 3px 8px; font-size: 0.58rem; font-weight: 900;
+    letter-spacing: 0.06em; border-radius: 5px;
+    line-height: 1.4; white-space: nowrap; margin-left: 4px;
+}
 .top-formule-badge.decouverte { background: #f1f5f9; color: #64748b; border: 1px solid #e2e8f0; }
 .top-formule-badge.pro { background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); color: #92400e; border: 1px solid #fcd34d; }
-.top-formule-badge.proplus { background: #ecfdf5; color: #047857; border: 1px solid #a7f3d0; }
+.top-formule-badge.proplus { background: var(--green-soft); color: var(--green-deep); border: 1px solid #a7f3d0; }
 
-.tabs-wrflex; flex-direction: column; align-items: center; justify-content: center;
-    padding: 60px 20px; gap: 16px;
+.tabs-wrap { max-width: 620px; margin: 12px auto 0; padding: 0 16px; }
+.tabs {
+    display: grid; grid-template-columns: repeat(4, minmax(0,1fr));
+    background: #e8edf3; border-radius: 15px; padding: 4px; gap: 3px;
 }
-.loading-spinner {
-    width: 40px; height: 40px;
-    border: 3px solid #e5e5ea;
+.tab {
+    border: none; background: transparent;
+    padding: 10px 3px; border-radius: 11px;
+    font-size: .77rem; font-weight: 750;
+    color: var(--muted); cursor: pointer;
+    transition: background .22s, color .22s, box-shadow .22s;
+}
+.tab.active { background: #fff; color: var(--ink); box-shadow: 0 2px 7px rgba(15,23,42,.075); }
+
+.container { max-width: 620px; margin: 0 auto; padding: 17px 16px; }
+.view { display: none; }
+.view.active { display: block; }
+
+.formule-mention {
+    padding: 6px 2px 14px;
+    font-size: 0.83rem; font-weight: 600;
+    color: var(--muted); line-height: 1.6;
+    text-align: center;
+}
+.formule-mention .mention-badge {
+    display: inline-flex; align-items: center; justify-content: center;
+    padding: 2px 8px; font-size: 0.62rem; font-weight: 900;
+    letter-spacing: 0.06em; border-radius: 5px;
+    line-height: 1.5; white-space: nowrap; vertical-align: middle;
+    margin: 0 2px; transform: translateY(-1px);
+}
+.mention-badge.badge-pro {
+    background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+    color: #92400e; border: 1px solid #fcd34d;
+}
+.mention-badge.badge-proplus {
+    background: var(--green-soft);
+    color: var(--green-deep); border: 1px solid #a7f3d0;
+}
+
+.card {
+    background: var(--card);
+    border: 1px solid #e9eef5;
+    border-radius: var(--radius);
+    box-shadow: 0 1px 3px rgba(15,23,42,.05), 0 6px 18px rgba(15,23,42,.05);
+    padding: 20px;
+}
+.card + .card { margin-top: 13px; }
+.eyebrow {
+    font-size: .65rem; font-weight: 850; color: var(--muted-2);
+    letter-spacing: .12em; text-transform: uppercase;
+}
+.big { font-size: 2.2rem; font-weight: 850; letter-spacing: -.055em; line-height: 1; font-variant-numeric: tabular-nums; }
+.big .u { font-size: .8rem; font-weight: 700; color: var(--muted-2); letter-spacing: 0; margin-left: 4px; }
+
+.overview-heading {
+    display: flex; align-items: flex-end; justify-content: space-between;
+    gap: 12px; margin: 3px 2px 14px;
+}
+.overview-title { font-size: 1.35rem; line-height: 1.2; font-weight: 850; letter-spacing: -.045em; }
+.overview-description { font-size: .79rem; color: var(--muted); margin-top: 5px; line-height: 1.45; }
+.live-indicator {
+    display: flex; align-items: center; gap: 6px; flex-shrink: 0;
+    font-size: .65rem; font-weight: 800; color: var(--green-deep);
+    background: var(--green-soft); padding: 7px 9px; border-radius: 9px;
+}
+.live-dot { width: 7px; height: 7px; background: var(--green); border-radius: 50%; }
+
+.hero {
+    position: relative; overflow: hidden; isolation: isolate;
+    background: linear-gradient(140deg,#064e3b 0%,#047857 55%,#10b981 100%);
+    color: #fff; padding: 24px 22px 21px; border: none;
+    box-shadow: 0 10px 26px rgba(4,120,87,.13);
+}
+.hero .eyebrow { color: rgba(255,255,255,.76); }
+.hero-number {
+    font-size: clamp(3.1rem,11vw,4rem); font-weight: 850; letter-spacing: -.075em;
+    line-height: 1; margin-top: 12px; font-variant-numeric: tabular-nums;
+    position: relative; z-index: 1;
+}
+.hero-number .u { display: inline-block; font-size: .85rem; font-weight: 650; opacity: .8; letter-spacing: 0; margin-left: 8px; }
+.hero-sub {
+    margin-top: 17px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+    font-size: .8rem; font-weight: 650; color: rgba(255,255,255,.88);
+    position: relative; z-index: 1;
+}
+.hero-sub .pill {
+    background: rgba(255,255,255,.16); border: 1px solid rgba(255,255,255,.13);
+    padding: 6px 10px; border-radius: 9px; font-weight: 850; font-size: .75rem;
+}
+.hero-spark { position: absolute; z-index: -1; right: -5px; bottom: 0; width: 59%; height: 105px; opacity: .32; overflow: visible; }
+.hero-spark path { stroke-dasharray: 300; stroke-dashoffset: 300; animation: drawSpark 1.6s .2s ease forwards; }
+@keyframes drawSpark { to { stroke-dashoffset: 0; } }
+
+.card-heading { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 4px; }
+.heading-note { font-size: .7rem; font-weight: 750; color: var(--muted); background: #f1f5f9; border-radius: 8px; padding: 5px 8px; white-space: nowrap; }
+.evo-chart { display: flex; gap: 9px; height: 172px; margin-top: 20px; padding: 0 1px; }
+.evo-col { flex: 1; min-width: 0; display: flex; flex-direction: column; height: 100%; }
+.evo-value { font-size: .68rem; font-weight: 850; margin-bottom: 7px; color: #475569; font-variant-numeric: tabular-nums; text-align: center; }
+.evo-bar-wrap { flex: 1; min-height: 0; display: flex; align-items: flex-end; justify-content: center; }
+.evo-bar {
+    width: 100%; max-width: 36px; border-radius: 7px 7px 3px 3px;
+    height: 0; min-height: 3px;
+    transition: height 1s cubic-bezier(.22,1,.36,1);
+    background: linear-gradient(180deg,#93c5fd,#3b82f6);
+}
+.evo-col:last-child .evo-bar { background: linear-gradient(180deg,#10b981,#047857); box-shadow: 0 3px 10px rgba(16,185,129,.17); }
+.evo-label { font-size: .63rem; font-weight: 750; color: var(--muted-2); margin-top: 9px; letter-spacing: .01em; text-align: center; }
+.evo-col:last-child .evo-label { color: var(--green-deep); }
+.evo-col:last-child .evo-value { color: var(--green-deep); }
+
+.diagram-caption {
+    margin-top: 16px; padding-top: 14px; border-top: 1px solid var(--line);
+    font-size: .83rem; font-weight: 600; line-height: 1.55; color: var(--muted);
+}
+.diagram-caption strong { color: var(--ink); font-weight: 800; }
+.diagram-caption.indispo {
+    color: var(--muted-2); font-style: italic; font-weight: 500;
+}
+
+.donut-big { position: relative; width: 220px; height: 220px; margin: 8px auto 6px; }
+.donut-big svg { width: 100%; height: 100%; transform: rotate(-90deg); }
+.donut-segment {
+    fill: none; stroke-width: 16; stroke-linecap: butt;
+    transition: stroke-dasharray 1.1s cubic-bezier(.22,1,.36,1), stroke-dashoffset 1.1s cubic-bezier(.22,1,.36,1);
+}
+.donut-center { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+.donut-center .big { font-size: 2.6rem; }
+.rows { display: flex; flex-direction: column; gap: 16px; }
+.row-top { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+.row-dot { width: 10px; height: 10px; border-radius: 4px; flex-shrink: 0; }
+.row-label { flex: 1; font-size: .9rem; font-weight: 700; }
+.row-pct { font-size: .78rem; font-weight: 700; color: var(--muted-2); }
+.row-count { font-size: 1rem; font-weight: 800; min-width: 34px; text-align: right; font-variant-numeric: tabular-nums; }
+.track { height: 8px; background: #f1f5f9; border-radius: 99px; overflow: hidden; }
+.fill { height: 100%; width: 0; border-radius: 99px; transition: width 1.1s cubic-bezier(.22,1,.36,1); }
+
+.usage-compare { margin-top: 14px; }
+.compare-figures { display: flex; justify-content: space-between; align-items: flex-end; gap: 16px; margin-bottom: 14px; }
+.cf-figure { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.cf-web { align-items: flex-end; text-align: right; }
+.cf-label {
+    display: inline-flex; align-items: center; gap: 7px;
+    font-size: .68rem; font-weight: 800; letter-spacing: .05em;
+    text-transform: uppercase; color: var(--muted);
+}
+.cf-web .cf-label { flex-direction: row-reverse; }
+.cf-label i { width: 8px; height: 8px; border-radius: 50%; display: inline-block; flex-shrink: 0; }
+.cf-app .cf-label i { background: var(--green); }
+.cf-web .cf-label i { background: var(--purple); }
+.cf-value { font-size: 1.75rem; font-weight: 850; letter-spacing: -.055em; line-height: 1; font-variant-numeric: tabular-nums; }
+.cf-value small { font-size: .72rem; font-weight: 750; letter-spacing: 0; color: var(--muted-2); margin-left: 4px; }
+.cf-app .cf-value { color: var(--green-deep); }
+.cf-web .cf-value { color: var(--purple-deep); }
+.compare-split {
+    display: flex; height: 16px; border-radius: 9px; overflow: hidden;
+    background: #f1f5f9; box-shadow: inset 0 0 0 1px rgba(15,23,42,.03);
+}
+.cs-seg { height: 100%; width: 0; transition: width 1.1s cubic-bezier(.22,1,.36,1); }
+.cs-app { background: linear-gradient(90deg,#34d399,#059669); border-right: 2px solid #fff; }
+.cs-web { background: linear-gradient(90deg,#c4b5fd,#7c3aed); }
+.freq-display { display: flex; align-items: baseline; gap: 10px; margin: 16px 0 4px; }
+.freq-num {
+    font-size: 3.2rem; font-weight: 850; letter-spacing: -.065em; line-height: 1;
+    color: var(--green-deep); font-variant-numeric: tabular-nums;
+}
+.freq-unit { font-size: .95rem; font-weight: 700; color: var(--muted); }
+
+#view-pays { display: none; }
+#screen-stats-projets.pays-active { overflow: hidden; padding-bottom: 0; }
+#screen-stats-projets.pays-active #view-pays {
+    display: block; position: fixed;
+    left: 0; right: 0; bottom: 0;
+    top: var(--pays-top, 110px);
+    background: var(--bg); z-index: 10; overflow: hidden;
+}
+.pays-heading { position: absolute; top: 6px; left: 16px; right: 16px; z-index: 5; pointer-events: none; }
+.pays-title { font-size: 1.15rem; line-height: 1.2; font-weight: 850; letter-spacing: -.045em; }
+.pays-description {
+    font-size: .82rem; color: var(--muted);
+    margin-top: 4px; line-height: 1.55; font-weight: 600;
+}
+.pays-description .mention-badge {
+    display: inline-flex; align-items: center; justify-content: center;
+    padding: 2px 8px; font-size: 0.62rem; font-weight: 900;
+    letter-spacing: 0.06em; border-radius: 5px;
+    line-height: 1.5; white-space: nowrap; vertical-align: middle;
+    margin: 0 2px; transform: translateY(-1px);
+}
+.pays-description .mention-badge.badge-proplus {
+    background: var(--green-soft);
+    color: var(--green-deep); border: 1px solid #a7f3d0;
+}
+
+.map-viewport { position: absolute; inset: 0; overflow: hidden; background: transparent; }
+.map-rotator { position: absolute; top: 50%; left: 50%; transform-origin: center center; }
+.map-rotator svg { display: block; width: 100%; height: 100%; }
+.map-land { fill: #b3c2d4; stroke: none; }
+.map-marker { fill: #10b981; }
+.map-spinner {
+    position: absolute; top: 50%; left: 50%;
+    width: 34px; height: 34px;
+    margin-top: -17px; margin-left: -17px;
+    border: 3px solid #dde5ef;
     border-top-color: #10b981;
     border-radius: 50%;
-    animation: pjSpin .8s linear infinite;
+    animation: spinMap .85s linear infinite;
+    z-index: 2;
 }
-@keyframes pjSpin { to { transform: rotate(360deg); } }
-.loading-text { font-size: 0.9rem; color: #64748b; font-weight: 500; }
+.map-spinner.hidden { display: none; }
+@keyframes spinMap { to { transform: rotate(360deg); } }
+
+/* ═══════ MODALS ═══════ */
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(15,23,42,.55);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    z-index: 9999;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .25s ease;
+}
+.modal-overlay.show {
+    opacity: 1;
+    pointer-events: auto;
+}
+.modal-card {
+    background: #ffffff;
+    border-radius: 22px;
+    padding: 28px 22px 20px;
+    max-width: 420px;
+    width: 100%;
+    position: relative;
+    box-shadow: 0 25px 50px -12px rgba(15,23,42,.35);
+    transform: translateY(20px) scale(.96);
+    transition: transform .3s cubic-bezier(.22,1,.36,1);
+}
+.modal-overlay.show .modal-card {
+    transform: translateY(0) scale(1);
+}
+.modal-close {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    border: none;
+    background: #f1f5f9;
+    color: #64748b;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    transition: background-color .15s ease, color .15s ease;
+}
+.modal-close:hover { background: #e2e8f0; color: #0b1220; }
+.modal-close:active { transform: scale(.94); }
+.modal-close svg { width: 16px; height: 16px; display: block; }
+.modal-title {
+    font-size: 1.15rem;
+    font-weight: 800;
+    color: var(--ink);
+    letter-spacing: -0.025em;
+    line-height: 1.3;
+    margin: 0 36px 10px 0;
+    text-align: left;
+}
+.modal-text {
+    font-size: 0.88rem;
+    font-weight: 500;
+    color: var(--muted);
+    line-height: 1.55;
+    margin: 0 0 22px;
+    text-align: left;
+}
+.modal-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+.modal-btn {
+    width: 100%;
+    padding: 14px 18px;
+    border-radius: 12px;
+    font-family: inherit;
+    font-size: 0.92rem;
+    font-weight: 700;
+    cursor: pointer;
+    border: none;
+    transition: transform .15s ease, filter .15s ease, background-color .15s ease;
+    letter-spacing: 0.005em;
+}
+.modal-btn:active { transform: scale(.98); }
+.modal-btn-primary {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    color: #ffffff;
+    box-shadow: 0 12px 24px -10px rgba(16,185,129,.7), inset 0 1px 0 rgba(255,255,255,.18);
+}
+.modal-btn-primary:hover { filter: brightness(1.03); }
+.modal-btn-secondary {
+    background: #ffffff;
+    color: var(--muted);
+    border: 1px solid #e2e8f0;
+}
+.modal-btn-secondary:hover { background: #f8fafc; color: var(--ink); }
+
+@media (max-width:380px) {
+    .container { padding: 14px 12px; }
+    .hero { padding: 22px 18px; }
+    .hero-number { font-size: 3.1rem; }
+    .big { font-size: 1.8rem; }
+    .donut-big { width: 190px; height: 190px; }
+    .evo-chart { gap: 5px; height: 156px; }
+    .evo-value { font-size: .62rem; }
+    .overview-title { font-size: 1.2rem; }
+    .live-indicator { font-size: .6rem; padding: 7px; }
+    .cf-value { font-size: 1.5rem; }
+    .freq-num { font-size: 2.6rem; }
+    .pays-title { font-size: 1.05rem; }
+    .pays-description { font-size: .76rem; }
+    .formule-mention { font-size: 0.78rem; }
+    .modal-card { padding: 24px 18px 16px; }
+    .modal-title { font-size: 1.05rem; }
+    .modal-text { font-size: 0.83rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+    .projets-module-root *, .projets-module-root *::before, .projets-module-root *::after {
+        animation-duration: .01ms !important;
+        animation-iteration-count: 1 !important;
+        scroll-behavior: auto !important;
+        transition-duration: .01ms !important;
+    }
+}
 </style>
 
 <script>
 (function() {
 
-    // ─── État local ───
+    /* ═══════════════════════════════════════════════════════════
+       ÉTAT DU MODULE
+    ═══════════════════════════════════════════════════════════ */
     let tousLesProjets = [];
+    let projetActif = null;
     let rechercheActive = '';
 
-    // ─── Message d'accueil selon l'heure ───
+    // Cache : évite le rechargement quand on revient sur l'onglet Projets
+    if (!window._cacheProjetsModule) {
+        window._cacheProjetsModule = { loaded: false, projets: [] };
+    }
+
+    const ORDRE_FORMULES = ['decouverte', 'pro', 'pro-plus'];
+    const NIVEAU_REQUIS = { installations: 0, usage: 1, appareils: 2, pays: 2 };
+    const DELAI_AVANT_STATS = 180;
+    const R_DONUT = 56;
+    const C_DONUT = 2 * Math.PI * R_DONUT;
+
+    let devicesCourants = [];
+    let freqParJourCourant = 0;
+
+    let mapReady = false, mapSvg = null, mapProjection = null;
+    let currentMarkers = [], currentPays = [], mapTrying = false;
+
+    let _sortieAutorisee = false;
+    let _modalSortieVisible = false;
+    let _modalSuspenduVisible = false;
+    let _timerOuvertureStats = null;
+
+    /* ═══════════════════════════════════════════════════════════
+       STATISTIQUES FICTIVES (projets EN ATTENTE)
+       Les mêmes pour tous les projets en attente
+    ═══════════════════════════════════════════════════════════ */
+    const STATS_DEMO = {
+        installs_total: 142,
+        installs_android: 54, installs_ios: 48, installs_pc: 40,
+        installs_7j: [12, 18, 25, 20, 30, 15, 22],
+        lancements_accueil: 320, lancements_navigateur: 85,
+        duree_accueil_total_sec: 48000, duree_navigateur_total_sec: 10200
+    };
+    const PAYS_DEMO = [
+        { nom: 'Cameroun', lat: 3.848, lng: 11.502, count: 52 },
+        { nom: 'France', lat: 46.2276, lng: 2.2137, count: 38 },
+        { nom: 'Sénégal', lat: 14.4974, lng: -14.4524, count: 22 },
+        { nom: 'Canada', lat: 56.1304, lng: -106.3468, count: 16 },
+        { nom: 'Belgique', lat: 50.5039, lng: 4.4699, count: 14 }
+    ];
+
+    /* ═══════════════════════════════════════════════════════════
+       OUTILS
+    ═══════════════════════════════════════════════════════════ */
+    const $ = id => document.getElementById(id);
+
+    function echapper(str) {
+        return String(str == null ? '' : str)
+            .replace(/&/g, '&amp;').replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+    }
+
+    // Le statut est écrit dans la base : en_attente / actif / suspendu
+    function normaliserStatut(s) {
+        const v = String(s || '').toLowerCase().replace(/-/g, '_');
+        if (v === 'actif') return 'actif';
+        if (v === 'suspendu') return 'suspendu';
+        return 'en_attente';
+    }
+
+    function normaliserFormule(f) {
+        const v = String(f || 'decouverte').toLowerCase().replace(/[_\s+]/g, '-');
+        if (v === 'pro') return 'pro';
+        if (v === 'pro-plus' || v === 'proplus' || v === 'pro-') return 'pro-plus';
+        return 'decouverte';
+    }
+
+    function niveauFormule(f) {
+        const i = ORDRE_FORMULES.indexOf(normaliserFormule(f));
+        return i < 0 ? 0 : i;
+    }
+
+    function statutInfo(s) {
+        const st = normaliserStatut(s);
+        if (st === 'actif') return { cls: 'actif', label: 'Actif' };
+        if (st === 'suspendu') return { cls: 'suspendu', label: 'Suspendu' };
+        return { cls: 'en-attente', label: 'En attente' };
+    }
+
+    function formuleInfo(f) {
+        const v = normaliserFormule(f);
+        if (v === 'pro') return { cls: 'pro', label: 'PRO' };
+        if (v === 'pro-plus') return { cls: 'proplus', label: 'PRO+' };
+        return { cls: 'decouverte', label: 'DÉCOUVERTE' };
+    }
+
     function getGreeting() {
         const h = new Date().getHours();
-        if (h >= 5  && h < 12) return 'Bonjour 👋';
+        if (h >= 5 && h < 12) return 'Bonjour 👋';
         if (h >= 12 && h < 18) return 'Bon après-midi ☀️';
         if (h >= 18 && h < 23) return 'Bonsoir 🌆';
         return 'Bonne nuit 🌙';
     }
 
-    // ─── Initiales : 1ère lettre du 1er mot + 1ère lettre du 2e mot ───
     function initiales(str) {
         if (!str) return '?';
-        const parties = str.trim().split(/\s+/).filter(Boolean);
-        if (parties.length === 0) return '?';
-        const p1 = parties[0].charAt(0).toUpperCase();
-        const p2 = parties.length >= 2 ? parties[1].charAt(0).toUpperCase() : '';
-        return p1 + p2;
+        const p = str.trim().split(/\s+/).filter(Boolean);
+        if (p.length === 0) return '?';
+        return p[0].charAt(0).toUpperCase() + (p.length >= 2 ? p[1].charAt(0).toUpperCase() : '');
     }
 
-    // ─── Format date court ───
     function formatDate(ts) {
         if (!ts) return '';
-        try {
-            const d = new Date(ts);
-            const jour = d.getDate();
-            const mois = ['jan.','fév.','mars','avr.','mai','juin','juil.','août','sept.','oct.','nov.','déc.'];
-            return jour + ' ' + mois[d.getMonth()] + '. ' + d.getFullYear();
-        } catch (e) { return ''; }
+        const d = new Date(ts);
+        if (isNaN(d.getTime())) return typeof ts === 'string' ? ts : '';
+        const mois = ['janv.', 'févr.', 'mars', 'avr.', 'mai', 'juin', 'juil.', 'août', 'sept.', 'oct.', 'nov.', 'déc.'];
+        return String(d.getDate()).padStart(2, '0') + ' ' + mois[d.getMonth()] + ' ' + d.getFullYear();
     }
 
-    // ─── Statut : classe + label ───
-    function statutInfo(statut) {
-        if (statut === 'actif')  return { cls: 'actif',      label: 'Actif' };
-        if (statut === 'expire' || statut === 'expiré') return { cls: 'expire', label: 'Expiré' };
-        return { cls: 'en-attente', label: 'En attente' };
+    function formatNombre(n) {
+        if (!Number.isFinite(Number(n))) return '0';
+        return String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
     }
 
-    // ─── Formule : classe CSS + label ───
-    function formuleInfo(f) {
-        if (f === 'pro')      return { cls: 'pro',        label: 'PRO' };
-        if (f === 'pro-plus') return { cls: 'proplus',    label: 'PRO+' };
-        return { cls: 'decouverte', label: 'DÉCOUVERTE' };
+    function formatDuree(sec) {
+        if (!sec || sec <= 0) return { v: '0', u: 'min' };
+        const h = Math.floor(sec / 3600);
+        const m = Math.floor((sec % 3600) / 60);
+        if (h > 0) return { v: String(h), u: 'h' + (m > 0 ? ' ' + m + ' min' : '') };
+        return { v: String(m), u: 'min' };
+    }
+    function arrondir(n) { return Math.round(n * 10) / 10; }
+    function virgule(n) { return String(n).replace('.', ','); }
+
+    function remonterEnHaut() {
+        const s = $('screen-stats-projets');
+        if (s && s.scrollTo) s.scrollTo({ top: 0, behavior: 'auto' });
+        try { window.scrollTo({ top: 0, behavior: 'auto' }); } catch (e) {}
     }
 
-    // ─── Injecter les infos utilisateur ───
+    /* ═══════════════════════════════════════════════════════════
+       ACCUEIL (nom, avatar, salutation)
+    ═══════════════════════════════════════════════════════════ */
     function injecterUtilisateur() {
         const user = window._authUser;
-        const greetEl = document.getElementById('accueilSalut');
-        const nameEl  = document.getElementById('accueilNom');
-        const avEl    = document.getElementById('accueilAvatar');
-
+        const greetEl = $('accueilSalut');
+        const nameEl = $('accueilNom');
+        const avEl = $('accueilAvatar');
         if (greetEl) greetEl.textContent = getGreeting();
         if (!user) return;
-
         const nomComplet = user.displayName || (user.email ? user.email.split('@')[0] : 'Utilisateur');
         if (nameEl) nameEl.textContent = nomComplet;
-        if (avEl)   avEl.textContent = initiales(nomComplet);
+        if (avEl) avEl.textContent = initiales(nomComplet);
     }
 
-    // ─── Adapter le bouton selon le nombre de projets ───
-    function adapterBouton(nbProjets) {
-        const label = document.getElementById('btnCreerProjetLabel');
-        if (!label) return;
-        label.textContent = (nbProjets > 0) ? 'Créer un nouveau projet' : 'Créer un projet';
-    }
-
-    // ─── Afficher / masquer la barre de recherche ───
-    function majRecherche(nbProjets) {
-        const wrap = document.getElementById('rechercheWrap');
-        if (!wrap) return;
-        wrap.style.display = (nbProjets > 0) ? 'block' : 'none';
-    }
-
-    // ─── État vide ───
+    /* ═══════════════════════════════════════════════════════════
+       LISTE DES PROJETS
+    ═══════════════════════════════════════════════════════════ */
     function afficherVide() {
-        const c = document.getElementById('projetsConteneur');
+        const c = $('projetsConteneur');
         if (!c) return;
-        c.innerHTML =
-            '<div class="empty-state">' +
-                '<div class="empty-illustration">' +
-                    '<svg viewBox="0 0 24 24">' +
-                        '<rect x="3" y="3" width="7" height="7" rx="1.5"/>' +
-                        '<rect x="14" y="3" width="7" height="7" rx="1.5"/>' +
-                        '<rect x="3" y="14" width="7" height="7" rx="1.5"/>' +
-                        '<line x1="17.5" y1="14" x2="17.5" y2="21"/>' +
-                        '<line x1="14" y1="17.5" x2="21" y2="17.5"/>' +
-                    '</svg>' +
-                '</div>' +
-                '<h2 class="empty-title">Aucun projet pour le moment</h2>' +
-                '<p class="empty-subtitle">Créez votre 1<sup>er</sup> site installable. Et retrouvez-le ici. Avec toutes ces statistiques.</p>' +
-                '<div class="empty-hint">' +
-                    '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>' +
-                    'Commencez par le bouton ci-dessus' +
-                '</div>' +
-            '</div>';
+        c.innerHTML = `
+            <div class="empty-state">
+                <div class="empty-illustration">
+                    <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><line x1="17.5" y1="14" x2="17.5" y2="21"/><line x1="14" y1="17.5" x2="21" y2="17.5"/></svg>
+                </div>
+                <h2 class="empty-title">Aucun projet pour le moment</h2>
+                <p class="empty-subtitle">Créez votre 1<sup>er</sup> site installable et retrouvez-le ici avec toutes ses statistiques.</p>
+            </div>
+        `;
     }
 
-    // ─── État de chargement ───
     function afficherChargement() {
-        const c = document.getElementById('projetsConteneur');
+        const c = $('projetsConteneur');
         if (!c) return;
-        c.innerHTML =
-            '<div class="loading-bloc">' +
-                '<div class="loading-spinner"></div>' +
-                '<p class="loading-text">Chargement de vos projets...</p>' +
-            '</div>';
+        c.innerHTML = '<div class="loading-bloc"><div class="loading-spinner"></div><p class="loading-text">Chargement de vos projets...</p></div>';
     }
 
-    // ─── Filtre par recherche ───
-    function filtrerProjets(projets, terme) {
-        if (!terme) return projets;
-        const t = terme.toLowerCase().trim();
-        return projets.filter(function(p) {
-            return (p.nom || '').toLowerCase().indexOf(t) !== -1;
-        });
+    function majCompteur() {
+        const el = $('sectionCompteur');
+        if (el) el.textContent = String(tousLesProjets.length);
     }
 
-    // ─── Afficher la liste des projets ───
     function afficherListe(projets) {
-        const c = document.getElementById('projetsConteneur');
+        const c = $('projetsConteneur');
         if (!c) return;
 
-        const filtres = filtrerProjets(projets, rechercheActive);
+        const terme = rechercheActive.toLowerCase().trim();
+        const filtres = projets.filter(p => (p.nom || '').toLowerCase().includes(terme));
 
         if (filtres.length === 0) {
-            c.innerHTML =
-                '<div style="padding: 40px 20px; text-align: center; color: #94a3b8; font-size: 0.9rem;">' +
-                    'Aucun projet ne correspond à votre recherche.' +
-                '</div>';
+            c.innerHTML = '<div class="aucun-resultat">Aucun projet ne correspond à votre recherche.</div>';
             return;
         }
 
         let html = '<div class="projets-list">';
-        filtres.forEach(function(p) {
+        filtres.forEach(p => {
             const st = statutInfo(p.statut);
             const fi = formuleInfo(p.formule);
-            const dateStr = formatDate(p.creeLe);
+            const dateStr = formatDate(p.creeLe || p.date);
+            const img = p.imageUrl || p.image || '';
+            const idProjet = echapper(p.id || p.nom);
 
             html +=
-                '<button type="button" class="projet-item" data-id="' + p.id + '">' +
-                    '<div class="projet-avatar">' +
-                        (p.imageUrl ? '<img src="' + p.imageUrl + '" alt="">' : '') +
-                    '</div>' +
+                '<button type="button" class="projet-item" data-id="' + idProjet + '">' +
+                    '<div class="projet-avatar">' + (img ? '<img src="' + echapper(img) + '" alt="">' : '') + '</div>' +
                     '<div class="projet-body">' +
                         '<div class="projet-top">' +
-                            '<div class="projet-nom">' + (p.nom || 'Sans nom') + '</div>' +
+                            '<div class="projet-nom">' + echapper(p.nom || 'Sans nom') + '</div>' +
                             '<span class="formule-badge ' + fi.cls + '">' + fi.label + '</span>' +
                         '</div>' +
                         '<div class="projet-bottom">' +
                             '<span class="projet-statut ' + st.cls + '"><span class="dot"></span>' + st.label + '</span>' +
-                            (dateStr ? '<span class="projet-sep"></span><span class="projet-date">' + dateStr + '</span>' : '') +
+                            (dateStr ? '<span class="projet-sep"></span><span class="projet-date">' + echapper(dateStr) + '</span>' : '') +
                         '</div>' +
                     '</div>' +
                 '</button>';
@@ -507,101 +1022,695 @@
         html += '</div>';
         c.innerHTML = html;
 
-        // Clic sur une carte projet
-        c.querySelectorAll('.projet-item').forEach(function(btn) {
-            btn.addEventListener('click', function() {
-                const id = this.dataset.id;
-                console.log('[Projets] Clic sur projet :', id);
-                // ⏳ à venir : ouvrir la page statistiques
-            });
+        c.querySelectorAll('.projet-item').forEach(btn => {
+            btn.addEventListener('click', () => ouvrirProjet(btn.dataset.id));
         });
     }
 
-    // ─── Charger depuis lister-projets ───
     async function chargerListeProjets() {
+        if (window._cacheProjetsModule.loaded && window._cacheProjetsModule.projets.length > 0) {
+            tousLesProjets = window._cacheProjetsModule.projets;
+            majCompteur();
+            afficherListe(tousLesProjets);
+            return;
+        }
+
         afficherChargement();
 
         if (!window._authUser) {
+            tousLesProjets = [];
+            majCompteur();
             afficherVide();
-            document.getElementById('sectionCompteur').textContent = '0';
-            adapterBouton(0);
-            majRecherche(0);
             return;
         }
 
         try {
             const jeton = await window._authUser.getIdToken();
-
             const response = await fetch('/.netlify/functions/lister-projets', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ jeton: jeton })
             });
-
             const resultat = await response.json();
 
             if (!resultat || !resultat.success) {
-                if (typeof window.showNotification === 'function') {
-                    window.showNotification((resultat && resultat.message) || "Erreur lors du chargement des projets.", 'error');
-                }
                 tousLesProjets = [];
+                majCompteur();
                 afficherVide();
-                document.getElementById('sectionCompteur').textContent = '0';
-                adapterBouton(0);
-                majRecherche(0);
                 return;
             }
 
             tousLesProjets = resultat.projets || [];
-            const nb = tousLesProjets.length;
+            window._cacheProjetsModule.loaded = true;
+            window._cacheProjetsModule.projets = tousLesProjets;
 
-            document.getElementById('sectionCompteur').textContent = String(nb);
-            adapterBouton(nb);
-            majRecherche(nb);
-
-            if (nb === 0) {
-                afficherVide();
-            } else {
-                afficherListe(tousLesProjets);
-            }
-
+            majCompteur();
+            if (tousLesProjets.length === 0) afficherVide();
+            else afficherListe(tousLesProjets);
         } catch (e) {
             console.error('[Projets] Erreur :', e);
             tousLesProjets = [];
+            majCompteur();
             afficherVide();
-            document.getElementById('sectionCompteur').textContent = '0';
-            adapterBouton(0);
-            majRecherche(0);
         }
     }
 
-    // ─── Init (appelé par le Shell à l'injection) ───
+    /* ═══════════════════════════════════════════════════════════
+       CHARGEMENT DES STATISTIQUES
+    ═══════════════════════════════════════════════════════════ */
+    function majBadgeFormule(formule) {
+        const el = $('topFormuleBadge');
+        if (!el) return;
+        const fi = formuleInfo(formule);
+        el.classList.remove('decouverte', 'pro', 'proplus');
+        el.classList.add(fi.cls);
+        el.textContent = fi.label;
+    }
+
+    function chargerStats(projet) {
+        const niveauProjet = niveauFormule(projet.formule);
+        const estEnAttente = (normaliserStatut(projet.statut) === 'en_attente');
+
+        // EN ATTENTE → statistiques fictives, rien n'est bloqué
+        // ACTIF → vraies statistiques, sections bloquées selon la formule
+        const s = estEnAttente ? STATS_DEMO : (projet.stats || {});
+
+        const isBloquee = {};
+        Object.keys(NIVEAU_REQUIS).forEach(nom => {
+            isBloquee[nom] = estEnAttente ? false : (niveauProjet < NIVEAU_REQUIS[nom]);
+        });
+
+        $('topNom').textContent = projet.nom || 'Sans nom';
+        majBadgeFormule(projet.formule);
+
+        // ═══ INSTALLATIONS ═══
+        $('numInstalls').textContent = formatNombre(s.installs_total || 0);
+        const evo = (s.installs_7j && s.installs_7j.length) ? s.installs_7j : [0, 0, 0, 0, 0, 0, 0];
+        const jours = ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim'];
+        const maxEvo = Math.max(...evo, 1);
+        const aujourdhui = evo[evo.length - 1] || 0;
+        const hier = evo[evo.length - 2] || 0;
+        const diffJour = aujourdhui - hier;
+
+        if (diffJour > 0) {
+            $('heroToday').textContent = '+' + formatNombre(diffJour);
+            $('heroTodayLabel').textContent = 'par rapport à hier';
+        } else if (diffJour < 0) {
+            $('heroToday').textContent = formatNombre(diffJour);
+            $('heroTodayLabel').textContent = 'par rapport à hier';
+        } else if (aujourdhui === 0) {
+            $('heroToday').textContent = '0';
+            $('heroTodayLabel').textContent = 'installation aujourd\'hui';
+        } else {
+            $('heroToday').textContent = '0';
+            $('heroTodayLabel').textContent = 'stable par rapport à hier';
+        }
+
+        $('evoChart').innerHTML = evo.map((v, i) =>
+            '<div class="evo-col">' +
+                '<div class="evo-value">' + formatNombre(v) + '</div>' +
+                '<div class="evo-bar-wrap">' +
+                    '<div class="evo-bar" data-h="' + (v / maxEvo * 100) + '"></div>' +
+                '</div>' +
+                '<div class="evo-label">' + (jours[i] || '') + '</div>' +
+            '</div>'
+        ).join('');
+
+        if (aujourdhui === 0) {
+            $('installInsight').innerHTML = 'Aucune installation enregistrée aujourd\'hui.';
+        } else if (diffJour > 0) {
+            $('installInsight').innerHTML = 'Vous avez enregistré <strong>' + formatNombre(aujourdhui) + ' installations aujourd\'hui</strong>, soit <strong>+' + formatNombre(diffJour) + '</strong> par rapport à hier.';
+        } else if (diffJour < 0) {
+            $('installInsight').innerHTML = 'Vous avez enregistré <strong>' + formatNombre(aujourdhui) + ' installations aujourd\'hui</strong>, soit <strong>' + formatNombre(diffJour) + '</strong> par rapport à hier.';
+        } else {
+            $('installInsight').innerHTML = '<strong>' + formatNombre(aujourdhui) + ' installations aujourd\'hui</strong>, soit <strong>autant qu\'hier</strong>.';
+        }
+
+        // ═══ APPAREILS ═══
+        const android = isBloquee.appareils ? 0 : (s.installs_android || 0);
+        const ios = isBloquee.appareils ? 0 : (s.installs_ios || 0);
+        const pc = isBloquee.appareils ? 0 : (s.installs_pc || 0);
+        const totalDev = android + ios + pc;
+
+        devicesCourants = [
+            { k: 'a', nom: 'Android', count: android, color: '#10b981' },
+            { k: 'i', nom: 'iPhone', count: ios, color: '#6366f1' },
+            { k: 'p', nom: 'Ordinateur', count: pc, color: '#3b82f6' }
+        ].map(d => ({ ...d, pct: totalDev > 0 ? d.count / totalDev : 0 }));
+
+        $('donutTotal').textContent = formatNombre(totalDev);
+        $('deviceRows').innerHTML = devicesCourants.map(d =>
+            '<div>' +
+                '<div class="row-top">' +
+                    '<span class="row-dot" style="background:' + d.color + '"></span>' +
+                    '<span class="row-label">' + d.nom + '</span>' +
+                    '<span class="row-pct">' + Math.round(d.pct * 100) + ' %</span>' +
+                    '<span class="row-count">' + formatNombre(d.count) + '</span>' +
+                '</div>' +
+                '<div class="track"><div class="fill" data-w="' + (d.pct * 100) + '" style="background:' + d.color + '"></div></div>' +
+            '</div>'
+        ).join('');
+
+        const capDevices = $('explainDevices');
+        capDevices.classList.remove('indispo');
+        if (isBloquee.appareils) {
+            capDevices.textContent = 'Données indisponibles';
+            capDevices.classList.add('indispo');
+        } else {
+            const avecDonnees = devicesCourants.filter(d => d.count > 0);
+            if (avecDonnees.length === 0) {
+                capDevices.textContent = 'Aucune installation pour le moment.';
+            } else if (avecDonnees.length === 1) {
+                capDevices.innerHTML = '<strong>100 %</strong> de vos utilisateurs sont sur <strong>' + avecDonnees[0].nom + '</strong>.';
+            } else {
+                const top2 = [...avecDonnees].sort((a, b) => b.pct - a.pct).slice(0, 2);
+                const sommePct = Math.round((top2[0].pct + top2[1].pct) * 100);
+                capDevices.innerHTML = '<strong>' + sommePct + ' %</strong> de vos utilisateurs sont sur <strong>' + top2[0].nom + ' et ' + top2[1].nom + '</strong>.';
+            }
+        }
+
+        // ═══ USAGE ═══
+        const openApp = isBloquee.usage ? 0 : (s.lancements_accueil || 0);
+        const openWeb = isBloquee.usage ? 0 : (s.lancements_navigateur || 0);
+        const moyApp = openApp > 0 ? Math.round((s.duree_accueil_total_sec || 0) / openApp) : 0;
+        const moyWeb = openWeb > 0 ? Math.round((s.duree_navigateur_total_sec || 0) / openWeb) : 0;
+        const tApp = formatDuree(moyApp);
+        const tWeb = formatDuree(moyWeb);
+
+        $('valOpenApp').textContent = formatNombre(openApp);
+        $('valOpenWeb').textContent = formatNombre(openWeb);
+
+        const totalOpen = openApp + openWeb;
+        if (totalOpen === 0) {
+            $('segOpenApp').dataset.w = 50;
+            $('segOpenWeb').dataset.w = 50;
+        } else {
+            $('segOpenApp').dataset.w = openApp / totalOpen * 100;
+            $('segOpenWeb').dataset.w = openWeb / totalOpen * 100;
+        }
+
+        const capOpen = $('explainOpen');
+        capOpen.classList.remove('indispo');
+        if (isBloquee.usage) {
+            capOpen.textContent = 'Données indisponibles';
+            capOpen.classList.add('indispo');
+        } else if (openApp > 0 && openWeb > 0) {
+            if (openApp > openWeb) {
+                const r = arrondir(openApp / openWeb);
+                capOpen.innerHTML = 'Vos utilisateurs ouvrent votre site web <strong>depuis l\'écran d\'accueil</strong> <strong>' + virgule(r) + '× plus souvent</strong> que <strong>depuis le navigateur</strong>.';
+            } else if (openWeb > openApp) {
+                const r = arrondir(openWeb / openApp);
+                capOpen.innerHTML = 'Vos utilisateurs ouvrent votre site web <strong>depuis le navigateur</strong> <strong>' + virgule(r) + '× plus souvent</strong> que <strong>depuis l\'écran d\'accueil</strong>.';
+            } else {
+                capOpen.innerHTML = 'Vos utilisateurs ouvrent votre site web <strong>autant de fois depuis l\'écran d\'accueil</strong> que <strong>depuis le navigateur</strong>.';
+            }
+        } else if (openApp > 0) {
+            capOpen.innerHTML = 'Toutes les ouvertures de votre site web viennent <strong>depuis l\'écran d\'accueil</strong>.';
+        } else if (openWeb > 0) {
+            capOpen.innerHTML = 'Toutes les ouvertures de votre site web viennent <strong>depuis le navigateur</strong>.';
+        } else {
+            capOpen.textContent = 'Aucune ouverture enregistrée.';
+        }
+
+        $('valTimeApp').innerHTML = tApp.v + '<small>' + tApp.u + '</small>';
+        $('valTimeWeb').innerHTML = tWeb.v + '<small>' + tWeb.u + '</small>';
+
+        const totalTime = moyApp + moyWeb;
+        if (totalTime === 0) {
+            $('segTimeApp').dataset.w = 50;
+            $('segTimeWeb').dataset.w = 50;
+        } else {
+            $('segTimeApp').dataset.w = moyApp / totalTime * 100;
+            $('segTimeWeb').dataset.w = moyWeb / totalTime * 100;
+        }
+
+        const capTime = $('explainTime');
+        capTime.classList.remove('indispo');
+        if (isBloquee.usage) {
+            capTime.textContent = 'Données indisponibles';
+            capTime.classList.add('indispo');
+        } else if (moyApp > 0 && moyWeb > 0) {
+            if (moyApp > moyWeb * 1.1) {
+                const r = arrondir(moyApp / moyWeb);
+                capTime.innerHTML = 'Vos utilisateurs restent <strong>' + virgule(r) + ' fois plus longtemps</strong> sur votre site web <strong>depuis l\'écran d\'accueil</strong> que <strong>depuis le navigateur</strong>.';
+            } else if (moyWeb > moyApp * 1.1) {
+                const r = arrondir(moyWeb / moyApp);
+                capTime.innerHTML = 'Vos utilisateurs restent <strong>' + virgule(r) + ' fois plus longtemps</strong> sur votre site web <strong>depuis le navigateur</strong> que <strong>depuis l\'écran d\'accueil</strong>.';
+            } else {
+                capTime.innerHTML = 'Vos utilisateurs passent <strong>autant de temps</strong> sur votre site web <strong>depuis l\'écran d\'accueil</strong> que <strong>depuis le navigateur</strong> — environ <strong>' + tApp.v + ' ' + tApp.u + '</strong>.';
+            }
+        } else if (moyApp > 0) {
+            capTime.innerHTML = 'Vos utilisateurs passent en moyenne <strong>' + tApp.v + ' ' + tApp.u + '</strong> sur votre site web <strong>depuis l\'écran d\'accueil</strong>.';
+        } else if (moyWeb > 0) {
+            capTime.innerHTML = 'Vos utilisateurs passent en moyenne <strong>' + tWeb.v + ' ' + tWeb.u + '</strong> sur votre site web <strong>depuis le navigateur</strong>.';
+        } else {
+            capTime.textContent = 'Pas encore assez de données.';
+        }
+
+        const joursActifs = 30;
+        const usersActifsQuotidiens = Math.max(1, Math.round((s.installs_total || 0) * 0.04));
+        freqParJourCourant = isBloquee.usage ? 0 : arrondir(openApp / joursActifs / usersActifsQuotidiens);
+        $('freqNumber').textContent = virgule(freqParJourCourant.toFixed(1));
+
+        const capFreq = $('explainFreq');
+        capFreq.classList.remove('indispo');
+        if (isBloquee.usage) {
+            capFreq.textContent = 'Données indisponibles';
+            capFreq.classList.add('indispo');
+        } else if (freqParJourCourant > 0) {
+            capFreq.innerHTML = 'En moyenne, chaque utilisateur actif ouvre votre site web <strong>' + virgule(freqParJourCourant.toFixed(1)) + ' fois par jour</strong> depuis l\'écran d\'accueil de son téléphone.';
+        } else {
+            capFreq.textContent = 'Pas encore assez de données.';
+        }
+
+        // ═══ PAYS ═══
+        if (isBloquee.pays) currentPays = [];
+        else if (estEnAttente) currentPays = PAYS_DEMO;
+        else currentPays = projet.pays || [];
+    }
+
+    /* ═══════════════════════════════════════════════════════════
+       ANIMATIONS & ONGLETS
+    ═══════════════════════════════════════════════════════════ */
+    const vuesAnimees = new Set();
+
+    function dessinerDonut(selector) {
+        let offset = 0;
+        devicesCourants.forEach(d => {
+            const el = document.querySelector(selector + '[data-k="' + d.k + '"]');
+            if (!el) return;
+            el.setAttribute('stroke-dasharray', (C_DONUT * d.pct) + ' ' + C_DONUT);
+            el.setAttribute('stroke-dashoffset', -offset);
+            offset += C_DONUT * d.pct;
+        });
+    }
+
+    function animerVue(nom) {
+        const vue = $('view-' + nom);
+        if (!vue) return;
+        if (vuesAnimees.has(nom)) return;
+        vuesAnimees.add(nom);
+
+        vue.querySelectorAll('.fill').forEach(el => el.style.width = '0');
+        vue.querySelectorAll('.donut-segment').forEach(el => el.setAttribute('stroke-dasharray', '0 ' + C_DONUT));
+        vue.querySelectorAll('.evo-bar').forEach(el => el.style.height = '0');
+        vue.querySelectorAll('.cs-seg').forEach(el => el.style.width = '0');
+
+        requestAnimationFrame(() => setTimeout(() => {
+            vue.querySelectorAll('.fill').forEach(el => {
+                el.style.width = (Number(el.dataset.w) || 0) + '%';
+            });
+
+            if (nom === 'installations') {
+                vue.querySelectorAll('.evo-bar').forEach(el => {
+                    el.style.height = (Number(el.dataset.h) || 0) + '%';
+                });
+            }
+
+            if (nom === 'appareils') dessinerDonut('.big-seg');
+
+            if (nom === 'usage') {
+                ['segOpenApp', 'segOpenWeb', 'segTimeApp', 'segTimeWeb'].forEach(id => {
+                    const el = $(id);
+                    if (el) el.style.width = (Number(el.dataset.w) || 0) + '%';
+                });
+            }
+        }, 50));
+    }
+
+    function ouvrirOnglet(nom) {
+        document.querySelectorAll('.projets-module-root .tab').forEach(t => {
+            t.classList.toggle('active', t.dataset.view === nom);
+        });
+        document.querySelectorAll('.projets-module-root .view').forEach(v => {
+            v.classList.toggle('active', v.id === 'view-' + nom);
+        });
+
+        const statsScreen = $('screen-stats-projets');
+
+        if (nom === 'pays') {
+            remonterEnHaut();
+            requestAnimationFrame(() => {
+                calculerPositionPays();
+                statsScreen.classList.add('pays-active');
+                requestAnimationFrame(() => {
+                    ajusterCarte();
+                    initMap();
+                    setTimeout(ajusterCarte, 80);
+                    setTimeout(ajusterCarte, 250);
+                });
+            });
+        } else {
+            statsScreen.classList.remove('pays-active');
+            if (statsScreen.scrollTo) statsScreen.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        animerVue(nom);
+    }
+
+    document.querySelectorAll('.projets-module-root .tab').forEach(t => {
+        t.addEventListener('click', () => ouvrirOnglet(t.dataset.view));
+    });
+
+    /* ═══════════════════════════════════════════════════════════
+       MODAL SORTIE (projets EN ATTENTE uniquement)
+    ═══════════════════════════════════════════════════════════ */
+    function afficherModalSortie() {
+        if (_modalSortieVisible) return;
+        _modalSortieVisible = true;
+        const el = $('modalSortie');
+        if (el) {
+            el.classList.add('show');
+            el.setAttribute('aria-hidden', 'false');
+        }
+    }
+
+    function cacherModalSortie() {
+        if (!_modalSortieVisible) return;
+        _modalSortieVisible = false;
+        const el = $('modalSortie');
+        if (el) {
+            el.classList.remove('show');
+            el.setAttribute('aria-hidden', 'true');
+        }
+    }
+
+    function estProjetEnAttente() {
+        return !!projetActif && normaliserStatut(projetActif.statut) === 'en_attente';
+    }
+
+    function sortirDesStats() {
+        _sortieAutorisee = true;
+        if (history.state && history.state.screen === 'stats') {
+            history.back();
+        } else {
+            fermerStats();
+        }
+    }
+
+    function demanderSortieStats() {
+        if (estProjetEnAttente()) {
+            afficherModalSortie();
+        } else {
+            sortirDesStats();
+        }
+    }
+
+    // « Finaliser mon projet » : ne fait rien pour l'instant
+    function finaliserProjet() {}
+
+    // « Plus tard » : sort réellement
+    function plusTardStats() {
+        cacherModalSortie();
+        sortirDesStats();
+    }
+
+    // Croix : ferme le modal et reste dans les statistiques
+    function fermerModalX() {
+        cacherModalSortie();
+    }
+
+    $('btnBackStats').addEventListener('click', demanderSortieStats);
+    $('modalClose').addEventListener('click', fermerModalX);
+    $('modalFinaliser').addEventListener('click', finaliserProjet);
+    $('modalPlusTard').addEventListener('click', plusTardStats);
+
+    /* ═══════════════════════════════════════════════════════════
+       MODAL SUSPENDU
+    ═══════════════════════════════════════════════════════════ */
+    function afficherModalSuspendu() {
+        if (_modalSuspenduVisible) return;
+        _modalSuspenduVisible = true;
+        const el = $('modalSuspendu');
+        if (el) {
+            el.classList.add('show');
+            el.setAttribute('aria-hidden', 'false');
+        }
+    }
+
+    function cacherModalSuspendu() {
+        if (!_modalSuspenduVisible) return;
+        _modalSuspenduVisible = false;
+        const el = $('modalSuspendu');
+        if (el) {
+            el.classList.remove('show');
+            el.setAttribute('aria-hidden', 'true');
+        }
+    }
+
+    // « Débloquer maintenant » : ne fait rien pour l'instant
+    function debloquerProjet() {}
+
+    $('modalSuspenduClose').addEventListener('click', cacherModalSuspendu);
+    $('modalDebloquer').addEventListener('click', debloquerProjet);
+    $('modalSuspenduPlusTard').addEventListener('click', cacherModalSuspendu);
+
+    /* ═══════════════════════════════════════════════════════════
+       OUVERTURE / FERMETURE D'UN PROJET
+    ═══════════════════════════════════════════════════════════ */
+    function ouvrirProjet(id) {
+        const projet = tousLesProjets.find(p => String(p.id || p.nom) === String(id));
+        if (!projet) return;
+
+        // SUSPENDU : on n'entre pas, on affiche seulement le modal
+        if (normaliserStatut(projet.statut) === 'suspendu') {
+            afficherModalSuspendu();
+            return;
+        }
+
+        projetActif = projet;
+
+        if (_timerOuvertureStats) {
+            clearTimeout(_timerOuvertureStats);
+            _timerOuvertureStats = null;
+        }
+
+        _sortieAutorisee = false;
+        cacherModalSortie();
+
+        document.querySelectorAll('.projets-module-root .projet-item').forEach(el => el.classList.remove('selected'));
+        document.querySelectorAll('.projets-module-root .projet-item').forEach(el => {
+            if (el.dataset.id === String(id)) el.classList.add('selected');
+        });
+
+        vuesAnimees.clear();
+        chargerStats(projet);
+
+        document.querySelectorAll('.projets-module-root .tab').forEach(t => t.classList.toggle('active', t.dataset.view === 'installations'));
+        document.querySelectorAll('.projets-module-root .view').forEach(v => v.classList.toggle('active', v.id === 'view-installations'));
+        $('screen-stats-projets').classList.remove('pays-active');
+
+        _timerOuvertureStats = setTimeout(() => {
+            _timerOuvertureStats = null;
+
+            try {
+                history.pushState({ screen: 'stats', projet: String(id) }, '');
+            } catch (e) {}
+
+            $('screen-list-projets').classList.remove('active');
+            $('screen-stats-projets').classList.add('active');
+            remonterEnHaut();
+
+            requestAnimationFrame(() => animerVue('installations'));
+
+            if (mapReady) drawMarkers(currentPays);
+        }, DELAI_AVANT_STATS);
+    }
+
+    function fermerStats() {
+        if (_timerOuvertureStats) {
+            clearTimeout(_timerOuvertureStats);
+            _timerOuvertureStats = null;
+        }
+        cacherModalSortie();
+        $('screen-stats-projets').classList.remove('active', 'pays-active');
+        $('screen-list-projets').classList.add('active');
+        document.querySelectorAll('.projets-module-root .projet-item.selected').forEach(el => el.classList.remove('selected'));
+        projetActif = null;
+    }
+
+    /* ═══════════════════════════════════════════════════════════
+       BOUTON RETOUR NATIF DU TÉLÉPHONE
+    ═══════════════════════════════════════════════════════════ */
+    if (window._projetsPopHandler) {
+        window.removeEventListener('popstate', window._projetsPopHandler);
+    }
+    window._projetsPopHandler = function () {
+        const statsScreen = $('screen-stats-projets');
+        if (!statsScreen || !statsScreen.classList.contains('active')) return;
+
+        if (_sortieAutorisee) {
+            _sortieAutorisee = false;
+            fermerStats();
+            return;
+        }
+
+        // Projet EN ATTENTE : on bloque la sortie et on affiche le modal
+        if (estProjetEnAttente()) {
+            try { history.pushState({ screen: 'stats' }, ''); } catch (err) {}
+            afficherModalSortie();
+        } else {
+            // Projet ACTIF : on laisse sortir
+            _sortieAutorisee = false;
+            fermerStats();
+        }
+    };
+    window.addEventListener('popstate', window._projetsPopHandler);
+
+    /* ═══════════════════════════════════════════════════════════
+       CARTE DU MONDE (D3.js)
+    ═══════════════════════════════════════════════════════════ */
+    function drawMarkers(pays) {
+        if (!mapReady || !mapSvg || !mapProjection) return;
+        currentMarkers.forEach(m => m.remove());
+        currentMarkers = [];
+
+        if (!pays || pays.length === 0) return;
+
+        const ns = 'http://www.w3.org/2000/svg';
+        const maxC = Math.max(...pays.map(p => p.count), 1);
+        pays.forEach(p => {
+            const xy = mapProjection([p.lng, p.lat]);
+            if (!xy) return;
+            const r = 1.6 + 2.4 * Math.sqrt(p.count / maxC);
+            const dot = document.createElementNS(ns, 'circle');
+            dot.setAttribute('cx', xy[0].toFixed(2));
+            dot.setAttribute('cy', xy[1].toFixed(2));
+            dot.setAttribute('r', r.toFixed(2));
+            dot.setAttribute('class', 'map-marker');
+            mapSvg.appendChild(dot);
+            currentMarkers.push(dot);
+        });
+    }
+
+    async function initMap() {
+        const spinner = $('mapSpinner');
+
+        if (mapReady) {
+            drawMarkers(currentPays);
+            spinner.classList.add('hidden');
+            return;
+        }
+
+        if (mapTrying) return;
+        mapTrying = true;
+
+        while (!mapReady) {
+            try {
+                const [d3geo, topojson] = await Promise.all([
+                    import('https://esm.sh/d3-geo@3'),
+                    import('https://esm.sh/topojson-client@3')
+                ]);
+
+                const world = await fetch('https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json').then(r => r.json());
+                const allCountries = topojson.feature(world, world.objects.countries);
+
+                const countries = {
+                    type: 'FeatureCollection',
+                    features: allCountries.features.filter(f => {
+                        const id = String(f.id || '').padStart(3, '0');
+                        const nom = (f.properties && f.properties.name) || '';
+                        return id !== '010' && nom !== 'Antarctica';
+                    })
+                };
+
+                const W = 600, H = 300;
+                const projection = d3geo.geoNaturalEarth1().fitExtent([[-30, -15], [W + 30, H + 15]], countries);
+                const path = d3geo.geoPath(projection);
+
+                mapSvg = $('worldMap');
+                const ns = 'http://www.w3.org/2000/svg';
+                mapSvg.innerHTML = '';
+
+                countries.features.forEach(f => {
+                    const d = path(f);
+                    if (!d) return;
+                    const p = document.createElementNS(ns, 'path');
+                    p.setAttribute('d', d);
+                    p.setAttribute('class', 'map-land');
+                    mapSvg.appendChild(p);
+                });
+
+                mapProjection = projection;
+                mapReady = true;
+                drawMarkers(currentPays);
+
+                spinner.classList.add('hidden');
+            } catch (err) {
+                console.warn('Carte indisponible, nouvelle tentative dans 2,5s…', err);
+                await new Promise(r => setTimeout(r, 2500));
+            }
+        }
+
+        mapTrying = false;
+    }
+
+    function calculerPositionPays() {
+        const tabsWrap = document.querySelector('.projets-module-root .tabs-wrap');
+        if (!tabsWrap) return;
+        const rect = tabsWrap.getBoundingClientRect();
+        document.documentElement.style.setProperty('--pays-top', Math.max(0, rect.bottom) + 'px');
+    }
+
+    function ajusterCarte() {
+        const vp = document.querySelector('.projets-module-root .map-viewport');
+        const rot = $('mapRotator');
+        if (!vp || !rot) return;
+
+        const W = vp.clientWidth;
+        const H = vp.clientHeight;
+        if (!W || !H) return;
+
+        if (H > W) {
+            const sourceW = Math.min(2 * W, H);
+            rot.style.width = sourceW + 'px';
+            rot.style.height = (sourceW / 2) + 'px';
+            rot.style.transform = 'translate(-50%,-50%) rotate(90deg)';
+        } else {
+            const w = Math.min(W, 2 * H);
+            rot.style.width = w + 'px';
+            rot.style.height = (w / 2) + 'px';
+            rot.style.transform = 'translate(-50%,-50%)';
+        }
+    }
+
+    if (window._projetsResizeHandler) {
+        window.removeEventListener('resize', window._projetsResizeHandler);
+    }
+    window._projetsResizeHandler = function () {
+        const s = $('screen-stats-projets');
+        if (s && s.classList.contains('pays-active')) {
+            calculerPositionPays();
+            ajusterCarte();
+        }
+    };
+    window.addEventListener('resize', window._projetsResizeHandler);
+
+    /* ═══════════════════════════════════════════════════════════
+       INITIALISATION DU MODULE
+    ═══════════════════════════════════════════════════════════ */
     async function init_projets() {
         injecterUtilisateur();
 
-        // Bouton "Créer un projet" → bascule vers l'onglet Créer
-        const btn = document.getElementById('btnCreerProjet');
-        if (btn) {
-            btn.addEventListener('click', function() {
-                const btnNav = document.getElementById('btn-create');
-                if (btnNav) btnNav.click();
-            });
+        const btnCreate = $('btnCreerProjet');
+        if (btnCreate) {
+            btnCreate.onclick = () => {
+                const nav = $('btn-create');
+                if (nav) nav.click();
+            };
         }
 
-        // Barre de recherche : filtre en temps réel
-        const input = document.getElementById('rechercheInput');
-        if (input) {
-            input.addEventListener('input', function() {
+        const inputRech = $('rechercheInput');
+        if (inputRech) {
+            inputRech.oninput = function () {
                 rechercheActive = this.value;
                 afficherListe(tousLesProjets);
-            });
+            };
         }
 
-        // Charger les projets depuis lister-projets
         await chargerListeProjets();
     }
 
     window.init_projets = init_projets;
-
 })();
 </script>
