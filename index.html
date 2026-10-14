@@ -1724,13 +1724,23 @@ async function lancerCreationProjet() {
         // 2. Récupérer toutes les données stockées
         const nomApp        = await recupererNatif('nomApp');
         const nomCourt      = await recupererNatif('nomCourt');
-        const logo          = await recupererNatif('logo');
+        let logo            = await recupererNatif('logo');
         const couleurFond   = (await recupererNatif('couleurFond'))   || '#ffffff';
         const themeColor    = (await recupererNatif('themeColor'))    || '#ffffff';
         const display       = (await recupererNatif('display'))       || 'standalone';
         const orientation   = (await recupererNatif('orientation'))   || 'portrait';
         const launchHandler = (await recupererNatif('launchHandler')) || 'navigate-existing';
         const translations  = (await recupererNatif('translations'))  || [];
+
+        // ⬇️ MODIF : le logo est stocké comme Blob → le convertir en data URL
+        if (logo instanceof Blob) {
+            logo = await new Promise(function(resolve, reject) {
+                const reader = new FileReader();
+                reader.onloadend = function() { resolve(reader.result); };
+                reader.onerror = reject;
+                reader.readAsDataURL(logo);
+            });
+        }
 
         // Validation minimale côté client
         if (!nomApp || !String(nomApp).trim()) {
@@ -2115,7 +2125,7 @@ window.addEventListener('DOMContentLoaded', async function() {
                 cacheOnglets.creer.codesScripts = codesScripts.slice();
                 cacheOnglets.creer.sousEcran = 'principal';
                 cacheOnglets.creer.scroll = 0;
-                _fichiersChargees = true;
+                _fichieresChargees = true;
             }).catch(function() {});
         }
     }, 200);
