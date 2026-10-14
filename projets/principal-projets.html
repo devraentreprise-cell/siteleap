@@ -1507,6 +1507,9 @@
                 history.pushState({ screen: 'stats', projet: String(id) }, '');
             } catch (e) {}
 
+            // ⬇️ MODIF 1 : cacher header + navbar pendant les stats
+            document.body.classList.add('in-sub-screen');
+
             $('screen-list-projets').classList.remove('active');
             $('screen-stats-projets').classList.add('active');
             remonterEnHaut();
@@ -1526,6 +1529,10 @@
         $('screen-stats-projets').classList.remove('active', 'pays-active');
         $('screen-list-projets').classList.add('active');
         document.querySelectorAll('.projets-module-root .projet-item.selected').forEach(el => el.classList.remove('selected'));
+
+        // ⬇️ MODIF 2 : réafficher header + navbar
+        document.body.classList.remove('in-sub-screen');
+
         projetActif = null;
     }
 
