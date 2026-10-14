@@ -1,6 +1,7 @@
 // ==========================================
 // Fichier : lister-projets.js
-// Renvoie les projets du client connecté, avec leurs statistiques
+// Renvoie les projets du client connecté, avec uniquement
+// les statistiques autorisées par la formule de chaque projet
 // ==========================================
 
 import admin from "firebase-admin";
@@ -14,8 +15,85 @@ if (!admin.apps.length) {
 
 const db = admin.database();
 
+// Niveau de chaque formule : plus le niveau est haut, plus on voit de statistiques
+const NIVEAU_FORMULE = { "decouverte": 0, "pro": 1, "pro-plus": 2 };
+const JOURS = ["lundi", "mardi", "mercredi", "jeudi", "vendredi", "samedi", "dimanche"];
+
 function reponse(statusCode, objet) {
     return { statusCode: statusCode, body: JSON.stringify(objet) };
+}
+
+function niveauDe(formule) {
+    const n = NIVEAU_FORMULE[formule];
+    return typeof n === "number" ? n : 0;
+}
+
+// Position d'aujourd'hui dans la semaine (0 = lundi ... 6 = dimanche), à l'heure du Cameroun
+function indexAujourdhui() {
+    const dateStr = new Intl.DateTimeFormat("en-CA", {
+        timeZone: "Africa/Douala",
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit"
+    }).format(new Date());
+    const parties = dateStr.split("-").map(Number);
+    const jourSemaine = new Date(Date.UTC(parties[0], parties[1] - 1, parties[2])).getUTCDay();
+    return (jourSemaine + 6) % 7;
+}
+
+// Transforme installs_par_jour (lundi ... dimanche) en liste de 7 nombres
+function installs7j(stats) {
+    const parJour = stats.installs_par_jour || {};
+    return JOURS.map(function (jour) {
+        return Number(parJour[jour] && parJour[jour].installs) || 0;
+    });
+}
+
+// Met la liste des pays sous la forme attendue par l'écran
+function listerPays(brut) {
+    if (!brut) return [];
+    const liste = Array.isArray(brut) ? brut : Object.values(brut);
+    return liste
+        .map(function (p) {
+            p = p || {};
+            return {
+                nom: String(p.nom || ""),
+                lat: Number(p.lat) || 0,
+                lng: Number(p.lng) || 0,
+                count: Number(p.count) || 0
+            };
+        })
+        .filter(function (p) { return p.count > 0; });
+}
+
+// Ne garde que ce que la formule autorise
+function statsAutorisees(brut, niveau) {
+    const s = brut || {};
+
+    // Niveau 0 (Découverte) : installations
+    const resultat = {
+        installs_total: Number(s.installs_total) || 0,
+        installs_7j: installs7j(s),
+        index_aujourdhui: indexAujourdhui()
+    };
+
+    // Niveau 1 (Pro) : + usage
+    if (niveau >= 1) {
+        resultat.lancements_accueil = Number(s.lancements_accueil) || 0;
+        resultat.lancements_navigateur = Number(s.lancements_navigateur) || 0;
+        resultat.duree_accueil_total_sec = Number(s.duree_accueil_total_sec) || 0;
+        resultat.duree_navigateur_total_sec = Number(s.duree_navigateur_total_sec) || 0;
+    }
+
+    // Niveau 2 (Pro+) : + appareils et pays
+    if (niveau >= 2) {
+        resultat.installs_android = Number(s.installs_android) || 0;
+        resultat.installs_ios = Number(s.installs_ios) || 0;
+        resultat.installs_pc = Number(s.installs_pc) || 0;
+        resultat.pays = listerPays(s.pays);
+    }
+
+    return resultat;
 }
 
 export async function handler(event, context) {
@@ -72,17 +150,22 @@ export async function handler(event, context) {
             });
         });
 
-        // 4. Lecture des statistiques de chaque projet, toutes en même temps
+        // 4. Lecture des statistiques UNIQUEMENT pour les projets actifs
+        //    (en attente ou suspendu : aucune statistique n'est lue ni envoyée)
         const lectures = projets.map(function (p) {
+            if (p.statut !== "actif") return Promise.resolve(null);
             return db.ref("stats/" + p.id).once("value");
         });
         const snapsStats = await Promise.all(lectures);
 
+        // 5. On ne garde que ce que la formule autorise
         projets.forEach(function (p, i) {
-            p.stats = snapsStats[i].val() || {};
+            if (p.statut === "actif" && snapsStats[i]) {
+                p.stats = statsAutorisees(snapsStats[i].val(), niveauDe(p.formule));
+            }
         });
 
-        // 5. Du plus récent au plus ancien
+        // 6. Du plus récent au plus ancien
         projets.sort(function (a, b) {
             return b.creeLe - a.creeLe;
         });
