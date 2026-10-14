@@ -328,30 +328,40 @@
 .lock-icon svg { width: 100%; height: 100%; display: block; }
 .section-head.is-locked .lock-icon { display: inline-flex; }
 
+/* ═══════════════════════════════════════════
+   LISTE (STYLE WHATSAPP)
+   ═══════════════════════════════════════════ */
 .section-list {
-    display: flex; flex-direction: column; gap: 10px; padding-bottom: 8px;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    padding-bottom: 8px;
 }
-.section-item {
-    display: flex; align-items: center; gap: 14px;
-    padding: 16px 16px; border-radius: 16px;
-    border: 1px solid #f1f5f9; background: #ffffff;
-    box-shadow:
-        0 8px 20px -14px rgba(15,23,42,.14),
-        0 2px 6px -2px rgba(15,23,42,.04);
-    font-family: inherit; text-align: left; color: #0b1220;
-    transition: box-shadow .18s ease, transform .18s ease;
-    width: 100%; cursor: default; overflow: hidden;
-    min-height: 84px; box-sizing: border-box;
-}
-.section-item.clickable { cursor: pointer; }
-.section-item.clickable:hover {
-    transform: translateY(-1px);
-    box-shadow:
-        0 14px 26px -16px rgba(15,23,42,.22),
-        0 2px 6px -2px rgba(15,23,42,.05);
-}
-.section-item.clickable:active { transform: translateY(0); }
 
+.section-item {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 14px 8px;
+    background: #ffffff;
+    border: none;
+    border-bottom: 1px solid #f1f5f9;
+    font-family: inherit;
+    text-align: left;
+    color: #0b1220;
+    width: 100%;
+    cursor: default;
+    box-sizing: border-box;
+    transition: background-color .15s ease;
+    min-height: 76px;
+}
+.section-item:last-child { border-bottom: none; }
+
+.section-item.clickable { cursor: pointer; }
+.section-item.clickable:hover { background-color: #f8fafc; }
+.section-item.clickable:active { background-color: #f1f5f9; }
+
+/* états grisés (formule insuffisante) */
 .section-list.section-list-disabled .section-item { cursor: pointer; }
 .section-list.section-list-disabled .item-icon,
 .section-list.section-list-disabled .item-content,
@@ -359,10 +369,7 @@
     opacity: 0.4; filter: grayscale(1);
 }
 .section-list.section-list-disabled .section-item.clickable:hover {
-    transform: translateY(-1px);
-    box-shadow:
-        0 14px 26px -16px rgba(15,23,42,.22),
-        0 2px 6px -2px rgba(15,23,42,.05);
+    background-color: #f8fafc;
 }
 
 .section-item.disabled { cursor: pointer; }
@@ -372,10 +379,7 @@
     opacity: 0.4; filter: grayscale(1);
 }
 .section-item.disabled.clickable:hover {
-    transform: translateY(-1px);
-    box-shadow:
-        0 14px 26px -16px rgba(15,23,42,.22),
-        0 2px 6px -2px rgba(15,23,42,.05);
+    background-color: #f8fafc;
 }
 
 .section-item.bloque-fullscreen {
@@ -388,13 +392,16 @@
     opacity: 0.4; filter: grayscale(1);
 }
 
+/* ═══════════════════════════════════════════
+   ICÔNE / CONTENU / FIN
+   ═══════════════════════════════════════════ */
 .item-icon {
-    flex-shrink: 0; width: 42px; height: 42px;
-    border-radius: 11px; background: #dbeafe; color: #1e40af;
+    flex-shrink: 0; width: 40px; height: 40px;
+    border-radius: 10px; background: #dbeafe; color: #1e40af;
     display: flex; align-items: center; justify-content: center;
 }
 .item-icon svg {
-    width: 22px; height: 22px;
+    width: 20px; height: 20px;
     stroke: currentColor; fill: none;
     stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round;
 }
@@ -436,6 +443,9 @@
     transition: filter .2s ease;
 }
 
+/* ═══════════════════════════════════════════
+   CHAMPS D'ÉDITION
+   ═══════════════════════════════════════════ */
 .edit-field {
     position: relative; background: transparent;
     border: none; border-bottom: 1.5px solid #e2e8f0;
@@ -459,6 +469,9 @@
     stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
 }
 
+/* ═══════════════════════════════════════════
+   ERREURS
+   ═══════════════════════════════════════════ */
 .error-message {
     font-size: 0.78rem; color: #ef4444; font-weight: 500;
     margin-top: 4px; display: none;
@@ -476,6 +489,9 @@
 }
 .edit-field.has-error { border-bottom-color: #ef4444; }
 
+/* ═══════════════════════════════════════════
+   DOTS
+   ═══════════════════════════════════════════ */
 .section-dots {
     display: flex; justify-content: center; gap: 8px;
     padding: 16px 0 12px; flex-shrink: 0;
@@ -489,6 +505,9 @@
     background: #10b981; width: 26px; border-radius: 4px;
 }
 
+/* ═══════════════════════════════════════════
+   BOUTON PRINCIPAL
+   ═══════════════════════════════════════════ */
 .btn-primary-full {
     background-color: #10b981; color: #ffffff;
     width: 100%; padding: 16px;
@@ -502,6 +521,9 @@
 .btn-primary-full:hover { background-color: #059669; transform: translateY(-1px); }
 .btn-primary-full:active { transform: scale(.98); }
 
+/* ═══════════════════════════════════════════
+   NOTIF UPGRADE (inchangée)
+   ═══════════════════════════════════════════ */
 .notif-upgrade {
     position: fixed;
     left: 50%;
