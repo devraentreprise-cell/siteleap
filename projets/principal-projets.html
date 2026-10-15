@@ -202,6 +202,23 @@
         </section>
     </div>
 
+    <!-- MODAL ENTRÉE (projets EN ATTENTE — première ouverture) -->
+    <div class="modal-overlay" id="modalEntree" aria-hidden="true">
+        <div class="modal-card" role="dialog" aria-labelledby="modalEntreeTitle">
+            <button type="button" class="modal-close" id="modalEntreeClose" aria-label="Fermer">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="6" y1="6" x2="18" y2="18"/>
+                    <line x1="18" y1="6" x2="6" y2="18"/>
+                </svg>
+            </button>
+            <h2 class="modal-title" id="modalEntreeTitle">Statistiques de démonstration</h2>
+            <p class="modal-text">Les données affichées ici sont des statistiques de démonstration.</p>
+            <div class="modal-actions">
+                <button type="button" class="modal-btn modal-btn-primary" id="modalEntreeOk">OK</button>
+            </div>
+        </div>
+    </div>
+
     <!-- MODAL SORTIE (projets EN ATTENTE) -->
     <div class="modal-overlay" id="modalSortie" aria-hidden="true">
         <div class="modal-card" role="dialog" aria-labelledby="modalTitle">
@@ -211,8 +228,8 @@
                     <line x1="18" y1="6" x2="6" y2="18"/>
                 </svg>
             </button>
-            <h2 class="modal-title" id="modalTitle">Votre projet n'est pas encore en ligne</h2>
-            <p class="modal-text">Les chiffres affichés sont une démonstration. Finalisez votre projet et vos vraies statistiques commenceront à se remplir.</p>
+            <h2 class="modal-title" id="modalTitle">Finalisation du projet</h2>
+            <p class="modal-text">Dernière étape : finaliser votre projet pour démarrer le suivi réel de vos statistiques.</p>
             <div class="modal-actions">
                 <button type="button" class="modal-btn modal-btn-primary" id="modalFinaliser">Finaliser mon projet</button>
                 <button type="button" class="modal-btn modal-btn-secondary" id="modalPlusTard">Plus tard</button>
@@ -418,8 +435,7 @@
 
 .top-bar {
     position: sticky; top: 0; z-index: 30;
-    background: rgba(255,255,255,.91);
-    backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+    background: #ffffff;
     padding: 12px 16px 10px;
 }
 .top-row {
@@ -564,10 +580,10 @@
     transition: height 1s cubic-bezier(.22,1,.36,1);
     background: linear-gradient(180deg,#93c5fd,#3b82f6);
 }
-.evo-col:last-child .evo-bar { background: linear-gradient(180deg,#10b981,#047857); box-shadow: 0 3px 10px rgba(16,185,129,.17); }
+.evo-col.today .evo-bar { background: linear-gradient(180deg,#10b981,#047857); box-shadow: 0 3px 10px rgba(16,185,129,.17); }
 .evo-label { font-size: .63rem; font-weight: 750; color: var(--muted-2); margin-top: 9px; letter-spacing: .01em; text-align: center; }
-.evo-col:last-child .evo-label { color: var(--green-deep); }
-.evo-col:last-child .evo-value { color: var(--green-deep); }
+.evo-col.today .evo-label { color: var(--green-deep); }
+.evo-col.today .evo-value { color: var(--green-deep); }
 
 .diagram-caption {
     margin-top: 16px; padding-top: 14px; border-top: 1px solid var(--line);
@@ -681,7 +697,7 @@
     align-items: center;
     justify-content: center;
     padding: 20px;
-    z-index: 9999;
+    z-index: 10050;
     opacity: 0;
     pointer-events: none;
     transition: opacity .25s ease;
@@ -811,14 +827,13 @@
     let projetActif = null;
     let rechercheActive = '';
 
-    // Cache : évite le rechargement quand on revient sur l'onglet Projets
     if (!window._cacheProjetsModule) {
         window._cacheProjetsModule = { loaded: false, projets: [] };
     }
 
     const ORDRE_FORMULES = ['decouverte', 'pro', 'pro-plus'];
     const NIVEAU_REQUIS = { installations: 0, usage: 1, appareils: 2, pays: 2 };
-    const DELAI_AVANT_STATS = 180;
+    const DELAI_AVANT_STATS = 0;
     const R_DONUT = 56;
     const C_DONUT = 2 * Math.PI * R_DONUT;
 
@@ -830,26 +845,34 @@
 
     let _sortieAutorisee = false;
     let _modalSortieVisible = false;
+    let _modalEntreeVisible = false;
     let _modalSuspenduVisible = false;
     let _timerOuvertureStats = null;
 
     /* ═══════════════════════════════════════════════════════════
        STATISTIQUES FICTIVES (projets EN ATTENTE)
-       Les mêmes pour tous les projets en attente
     ═══════════════════════════════════════════════════════════ */
     const STATS_DEMO = {
-        installs_total: 142,
-        installs_android: 54, installs_ios: 48, installs_pc: 40,
-        installs_7j: [12, 18, 25, 20, 30, 15, 22],
-        lancements_accueil: 320, lancements_navigateur: 85,
-        duree_accueil_total_sec: 48000, duree_navigateur_total_sec: 10200
+        installs_total: 38450,
+        installs_android: 16200, installs_ios: 12800, installs_pc: 9450,
+        installs_7j: [720, 950, 1180, 1040, 1420, 890, 1250],
+        lancements_accueil: 185000, lancements_navigateur: 24000,
+        duree_accueil_total_sec: 55500000, duree_navigateur_total_sec: 3600000
     };
     const PAYS_DEMO = [
-        { nom: 'Cameroun', lat: 3.848, lng: 11.502, count: 52 },
-        { nom: 'France', lat: 46.2276, lng: 2.2137, count: 38 },
-        { nom: 'Sénégal', lat: 14.4974, lng: -14.4524, count: 22 },
-        { nom: 'Canada', lat: 56.1304, lng: -106.3468, count: 16 },
-        { nom: 'Belgique', lat: 50.5039, lng: 4.4699, count: 14 }
+        { nom: 'Cameroun', lat: 3.848, lng: 11.502, count: 9200 },
+        { nom: 'France', lat: 46.2276, lng: 2.2137, count: 6800 },
+        { nom: "Côte d'Ivoire", lat: 7.54, lng: -5.5471, count: 4500 },
+        { nom: 'Sénégal', lat: 14.4974, lng: -14.4524, count: 3100 },
+        { nom: 'Canada', lat: 56.1304, lng: -106.3468, count: 2600 },
+        { nom: 'Belgique', lat: 50.5039, lng: 4.4699, count: 2200 },
+        { nom: 'Gabon', lat: -0.8037, lng: 11.6094, count: 1900 },
+        { nom: 'Maroc', lat: 31.7917, lng: -7.0926, count: 1700 },
+        { nom: 'États-Unis', lat: 37.0902, lng: -95.7129, count: 1500 },
+        { nom: 'Allemagne', lat: 51.1657, lng: 10.4515, count: 1200 },
+        { nom: 'Royaume-Uni', lat: 55.3781, lng: -3.4360, count: 950 },
+        { nom: 'Nigeria', lat: 9.0820, lng: 8.6753, count: 820 },
+        { nom: 'Congo', lat: -4.0383, lng: 21.7587, count: 680 }
     ];
 
     /* ═══════════════════════════════════════════════════════════
@@ -863,7 +886,6 @@
             .replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
     }
 
-    // Le statut est écrit dans la base : en_attente / actif / suspendu
     function normaliserStatut(s) {
         const v = String(s || '').toLowerCase().replace(/-/g, '_');
         if (v === 'actif') return 'actif';
@@ -920,18 +942,37 @@
         return String(d.getDate()).padStart(2, '0') + ' ' + mois[d.getMonth()] + ' ' + d.getFullYear();
     }
 
+    /* ─── Notation compacte K / M / Md ─── */
     function formatNombre(n) {
-        if (!Number.isFinite(Number(n))) return '0';
-        return String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+        const num = Number(n);
+        if (!Number.isFinite(num)) return '0';
+        const abs = Math.abs(num);
+        if (abs < 1000) return String(Math.round(num));
+
+        let valeur, suffixe;
+        if (abs < 1e6)       { valeur = num / 1e3; suffixe = 'K'; }
+        else if (abs < 1e9)  { valeur = num / 1e6; suffixe = 'M'; }
+        else                 { valeur = num / 1e9; suffixe = 'Md'; }
+
+        const arrondi = (Math.abs(valeur) < 10)
+            ? Math.round(valeur * 10) / 10
+            : Math.round(valeur);
+
+        return String(arrondi).replace('.', ',') + suffixe;
     }
 
+    /* ─── Durée : 3 paliers (s / min / h) ─── */
     function formatDuree(sec) {
-        if (!sec || sec <= 0) return { v: '0', u: 'min' };
-        const h = Math.floor(sec / 3600);
-        const m = Math.floor((sec % 3600) / 60);
-        if (h > 0) return { v: String(h), u: 'h' + (m > 0 ? ' ' + m + ' min' : '') };
-        return { v: String(m), u: 'min' };
+        if (!sec || sec <= 0) return { v: '0', u: 's' };
+        if (sec < 60) return { v: String(Math.round(sec)), u: 's' };
+        const totalMin = Math.floor(sec / 60);
+        if (totalMin < 60) return { v: String(totalMin), u: 'min' };
+        const h = Math.floor(totalMin / 60);
+        const m = totalMin % 60;
+        if (m > 0) return { v: String(h), u: 'h ' + m + ' min' };
+        return { v: String(h), u: 'h' };
     }
+
     function arrondir(n) { return Math.round(n * 10) / 10; }
     function virgule(n) { return String(n).replace('.', ','); }
 
@@ -941,8 +982,21 @@
         try { window.scrollTo({ top: 0, behavior: 'auto' }); } catch (e) {}
     }
 
+    /* ─── Index du jour actuel (fuseau Cameroun, 0=lundi ... 6=dimanche) ─── */
+    function indexAujourdhuiCameroun() {
+        const dateStr = new Intl.DateTimeFormat('en-CA', {
+            timeZone: 'Africa/Douala',
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit'
+        }).format(new Date());
+        const [an, m, j] = dateStr.split('-').map(Number);
+        const jourSemaine = new Date(Date.UTC(an, m - 1, j)).getUTCDay();
+        return (jourSemaine + 6) % 7;
+    }
+
     /* ═══════════════════════════════════════════════════════════
-       ACCUEIL (nom, avatar, salutation)
+       ACCUEIL (prénom + avatar 2 lettres)
     ═══════════════════════════════════════════════════════════ */
     function injecterUtilisateur() {
         const user = window._authUser;
@@ -951,9 +1005,23 @@
         const avEl = $('accueilAvatar');
         if (greetEl) greetEl.textContent = getGreeting();
         if (!user) return;
-        const nomComplet = user.displayName || (user.email ? user.email.split('@')[0] : 'Utilisateur');
-        if (nameEl) nameEl.textContent = nomComplet;
-        if (avEl) avEl.textContent = initiales(nomComplet);
+
+        // Prénom uniquement
+        let prenom;
+        if (user.displayName && user.displayName.trim()) {
+            prenom = user.displayName.trim().split(/\s+/)[0];
+        } else if (user.email) {
+            prenom = user.email.split('@')[0];
+        } else {
+            prenom = 'Utilisateur';
+        }
+        if (nameEl) nameEl.textContent = prenom;
+
+        // Avatar : initiales du nom complet (2 lettres)
+        if (avEl) {
+            const source = user.displayName || (user.email ? user.email.split('@')[0] : '');
+            avEl.textContent = initiales(source);
+        }
     }
 
     /* ═══════════════════════════════════════════════════════════
@@ -1091,8 +1159,6 @@
         const niveauProjet = niveauFormule(projet.formule);
         const estEnAttente = (normaliserStatut(projet.statut) === 'en_attente');
 
-        // EN ATTENTE → statistiques fictives, rien n'est bloqué
-        // ACTIF → vraies statistiques, sections bloquées selon la formule
         const s = estEnAttente ? STATS_DEMO : (projet.stats || {});
 
         const isBloquee = {};
@@ -1108,8 +1174,15 @@
         const evo = (s.installs_7j && s.installs_7j.length) ? s.installs_7j : [0, 0, 0, 0, 0, 0, 0];
         const jours = ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim'];
         const maxEvo = Math.max(...evo, 1);
-        const aujourdhui = evo[evo.length - 1] || 0;
-        const hier = evo[evo.length - 2] || 0;
+
+        // Index du jour actuel
+        const idxAujourdhui = (typeof s.index_aujourdhui === 'number')
+            ? s.index_aujourdhui
+            : indexAujourdhuiCameroun();
+        const idxHier = (idxAujourdhui - 1 + 7) % 7;
+
+        const aujourdhui = evo[idxAujourdhui] || 0;
+        const hier = evo[idxHier] || 0;
         const diffJour = aujourdhui - hier;
 
         if (diffJour > 0) {
@@ -1127,7 +1200,7 @@
         }
 
         $('evoChart').innerHTML = evo.map((v, i) =>
-            '<div class="evo-col">' +
+            '<div class="evo-col' + (i === idxAujourdhui ? ' today' : '') + '">' +
                 '<div class="evo-value">' + formatNombre(v) + '</div>' +
                 '<div class="evo-bar-wrap">' +
                     '<div class="evo-bar" data-h="' + (v / maxEvo * 100) + '"></div>' +
@@ -1373,7 +1446,35 @@
     });
 
     /* ═══════════════════════════════════════════════════════════
-       MODAL SORTIE (projets EN ATTENTE uniquement)
+       MODAL ENTRÉE (projets EN ATTENTE — première ouverture)
+    ═══════════════════════════════════════════════════════════ */
+    function cleProjetVu(id) { return 'projetsModule_projetVu_' + id; }
+
+    function afficherModalEntree() {
+        if (_modalEntreeVisible) return;
+        _modalEntreeVisible = true;
+        const el = $('modalEntree');
+        if (el) {
+            el.classList.add('show');
+            el.setAttribute('aria-hidden', 'false');
+        }
+    }
+
+    function cacherModalEntree() {
+        if (!_modalEntreeVisible) return;
+        _modalEntreeVisible = false;
+        const el = $('modalEntree');
+        if (el) {
+            el.classList.remove('show');
+            el.setAttribute('aria-hidden', 'true');
+        }
+    }
+
+    $('modalEntreeClose').addEventListener('click', cacherModalEntree);
+    $('modalEntreeOk').addEventListener('click', cacherModalEntree);
+
+    /* ═══════════════════════════════════════════════════════════
+       MODAL SORTIE (projets EN ATTENTE)
     ═══════════════════════════════════════════════════════════ */
     function afficherModalSortie() {
         if (_modalSortieVisible) return;
@@ -1416,16 +1517,13 @@
         }
     }
 
-    // « Finaliser mon projet » : ne fait rien pour l'instant
     function finaliserProjet() {}
 
-    // « Plus tard » : sort réellement
     function plusTardStats() {
         cacherModalSortie();
         sortirDesStats();
     }
 
-    // Croix : ferme le modal et reste dans les statistiques
     function fermerModalX() {
         cacherModalSortie();
     }
@@ -1458,7 +1556,6 @@
         }
     }
 
-    // « Débloquer maintenant » : ne fait rien pour l'instant
     function debloquerProjet() {}
 
     $('modalSuspenduClose').addEventListener('click', cacherModalSuspendu);
@@ -1472,7 +1569,6 @@
         const projet = tousLesProjets.find(p => String(p.id || p.nom) === String(id));
         if (!projet) return;
 
-        // SUSPENDU : on n'entre pas, on affiche seulement le modal
         if (normaliserStatut(projet.statut) === 'suspendu') {
             afficherModalSuspendu();
             return;
@@ -1487,6 +1583,7 @@
 
         _sortieAutorisee = false;
         cacherModalSortie();
+        cacherModalEntree();
 
         document.querySelectorAll('.projets-module-root .projet-item').forEach(el => el.classList.remove('selected'));
         document.querySelectorAll('.projets-module-root .projet-item').forEach(el => {
@@ -1500,24 +1597,30 @@
         document.querySelectorAll('.projets-module-root .view').forEach(v => v.classList.toggle('active', v.id === 'view-installations'));
         $('screen-stats-projets').classList.remove('pays-active');
 
-        _timerOuvertureStats = setTimeout(() => {
-            _timerOuvertureStats = null;
+        // ═══ BASCULE INSTANTANÉE ═══
+        try {
+            history.pushState({ screen: 'stats', projet: String(id) }, '');
+        } catch (e) {}
 
-            try {
-                history.pushState({ screen: 'stats', projet: String(id) }, '');
-            } catch (e) {}
+        document.body.classList.add('in-sub-screen');
+        $('screen-list-projets').classList.remove('active');
+        $('screen-stats-projets').classList.add('active');
+        remonterEnHaut();
 
-            // ⬇️ MODIF 1 : cacher header + navbar pendant les stats
-            document.body.classList.add('in-sub-screen');
+        requestAnimationFrame(() => animerVue('installations'));
 
-            $('screen-list-projets').classList.remove('active');
-            $('screen-stats-projets').classList.add('active');
-            remonterEnHaut();
+        if (mapReady) drawMarkers(currentPays);
 
-            requestAnimationFrame(() => animerVue('installations'));
-
-            if (mapReady) drawMarkers(currentPays);
-        }, DELAI_AVANT_STATS);
+        // ═══ MODALE D'ENTRÉE (une seule fois par projet EN ATTENTE) ═══
+        if (estProjetEnAttente()) {
+            const cle = cleProjetVu(id);
+            let dejaVu = false;
+            try { dejaVu = localStorage.getItem(cle) === '1'; } catch (e) {}
+            if (!dejaVu) {
+                try { localStorage.setItem(cle, '1'); } catch (e) {}
+                setTimeout(() => afficherModalEntree(), 500);
+            }
+        }
     }
 
     function fermerStats() {
@@ -1526,11 +1629,11 @@
             _timerOuvertureStats = null;
         }
         cacherModalSortie();
+        cacherModalEntree();
         $('screen-stats-projets').classList.remove('active', 'pays-active');
         $('screen-list-projets').classList.add('active');
         document.querySelectorAll('.projets-module-root .projet-item.selected').forEach(el => el.classList.remove('selected'));
 
-        // ⬇️ MODIF 2 : réafficher header + navbar
         document.body.classList.remove('in-sub-screen');
 
         projetActif = null;
@@ -1552,12 +1655,10 @@
             return;
         }
 
-        // Projet EN ATTENTE : on bloque la sortie et on affiche le modal
         if (estProjetEnAttente()) {
             try { history.pushState({ screen: 'stats' }, ''); } catch (err) {}
             afficherModalSortie();
         } else {
-            // Projet ACTIF : on laisse sortir
             _sortieAutorisee = false;
             fermerStats();
         }
