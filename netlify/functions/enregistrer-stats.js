@@ -1,6 +1,7 @@
 // ==========================================
 // Fichier : enregistrer-stats.js
 // Reçoit les événements d'un site installable et met à jour ses statistiques
+// Le statut du projet est lu dans la partie « projets » (jamais dans « stats »)
 // ==========================================
 
 import admin from "firebase-admin";
@@ -36,6 +37,22 @@ function reponse(statusCode, objet) {
 // Message reçu mais non compté (projet non actif, appareil déjà compté, etc.)
 function ignore() {
     return reponse(200, { success: true, ignore: true });
+}
+
+// Cherche le projet par son identifiant dans tous les tiroirs de « projets »
+// (on ignore les emails) et renvoie son statut, ou null s'il n'existe pas
+async function trouverStatutProjet(idProjet) {
+    const snap = await db.ref("projets").once("value");
+    let statut = null;
+    let trouve = false;
+    snap.forEach(function (tiroirEmail) {
+        if (tiroirEmail.hasChild(idProjet)) {
+            trouve = true;
+            statut = tiroirEmail.child(idProjet).child("statut").val();
+            return true; // arrête la recherche
+        }
+    });
+    return trouve ? String(statut || "") : null;
 }
 
 // Date du jour (AAAA-MM-JJ) et nom du jour, à l'heure du Cameroun
@@ -111,12 +128,16 @@ export async function handler(event, context) {
             return reponse(400, { success: false, message: "Type d'événement inconnu." });
         }
 
-        // 2. Seuls les projets ACTIFS enregistrent des statistiques
-        const refStats = db.ref("stats/" + idProjet);
-        const snapStatut = await refStats.child("statut").once("value");
-        if (snapStatut.val() !== "actif") {
+        // 2. Le statut se lit dans la partie « projets » : seuls les projets ACTIFS comptent
+        const statut = await trouverStatutProjet(idProjet);
+        if (statut === null) {
+            return reponse(404, { success: false, message: "Projet introuvable." });
+        }
+        if (statut !== "actif") {
             return ignore();
         }
+
+        const refStats = db.ref("stats/" + idProjet);
 
         // 3. Traitement selon le type d'événement
         if (type === "install") {
