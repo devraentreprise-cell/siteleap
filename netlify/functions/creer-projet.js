@@ -53,6 +53,45 @@ async function envoyerImage(image) {
     return donnees.secure_url;
 }
 
+// Calcule les dates de la semaine en cours (du lundi au dimanche) à l'heure du Cameroun (UTC+1)
+function obtenirSemaineCouranteCameroun() {
+    const formatter = new Intl.DateTimeFormat('en-CA', {
+        timeZone: 'Africa/Douala',
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit'
+    });
+    
+    const dateStr = formatter.format(new Date());
+    const [annee, mois, jour] = dateStr.split('-').map(Number);
+    
+    const dateCameroun = new Date(Date.UTC(annee, mois - 1, jour));
+    let jourSemaine = dateCameroun.getUTCDay(); // 0 = Dimanche, 1 = Lundi, ...
+    let decalageVersLundi = (jourSemaine === 0) ? -6 : 1 - jourSemaine;
+    
+    const lundiDate = new Date(dateCameroun);
+    lundiDate.setUTCDate(dateCameroun.getUTCDate() + decalageVersLundi);
+    
+    const joursNoms = ["lundi", "mardi", "mercredi", "jeudi", "vendredi", "samedi", "dimanche"];
+    const installsParJour = {};
+    
+    for (let i = 0; i < 7; i++) {
+        const d = new Date(lundiDate);
+        d.setUTCDate(lundiDate.getUTCDate() + i);
+        const an = d.getUTCFullYear();
+        const m = String(d.getUTCMonth() + 1).padStart(2, '0');
+        const j = String(d.getUTCDate()).padStart(2, '0');
+        const formattedDate = `${an}-${m}-${j}`;
+        
+        installsParJour[joursNoms[i]] = {
+            date: formattedDate,
+            installs: 0
+        };
+    }
+    
+    return installsParJour;
+}
+
 export async function handler(event, context) {
     if (event.httpMethod !== "POST") {
         return reponse(405, { success: false, message: "Méthode non autorisée." });
@@ -143,6 +182,7 @@ export async function handler(event, context) {
             formule: formule,
             statut: "en_attente",
             creeLe: admin.database.ServerValue.TIMESTAMP,
+            dateFin: 0,
             imageUrl: imageUrl
         };
 
@@ -156,7 +196,8 @@ export async function handler(event, context) {
             lancements_navigateur: 0,
             lancements_accueil: 0,
             duree_navigateur_total_sec: 0,
-            duree_accueil_total_sec: 0
+            duree_accueil_total_sec: 0,
+            installs_par_jour: obtenirSemaineCouranteCameroun()
         };
 
         await db.ref().update(miseAJour);
