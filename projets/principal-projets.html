@@ -555,6 +555,7 @@
     background: var(--bg);
     min-height: 100%;
     padding-bottom: 40px;
+    position: relative; /* Ajouté pour que les écrans absolus fonctionnent */
 }
 
 .top-bar {
@@ -913,10 +914,19 @@
 .modal-btn-secondary:hover { background: #f8fafc; color: var(--ink); }
 
 /* ═══════ FORMULAIRE & MESSAGES ═══════ */
-#finalisation-container {
+/* Les conteneurs sont en position absolue pour recouvrir tout l'écran et cacher le menu/nav parent */
+#finalisation-container, #success-container, #deja-inscrit-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
     background: #ffffff;
-    min-height: calc(100vh - 70px);
+    z-index: 50;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
 }
+
 .final-content {
     padding: 24px 20px 40px;
     display: flex;
@@ -973,13 +983,10 @@
 .final-footer-note { text-align: center; font-size: 0.75rem; color: var(--muted); line-height: 1.4; margin-top: 4px; padding: 0 10px; }
 
 /* ÉCRANS DE SUCCÈS / DÉJÀ INSCRIT */
-#success-container, #deja-inscrit-container {
-    background: #ffffff;
-    min-height: calc(100vh - 70px);
-}
 .success-wrapper {
     display: flex; flex-direction: column; align-items: center; justify-content: center;
-    min-height: calc(100vh - 70px);
+    height: 100%;
+    min-height: 100vh;
     text-align: center; padding: 24px;
 }
 .success-icon {
@@ -1223,6 +1230,7 @@
         
         $('finalisation-container').style.display = 'none';
         $('success-container').style.display = 'none';
+        $('deja-inscrit-container').style.display = 'none';
         
         if (dejaInscrit) {
             $('deja-inscrit-container').style.display = 'block';
