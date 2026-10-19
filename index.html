@@ -1732,15 +1732,41 @@ async function lancerCreationProjet() {
         const launchHandler = (await recupererNatif('launchHandler')) || 'navigate-existing';
         const translations  = (await recupererNatif('translations'))  || [];
 
-        // ⬇️ MODIF : le logo est stocké comme Blob → le convertir en data URL
-        if (logo instanceof Blob) {
-            logo = await new Promise(function(resolve, reject) {
-                const reader = new FileReader();
-                reader.onloadend = function() { resolve(reader.result); };
-                reader.onerror = reject;
-                reader.readAsDataURL(logo);
-            });
-        }
+        // ─── DEBUG TEMPORAIRE (à retirer ensuite) ───
+console.log('[DEBUG] type logo:', Object.prototype.toString.call(logo));
+console.log('[DEBUG] typeof logo:', typeof logo);
+console.log('[DEBUG] logo.constructor:', logo && logo.constructor && logo.constructor.name);
+
+// Conversion robuste : tant que ce n'est pas déjà une string, on tente FileReader
+if (logo && typeof logo !== 'string') {
+    try {
+        logo = await new Promise(function(resolve, reject) {
+            const reader = new FileReader();
+            reader.onload = function() {
+                if (reader.result && typeof reader.result === 'string') {
+                    resolve(reader.result);
+                } else {
+                    reject(new Error('FileReader a renvoyé un résultat invalide'));
+                }
+            };
+            reader.onerror = function() {
+                reject(reader.error || new Error('FileReader error'));
+            };
+            reader.readAsDataURL(logo);
+        });
+    } catch (e) {
+        console.error('[Création] Conversion logo échouée :', e, logo);
+        showNotification("L'icône est illisible. Rechargez-la depuis l'écran Icône.", 'error');
+        return false;
+    }
+}
+
+// Vérification finale : on DOIT avoir une data URL valide
+if (typeof logo !== 'string' || !logo.startsWith('data:image/')) {
+    console.error('[Création] Logo final invalide :', String(logo).slice(0, 100));
+    showNotification("L'icône du site est introuvable. Rechargez-la.", 'error');
+    return false;
+}
 
         // Validation minimale côté client
         if (!nomApp || !String(nomApp).trim()) {
