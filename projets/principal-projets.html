@@ -900,6 +900,8 @@
     letter-spacing: 0.005em;
 }
 .modal-btn:active { transform: scale(.98); }
+/* ✅ MODIF : style du bouton pendant le chargement */
+.modal-btn:disabled { opacity: .65; cursor: not-allowed; }
 .modal-btn-primary {
     background: linear-gradient(135deg, #10b981 0%, #059669 100%);
     color: #ffffff;
@@ -914,15 +916,16 @@
 .modal-btn-secondary:hover { background: #f8fafc; color: var(--ink); }
 
 /* ═══════ FORMULAIRE & MESSAGES ═══════ */
-/* Les conteneurs sont en position absolue pour recouvrir tout l'écran et cacher le menu/nav parent */
+/* ✅ MODIF : les 3 écrans démarrent maintenant SOUS l'en-tête des statistiques
+   (flèche retour visible). La valeur --final-top est calculée par le script. */
 #finalisation-container, #success-container, #deja-inscrit-container {
-    position: absolute;
-    top: 0;
+    position: fixed;
+    top: var(--final-top, 70px);
     left: 0;
     right: 0;
     bottom: 0;
     background: #ffffff;
-    z-index: 50;
+    z-index: 20;
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
 }
@@ -983,10 +986,11 @@
 .final-footer-note { text-align: center; font-size: 0.75rem; color: var(--muted); line-height: 1.4; margin-top: 4px; padding: 0 10px; }
 
 /* ÉCRANS DE SUCCÈS / DÉJÀ INSCRIT */
+/* ✅ MODIF : plus de min-height: 100vh (l'écran est maintenant plus court à cause de l'en-tête) */
 .success-wrapper {
     display: flex; flex-direction: column; align-items: center; justify-content: center;
     height: 100%;
-    min-height: 100vh;
+    min-height: 100%;
     text-align: center; padding: 24px;
 }
 .success-icon {
@@ -1047,6 +1051,7 @@
     let projetActif = null;
     let rechercheActive = '';
     let modeFinalisation = false;
+    let finalisationEnCours = false; // ✅ MODIF : évite le double clic sur « Finaliser mon projet »
 
     if (!window._cacheProjetsModule) {
         window._cacheProjetsModule = { loaded: false, projets: [] };
@@ -1194,6 +1199,22 @@
         return (jourSemaine + 6) % 7;
     }
 
+    /* ✅ MODIF : remet l'état « sous-écran » du Shell (cache le menu hamburger
+       et la barre de navigation du bas). Le Shell le retire quand on utilise
+       le bouton retour du téléphone, donc on le remet ici. */
+    function forcerSousEcran() {
+        document.body.classList.add('in-sub-screen');
+    }
+
+    /* ✅ MODIF : mesure la hauteur de l'en-tête des statistiques pour que
+       le formulaire / « déjà inscrit » / « inscription réussie » démarrent juste en dessous */
+    function calculerPositionFinal() {
+        const tb = document.querySelector('.projets-module-root .top-bar');
+        if (!tb) return;
+        const rect = tb.getBoundingClientRect();
+        document.documentElement.style.setProperty('--final-top', Math.max(0, rect.bottom) + 'px');
+    }
+
     /* ═══════════════════════════════════════════════════════════
        LOGIQUE DE FINALISATION
     ═══════════════════════════════════════════════════════════ */
@@ -1216,12 +1237,35 @@
 
     async function finaliserProjet() {
         if (!window._authUser || !window._authUser.email) return;
-        
+        if (finalisationEnCours) return; // ✅ MODIF : ignore le double clic
+
         const email = window._authUser.email;
-        const dejaInscrit = await verifierSiInscrit(email);
+
+        // ✅ MODIF : le bouton montre « Chargement... » pendant la vérification
+        finalisationEnCours = true;
+        const btnFinaliser = $('modalFinaliser');
+        const texteBtnFinaliser = btnFinaliser ? btnFinaliser.textContent : '';
+        if (btnFinaliser) {
+            btnFinaliser.disabled = true;
+            btnFinaliser.textContent = 'Chargement...';
+        }
+
+        let dejaInscrit = false;
+        try {
+            dejaInscrit = await verifierSiInscrit(email);
+        } finally {
+            finalisationEnCours = false;
+            if (btnFinaliser) {
+                btnFinaliser.disabled = false;
+                btnFinaliser.textContent = texteBtnFinaliser;
+            }
+        }
         
         modeFinalisation = true;
         cacherModalSortie();
+
+        // ✅ MODIF : on garde le menu et la barre du bas cachés
+        forcerSousEcran();
         
         // Masquer les stats
         document.querySelector('.projets-module-root .tabs-wrap').style.display = 'none';
@@ -1231,6 +1275,10 @@
         $('finalisation-container').style.display = 'none';
         $('success-container').style.display = 'none';
         $('deja-inscrit-container').style.display = 'none';
+
+        // ✅ MODIF : positionner les écrans sous l'en-tête des statistiques
+        remonterEnHaut();
+        calculerPositionFinal();
         
         if (dejaInscrit) {
             $('deja-inscrit-container').style.display = 'block';
@@ -1255,6 +1303,9 @@
                 if (timeZoneMap[timeZone]) whatsappInput.value = timeZoneMap[timeZone];
             }
         }
+
+        // ✅ MODIF : recalcul après affichage (au cas où la mise en page a bougé)
+        requestAnimationFrame(calculerPositionFinal);
 
         try { history.pushState({ screen: 'finalisation' }, ''); } catch(e) {}
     }
@@ -1856,6 +1907,7 @@
     function afficherModalSortie() {
         if (_modalSortieVisible) return;
         _modalSortieVisible = true;
+        forcerSousEcran(); // ✅ MODIF : menu et barre du bas restent cachés derrière la modale
         const el = $('modalSortie');
         if (el) {
             el.classList.add('show');
@@ -2042,6 +2094,11 @@
         const statsScreen = $('screen-stats-projets');
         if (!statsScreen || !statsScreen.classList.contains('active')) return;
 
+        // ✅ MODIF : le Shell vient de retirer « in-sub-screen » (menu + barre du bas
+        // réapparaissaient). On le remet tant qu'on reste dans les statistiques.
+        // (fermerStats() le retire de nouveau quand on sort vraiment.)
+        forcerSousEcran();
+
         if (modeFinalisation) {
             fermerFormulaireFinalisation(true);
             try { history.pushState({ screen: 'stats' }, ''); } catch(e) {}
@@ -2189,6 +2246,10 @@
         if (s && s.classList.contains('pays-active')) {
             calculerPositionPays();
             ajusterCarte();
+        }
+        // ✅ MODIF : si le formulaire est affiché, on recalcule sa position sous l'en-tête
+        if (modeFinalisation) {
+            calculerPositionFinal();
         }
     };
     window.addEventListener('resize', window._projetsResizeHandler);
