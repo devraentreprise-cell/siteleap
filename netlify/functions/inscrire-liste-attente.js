@@ -82,6 +82,7 @@ export async function handler(event, context) {
         await db.ref("liste_attente/" + cleEmail).set({
             pseudo: pseudo.trim(),
             whatsapp: whatsapp.trim(),
+            pourcentage_reduction: -10, // <-- MODIFICATION ICI (forcé par le serveur)
             date_inscription: admin.database.ServerValue.TIMESTAMP
         });
 
