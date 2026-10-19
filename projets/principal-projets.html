@@ -61,145 +61,249 @@
             </div>
         </div>
 
-        <div class="tabs-wrap">
-            <nav class="tabs">
-                <button class="tab active" data-view="installations">Installations</button>
-                <button class="tab" data-view="usage">Usage</button>
-                <button class="tab" data-view="appareils">Appareils</button>
-                <button class="tab" data-view="pays">Pays</button>
-            </nav>
-        </div>
+        <!-- CONTENEUR DES STATISTIQUES (Caché lors de la finalisation) -->
+        <div id="stats-content-wrapper">
+            <div class="tabs-wrap">
+                <nav class="tabs">
+                    <button class="tab active" data-view="installations">Installations</button>
+                    <button class="tab" data-view="usage">Usage</button>
+                    <button class="tab" data-view="appareils">Appareils</button>
+                    <button class="tab" data-view="pays">Pays</button>
+                </nav>
+            </div>
 
-        <div class="container">
-            <!-- INSTALLATIONS -->
-            <section class="view active" id="view-installations">
-                <div class="overview-heading">
-                    <div>
-                        <div class="overview-title">Vue d'ensemble</div>
-                        <div class="overview-description">Suivez les installations de votre site web.</div>
-                    </div>
-                    <div class="live-indicator"><span class="live-dot"></span>Statistiques</div>
-                </div>
-                <div class="card hero">
-                    <div class="eyebrow">Installations totales</div>
-                    <div class="hero-number">
-                        <span id="numInstalls">0</span><span class="u">installations</span>
-                    </div>
-                    <div class="hero-sub">
-                        <span class="pill" id="heroToday">+0</span>
-                        <span id="heroTodayLabel">par rapport à hier</span>
-                    </div>
-                    <svg class="hero-spark" viewBox="0 0 200 60" preserveAspectRatio="none" aria-hidden="true">
-                        <path d="M0 55 C30 50 40 40 60 42 S100 25 120 28 S160 10 200 4" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round"/>
-                    </svg>
-                </div>
-                <div class="card">
-                    <div class="card-heading">
-                        <span class="eyebrow">Évolution des installations</span>
-                        <span class="heading-note">7 jours</span>
-                    </div>
-                    <div class="evo-chart" id="evoChart"></div>
-                    <div class="diagram-caption" id="installInsight">—</div>
-                </div>
-            </section>
-
-            <!-- USAGE -->
-            <section class="view" id="view-usage">
-                <div class="formule-mention">
-                    Disponible uniquement avec la formule <span class="mention-badge badge-pro">PRO</span>
-                </div>
-                <div class="card">
-                    <div class="eyebrow">Nombre d'ouvertures</div>
-                    <div class="usage-compare">
-                        <div class="compare-figures">
-                            <div class="cf-figure cf-app">
-                                <div class="cf-label"><i></i>écran d'accueil</div>
-                                <div class="cf-value" id="valOpenApp">0</div>
-                            </div>
-                            <div class="cf-figure cf-web">
-                                <div class="cf-label">Navigateur<i></i></div>
-                                <div class="cf-value" id="valOpenWeb">0</div>
-                            </div>
+            <div class="container">
+                <!-- INSTALLATIONS -->
+                <section class="view active" id="view-installations">
+                    <div class="overview-heading">
+                        <div>
+                            <div class="overview-title">Vue d'ensemble</div>
+                            <div class="overview-description">Suivez les installations de votre site web.</div>
                         </div>
-                        <div class="compare-split">
-                            <div class="cs-seg cs-app" id="segOpenApp"></div>
-                            <div class="cs-seg cs-web" id="segOpenWeb"></div>
-                        </div>
+                        <div class="live-indicator"><span class="live-dot"></span>Statistiques</div>
                     </div>
-                    <div class="diagram-caption" id="explainOpen">—</div>
-                </div>
-                <div class="card">
-                    <div class="eyebrow">Durée moyenne d'une session</div>
-                    <div class="usage-compare">
-                        <div class="compare-figures">
-                            <div class="cf-figure cf-app">
-                                <div class="cf-label"><i></i>écran d'accueil</div>
-                                <div class="cf-value" id="valTimeApp">0</div>
-                            </div>
-                            <div class="cf-figure cf-web">
-                                <div class="cf-label">Navigateur<i></i></div>
-                                <div class="cf-value" id="valTimeWeb">0</div>
-                            </div>
+                    <div class="card hero">
+                        <div class="eyebrow">Installations totales</div>
+                        <div class="hero-number">
+                            <span id="numInstalls">0</span><span class="u">installations</span>
                         </div>
-                        <div class="compare-split">
-                            <div class="cs-seg cs-app" id="segTimeApp"></div>
-                            <div class="cs-seg cs-web" id="segTimeWeb"></div>
+                        <div class="hero-sub">
+                            <span class="pill" id="heroToday">+0</span>
+                            <span id="heroTodayLabel">par rapport à hier</span>
                         </div>
-                    </div>
-                    <div class="diagram-caption" id="explainTime">—</div>
-                </div>
-                <div class="card">
-                    <div class="eyebrow">Fréquence d'utilisation</div>
-                    <div class="freq-display">
-                        <span class="freq-num" id="freqNumber">0</span>
-                        <span class="freq-unit">fois / jour</span>
-                    </div>
-                    <div class="diagram-caption" id="explainFreq">—</div>
-                </div>
-            </section>
-
-            <!-- APPAREILS -->
-            <section class="view" id="view-appareils">
-                <div class="formule-mention">
-                    Disponible uniquement avec la formule <span class="mention-badge badge-proplus">PRO+</span>
-                </div>
-                <div class="card">
-                    <div class="eyebrow">Répartition par système</div>
-                    <div class="donut-big">
-                        <svg viewBox="0 0 140 140">
-                            <circle cx="70" cy="70" r="56" fill="none" stroke="#f1f5f9" stroke-width="16"/>
-                            <circle class="donut-segment big-seg" data-k="a" cx="70" cy="70" r="56" stroke="#10b981" stroke-dasharray="0 400"/>
-                            <circle class="donut-segment big-seg" data-k="i" cx="70" cy="70" r="56" stroke="#6366f1" stroke-dasharray="0 400"/>
-                            <circle class="donut-segment big-seg" data-k="p" cx="70" cy="70" r="56" stroke="#3b82f6" stroke-dasharray="0 400"/>
+                        <svg class="hero-spark" viewBox="0 0 200 60" preserveAspectRatio="none" aria-hidden="true">
+                            <path d="M0 55 C30 50 40 40 60 42 S100 25 120 28 S160 10 200 4" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round"/>
                         </svg>
-                        <div class="donut-center">
-                            <div class="big" id="donutTotal">0</div>
-                            <div class="eyebrow" style="margin-top:4px">appareils</div>
+                    </div>
+                    <div class="card">
+                        <div class="card-heading">
+                            <span class="eyebrow">Évolution des installations</span>
+                            <span class="heading-note">7 jours</span>
+                        </div>
+                        <div class="evo-chart" id="evoChart"></div>
+                        <div class="diagram-caption" id="installInsight">—</div>
+                    </div>
+                </section>
+
+                <!-- USAGE -->
+                <section class="view" id="view-usage">
+                    <div class="formule-mention">
+                        Disponible uniquement avec la formule <span class="mention-badge badge-pro">PRO</span>
+                    </div>
+                    <div class="card">
+                        <div class="eyebrow">Nombre d'ouvertures</div>
+                        <div class="usage-compare">
+                            <div class="compare-figures">
+                                <div class="cf-figure cf-app">
+                                    <div class="cf-label"><i></i>écran d'accueil</div>
+                                    <div class="cf-value" id="valOpenApp">0</div>
+                                </div>
+                                <div class="cf-figure cf-web">
+                                    <div class="cf-label">Navigateur<i></i></div>
+                                    <div class="cf-value" id="valOpenWeb">0</div>
+                                </div>
+                            </div>
+                            <div class="compare-split">
+                                <div class="cs-seg cs-app" id="segOpenApp"></div>
+                                <div class="cs-seg cs-web" id="segOpenWeb"></div>
+                            </div>
+                        </div>
+                        <div class="diagram-caption" id="explainOpen">—</div>
+                    </div>
+                    <div class="card">
+                        <div class="eyebrow">Durée moyenne d'une session</div>
+                        <div class="usage-compare">
+                            <div class="compare-figures">
+                                <div class="cf-figure cf-app">
+                                    <div class="cf-label"><i></i>écran d'accueil</div>
+                                    <div class="cf-value" id="valTimeApp">0</div>
+                                </div>
+                                <div class="cf-figure cf-web">
+                                    <div class="cf-label">Navigateur<i></i></div>
+                                    <div class="cf-value" id="valTimeWeb">0</div>
+                                </div>
+                            </div>
+                            <div class="compare-split">
+                                <div class="cs-seg cs-app" id="segTimeApp"></div>
+                                <div class="cs-seg cs-web" id="segTimeWeb"></div>
+                            </div>
+                        </div>
+                        <div class="diagram-caption" id="explainTime">—</div>
+                    </div>
+                    <div class="card">
+                        <div class="eyebrow">Fréquence d'utilisation</div>
+                        <div class="freq-display">
+                            <span class="freq-num" id="freqNumber">0</span>
+                            <span class="freq-unit">fois / jour</span>
+                        </div>
+                        <div class="diagram-caption" id="explainFreq">—</div>
+                    </div>
+                </section>
+
+                <!-- APPAREILS -->
+                <section class="view" id="view-appareils">
+                    <div class="formule-mention">
+                        Disponible uniquement avec la formule <span class="mention-badge badge-proplus">PRO+</span>
+                    </div>
+                    <div class="card">
+                        <div class="eyebrow">Répartition par système</div>
+                        <div class="donut-big">
+                            <svg viewBox="0 0 140 140">
+                                <circle cx="70" cy="70" r="56" fill="none" stroke="#f1f5f9" stroke-width="16"/>
+                                <circle class="donut-segment big-seg" data-k="a" cx="70" cy="70" r="56" stroke="#10b981" stroke-dasharray="0 400"/>
+                                <circle class="donut-segment big-seg" data-k="i" cx="70" cy="70" r="56" stroke="#6366f1" stroke-dasharray="0 400"/>
+                                <circle class="donut-segment big-seg" data-k="p" cx="70" cy="70" r="56" stroke="#3b82f6" stroke-dasharray="0 400"/>
+                            </svg>
+                            <div class="donut-center">
+                                <div class="big" id="donutTotal">0</div>
+                                <div class="eyebrow" style="margin-top:4px">appareils</div>
+                            </div>
                         </div>
                     </div>
+                    <div class="card">
+                        <div class="rows" id="deviceRows"></div>
+                        <div class="diagram-caption" id="explainDevices">—</div>
+                    </div>
+                </section>
+            </div>
+
+            <!-- PAYS -->
+            <section class="view" id="view-pays">
+                <div class="pays-heading">
+                    <div class="pays-title">Répartition géographique</div>
+                    <div class="pays-description">
+                        Disponible uniquement avec la formule <span class="mention-badge badge-proplus">PRO+</span>
+                    </div>
                 </div>
-                <div class="card">
-                    <div class="rows" id="deviceRows"></div>
-                    <div class="diagram-caption" id="explainDevices">—</div>
+                <div class="map-viewport">
+                    <div class="map-spinner" id="mapSpinner"></div>
+                    <div class="map-rotator" id="mapRotator">
+                        <svg id="worldMap" viewBox="0 0 600 300" preserveAspectRatio="xMidYMid meet" aria-label="Carte du monde des utilisateurs"></svg>
+                    </div>
                 </div>
             </section>
+        </div> <!-- /#stats-content-wrapper -->
+
+        <!-- ÉCRAN 3 : FORMULAIRE DE FINALISATION -->
+        <div id="finalisation-container" style="display: none;">
+            <main class="final-content">
+                <!-- 1. TRANSPARENCE -->
+                <section class="final-intro-section">
+                    <p class="final-intro-text">SiteLeap est actuellement en phase de développement technique pour être pleinement opérationnel.</p>
+                    
+                    <p class="final-intro-text"><span class="final-highlight">Néanmoins</span>, vous pouvez dès maintenant adhérer à la liste d'attente pour être informé dès que la plateforme sera opérationnelle.</p>
+                    
+                    <p class="final-intro-text">Il ne s'agit pas d'une simple liste passive où vous attendriez la sortie de l'outil, mais d'une communauté active au sein de laquelle vous serez informé en direct de l'avancement du projet et pourrez échanger avec nous.</p>
+                </section>
+
+                <!-- 2. AVANTAGES (ACCORDÉON) -->
+                <section class="final-perks-toggle-wrap">
+                    <button type="button" class="final-btn-toggle-perks" id="btnTogglePerks">
+                        Voir les avantages
+                        <svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+                    </button>
+                    
+                    <div class="final-perks-content hidden" id="perksContent">
+                        <div class="final-perk-item">
+                            <div class="final-perk-icon"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
+                            <div><strong>Accès anticipé</strong> - Profitez de l'outil avant tout le monde et bénéficiez d'un accès <strong>gratuit</strong> pendant cette période.</div>
+                        </div>
+                        
+                        <div class="final-perk-item">
+                            <div class="final-perk-icon"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
+                            <div><span class="final-badge-green">10 %</span> de réduction garantis dès votre inscription.</div>
+                        </div>
+
+                        <div class="final-perk-item">
+                            <div class="final-perk-icon"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
+                            <div>Profiter de jusqu'à <span class="final-badge-green">40 %</span> de réduction supplémentaires selon votre participation dans la communauté.</div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 3. FORMULAIRE -->
+                <section class="final-form-section">
+                    <!-- Pseudo -->
+                    <div class="final-form-group">
+                        <label class="final-form-label" for="final-pseudo">
+                            Prénom / Pseudo <span class="final-required">*</span>
+                        </label>
+                        <div class="final-input-wrap">
+                            <span class="final-input-icon">
+                                <svg viewBox="0 0 24 24">
+                                    <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/>
+                                    <circle cx="12" cy="7" r="4"/>
+                                </svg>
+                            </span>
+                            <input type="text" id="final-pseudo" class="final-form-input" placeholder="Ex. David" autocomplete="nickname">
+                        </div>
+                        <span class="final-error-msg" id="final-errorPseudo">Veuillez entrer un prénom ou un pseudo.</span>
+                    </div>
+
+                    <!-- Email -->
+                    <div class="final-form-group">
+                        <label class="final-form-label" for="final-email">
+                            Adresse email <span class="final-required">*</span>
+                        </label>
+                        <div class="final-input-wrap">
+                            <span class="final-input-icon">
+                                <svg viewBox="0 0 24 24">
+                                    <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+                                    <polyline points="22,6 12,13 2,6"/>
+                                </svg>
+                            </span>
+                            <input type="email" id="final-email" class="final-form-input final-email-locked" value="" readonly title="Email utilisé pour votre connexion">
+                        </div>
+                    </div>
+
+                    <!-- WhatsApp -->
+                    <div class="final-form-group">
+                        <label class="final-form-label" for="final-whatsapp">
+                            Numéro WhatsApp <span class="final-required">*</span>
+                        </label>
+                        <div class="final-input-wrap">
+                            <span class="final-input-icon">
+                                <svg viewBox="0 0 24 24">
+                                    <path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 16.92z"/>
+                                </svg>
+                            </span>
+                            <input type="tel" id="final-whatsapp" class="final-form-input" placeholder="+237 6 XX XX XX XX" autocomplete="tel">
+                        </div>
+                        <span class="final-error-msg" id="final-errorWhatsapp">Veuillez entrer votre numéro WhatsApp.</span>
+                    </div>
+
+                    <!-- Bouton de soumission -->
+                    <button type="button" class="final-btn-submit" id="final-btnSubmit">
+                        Rejoindre la liste d'attente
+                    </button>
+                </section>
+
+                <p class="final-footer-note">
+                    En cliquant sur ce bouton, vos informations seront enregistrées et vous serez redirigé vers notre communauté WhatsApp.
+                </p>
+            </main>
         </div>
 
-        <!-- PAYS -->
-        <section class="view" id="view-pays">
-            <div class="pays-heading">
-                <div class="pays-title">Répartition géographique</div>
-                <div class="pays-description">
-                    Disponible uniquement avec la formule <span class="mention-badge badge-proplus">PRO+</span>
-                </div>
-            </div>
-            <div class="map-viewport">
-                <div class="map-spinner" id="mapSpinner"></div>
-                <div class="map-rotator" id="mapRotator">
-                    <svg id="worldMap" viewBox="0 0 600 300" preserveAspectRatio="xMidYMid meet" aria-label="Carte du monde des utilisateurs"></svg>
-                </div>
-            </div>
-        </section>
     </div>
 
     <!-- MODAL ENTRÉE (projets EN ATTENTE — première ouverture) -->
@@ -258,6 +362,7 @@
 </div>
 
 <style>
+/* ═══════ STYLES MODULE PROJETS ═══════ */
 .projets-module-root, .projets-module-root *, .projets-module-root *::before, .projets-module-root *::after {
     margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent;
 }
@@ -788,6 +893,66 @@
 }
 .modal-btn-secondary:hover { background: #f8fafc; color: var(--ink); }
 
+/* ═══════ FORMULAIRE DE FINALISATION (Styles dédiés avec préfixe "final-") ═══════ */
+#finalisation-container {
+    background: #ffffff;
+    min-height: calc(100vh - 70px); /* Ajustement pour le header */
+}
+.final-content {
+    padding: 24px 20px 40px;
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+    max-width: 620px; /* Aligné avec le container des stats */
+    margin: 0 auto;
+}
+.final-intro-section { display: flex; flex-direction: column; gap: 14px; }
+.final-intro-text { font-size: 0.95rem; line-height: 1.6; color: var(--ink-soft); font-weight: 400; }
+.final-intro-text strong { color: var(--ink); font-weight: 600; }
+.final-highlight {
+    font-weight: 600; color: var(--green-deep);
+    background: linear-gradient(120deg, #d1fae5 0%, #d1fae5 100%);
+    background-repeat: no-repeat; background-size: 100% 30%; background-position: 0 85%;
+    padding: 0 4px;
+}
+.final-perks-toggle-wrap { margin-top: -8px; }
+.final-btn-toggle-perks {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: transparent; border: none; color: var(--green-dark);
+    font-family: inherit; font-size: 0.95rem; font-weight: 600;
+    cursor: pointer; padding: 4px 0; text-decoration: underline; text-underline-offset: 4px;
+}
+.final-btn-toggle-perks svg { width: 16px; height: 16px; stroke: currentColor; fill: none; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; transition: transform 0.3s ease; }
+.final-btn-toggle-perks.active svg { transform: rotate(180deg); }
+.final-perks-content { display: flex; flex-direction: column; gap: 16px; margin-top: 16px; }
+.final-perks-content.hidden { display: none; }
+.final-perk-item { display: flex; align-items: flex-start; gap: 12px; font-size: 0.92rem; color: var(--ink-soft); line-height: 1.5; }
+.final-perk-icon { flex-shrink: 0; width: 22px; height: 22px; border-radius: 8px 12px 8px 12px; background: var(--green-soft); display: flex; align-items: center; justify-content: center; margin-top: 1px; }
+.final-perk-icon svg { width: 12px; height: 12px; stroke: var(--green); fill: none; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
+.final-perk-item strong { color: var(--ink); font-weight: 600; }
+.final-badge-green { display: inline-block; background: var(--green); color: #ffffff; font-weight: 700; font-size: 0.8rem; padding: 1px 7px; border-radius: 6px; margin: 0 2px; transform: translateY(-1px); }
+.final-form-section { display: flex; flex-direction: column; gap: 16px; padding-top: 24px; border-top: 1px solid var(--line); }
+.final-form-group { display: flex; flex-direction: column; gap: 6px; }
+.final-form-label { font-size: 0.85rem; font-weight: 600; color: var(--ink-soft); display: flex; align-items: center; gap: 4px; margin-left: 4px; }
+.final-form-label .final-required { color: #ef4444; font-weight: 700; }
+.final-input-wrap { position: relative; }
+.final-input-icon { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); width: 18px; height: 18px; color: #94a3b8; pointer-events: none; }
+.final-input-icon svg { width: 100%; height: 100%; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.final-form-input { width: 100%; height: 48px; padding: 0 14px 0 42px; border: 1.5px solid var(--line); border-radius: 14px; background: #f8fafc; font-family: inherit; font-size: 0.95rem; font-weight: 400; color: var(--ink); outline: none; transition: all .2s ease; }
+.final-form-input::placeholder { color: #94a3b8; font-weight: 400; }
+.final-form-input:focus { border-color: var(--green); background: #ffffff; box-shadow: 0 0 0 4px rgba(16,185,129,.1); }
+.final-form-input:focus ~ .final-input-icon { color: var(--green); }
+.final-error-msg { display: none; font-size: 0.75rem; color: #ef4444; margin-top: 2px; margin-left: 4px; font-weight: 500; line-height: 1.4; }
+.final-form-input.has-error { border-color: #ef4444; background: #fef2f2; }
+.final-form-input.has-error:focus { box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.1); }
+.final-form-input.has-error ~ .final-input-icon { color: #ef4444; }
+.final-email-locked { background: #f1f5f9; color: #64748b; cursor: not-allowed; border-style: dashed; }
+.final-email-locked:focus { border-color: var(--line); box-shadow: none; background: #f1f5f9; }
+.final-btn-submit { display: flex; align-items: center; justify-content: center; width: 100%; padding: 15px 18px; margin-top: 8px; background: linear-gradient(135deg, var(--green) 0%, var(--green-dark) 100%); color: #ffffff; border: none; border-radius: 14px; font-family: inherit; font-size: 0.95rem; font-weight: 600; cursor: pointer; box-shadow: 0 8px 20px -6px rgba(16,185,129,.35); transition: transform .15s ease, filter .15s ease, box-shadow .15s ease; text-align: center; }
+.final-btn-submit:hover { filter: brightness(1.05); box-shadow: 0 10px 24px -6px rgba(16,185,129,.45); }
+.final-btn-submit:active { transform: scale(.98); }
+.final-footer-note { text-align: center; font-size: 0.75rem; color: var(--muted); line-height: 1.4; margin-top: 4px; padding: 0 10px; }
+
 @media (max-width:380px) {
     .container { padding: 14px 12px; }
     .hero { padding: 22px 18px; }
@@ -806,6 +971,7 @@
     .modal-card { padding: 24px 18px 16px; }
     .modal-title { font-size: 1.05rem; }
     .modal-text { font-size: 0.83rem; }
+    .final-content { padding: 20px 12px 30px; }
 }
 @media (prefers-reduced-motion: reduce) {
     .projets-module-root *, .projets-module-root *::before, .projets-module-root *::after {
@@ -826,6 +992,7 @@
     let tousLesProjets = [];
     let projetActif = null;
     let rechercheActive = '';
+    let modeFinalisation = false; // Nouvel état pour le formulaire
 
     if (!window._cacheProjetsModule) {
         window._cacheProjetsModule = { loaded: false, projets: [] };
@@ -942,7 +1109,6 @@
         return String(d.getDate()).padStart(2, '0') + ' ' + mois[d.getMonth()] + ' ' + d.getFullYear();
     }
 
-    /* ─── Notation compacte K / M / Md ─── */
     function formatNombre(n) {
         const num = Number(n);
         if (!Number.isFinite(num)) return '0';
@@ -961,7 +1127,6 @@
         return String(arrondi).replace('.', ',') + suffixe;
     }
 
-    /* ─── Durée : 3 paliers (s / min / h) ─── */
     function formatDuree(sec) {
         if (!sec || sec <= 0) return { v: '0', u: 's' };
         if (sec < 60) return { v: String(Math.round(sec)), u: 's' };
@@ -982,7 +1147,6 @@
         try { window.scrollTo({ top: 0, behavior: 'auto' }); } catch (e) {}
     }
 
-    /* ─── Index du jour actuel (fuseau Cameroun, 0=lundi ... 6=dimanche) ─── */
     function indexAujourdhuiCameroun() {
         const dateStr = new Intl.DateTimeFormat('en-CA', {
             timeZone: 'Africa/Douala',
@@ -996,6 +1160,148 @@
     }
 
     /* ═══════════════════════════════════════════════════════════
+       LOGIQUE DE FINALISATION
+    ═══════════════════════════════════════════════════════════ */
+    
+    function afficherFormulaireFinalisation() {
+        modeFinalisation = true;
+        cacherModalSortie();
+        
+        $('stats-content-wrapper').style.display = 'none';
+        $('finalisation-container').style.display = 'block';
+
+        // Remplir l'email
+        const emailInput = $('final-email');
+        if (window._authUser && window._authUser.email) {
+            emailInput.value = window._authUser.email;
+        } else {
+            emailInput.value = "Email non détecté";
+        }
+
+        // Détecter l'indicatif si le champ est vide
+        const whatsappInput = $('final-whatsapp');
+        if (!whatsappInput.value) {
+            const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+            const timeZoneMap = { 
+                'Africa/Douala': '+237 ', 'Africa/Lagos': '+234 ', 'Africa/Abidjan': '+225 ', 
+                'Africa/Dakar': '+221 ', 'Africa/Libreville': '+241 ', 'Africa/Kinshasa': '+243 ', 
+                'Africa/Brazzaville': '+242 ', 'Africa/Casablanca': '+212 ', 'Africa/Algiers': '+213 ', 
+                'Africa/Tunis': '+216 ', 'Europe/Paris': '+33 ', 'Europe/Brussels': '+32 ', 
+                'Europe/London': '+44 ', 'America/New_York': '+1 ', 'America/Toronto': '+1 ', 
+                'Europe/Berlin': '+49 ', 'Europe/Madrid': '+34 ', 'Europe/Rome': '+39 ' 
+            };
+            if (timeZoneMap[timeZone]) whatsappInput.value = timeZoneMap[timeZone];
+        }
+
+        try { history.pushState({ screen: 'finalisation' }, ''); } catch(e) {}
+    }
+
+    function fermerFormulaireFinalisation(retourModale = true) {
+        modeFinalisation = false;
+        
+        $('stats-content-wrapper').style.display = 'block';
+        $('finalisation-container').style.display = 'none';
+
+        if (retourModale) {
+            afficherModalSortie();
+        }
+    }
+
+    // Gestion de l'accordéon des avantages
+    const btnTogglePerks = $('btnTogglePerks');
+    const perksContent = $('perksContent');
+    if (btnTogglePerks && perksContent) {
+        btnTogglePerks.addEventListener('click', function() {
+            perksContent.classList.toggle('hidden');
+            btnTogglePerks.classList.toggle('active');
+        });
+    }
+
+    // Gestion du formulaire
+    const finalBtnSubmit = $('final-btnSubmit');
+    const finalPseudo = $('final-pseudo');
+    const finalWhatsapp = $('final-whatsapp');
+    const finalErrorPseudo = $('final-errorPseudo');
+    const finalErrorWhatsapp = $('final-errorWhatsapp');
+
+    if (finalPseudo && finalWhatsapp) {
+        finalPseudo.addEventListener('input', () => { finalPseudo.classList.remove('has-error'); finalErrorPseudo.style.display = 'none'; });
+        finalWhatsapp.addEventListener('input', () => { finalWhatsapp.classList.remove('has-error'); finalErrorWhatsapp.style.display = 'none'; });
+    }
+
+    if (finalBtnSubmit) {
+        finalBtnSubmit.addEventListener('click', async function() {
+            let isValid = true;
+
+            if (finalPseudo.value.trim() === '') {
+                finalPseudo.classList.add('has-error');
+                finalErrorPseudo.style.display = 'block';
+                isValid = false;
+            }
+
+            const telValue = finalWhatsapp.value.trim();
+            if (telValue === '') {
+                finalWhatsapp.classList.add('has-error');
+                finalErrorWhatsapp.textContent = 'Veuillez entrer votre numéro WhatsApp.';
+                finalErrorWhatsapp.style.display = 'block';
+                isValid = false;
+            } else if (!telValue.startsWith('+')) {
+                finalWhatsapp.classList.add('has-error');
+                finalErrorWhatsapp.textContent = 'Le numéro doit commencer par un indicatif (ex: +237).';
+                finalErrorWhatsapp.style.display = 'block';
+                isValid = false;
+            } else {
+                const numSansIndicatif = telValue.replace(/^\+\d{1,3}/, '').trim();
+                const chiffresLocaux = numSansIndicatif.replace(/\D/g, '');
+                if (chiffresLocaux.length < 4) {
+                    finalWhatsapp.classList.add('has-error');
+                    finalErrorWhatsapp.textContent = 'Numéro incorrect. Veuillez saisir un numéro valide.';
+                    finalErrorWhatsapp.style.display = 'block';
+                    isValid = false;
+                }
+            }
+
+            if (isValid) {
+                const originalText = finalBtnSubmit.textContent;
+                finalBtnSubmit.textContent = 'Inscription en cours...';
+                finalBtnSubmit.disabled = true;
+
+                try {
+                    let jeton = "";
+                    if (window._authUser && window._authUser.getIdToken) {
+                        jeton = await window._authUser.getIdToken();
+                    }
+
+                    const response = await fetch('/.netlify/functions/inscrire-liste-attente', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            pseudo: finalPseudo.value.trim(),
+                            email: $('final-email').value.trim(),
+                            whatsapp: telValue,
+                            jeton: jeton
+                        })
+                    });
+
+                    const resultat = await response.json();
+                    if (resultat.success) {
+                        window.location.href = "https://chat.whatsapp.com/HIXDGqadgJIBwuFnx00zZi";
+                    } else {
+                        alert("Erreur : " + resultat.message);
+                        finalBtnSubmit.textContent = originalText;
+                        finalBtnSubmit.disabled = false;
+                    }
+                } catch (err) {
+                    console.error(err);
+                    alert("Erreur de connexion.");
+                    finalBtnSubmit.textContent = originalText;
+                    finalBtnSubmit.disabled = false;
+                }
+            }
+        });
+    }
+
+    /* ═══════════════════════════════════════════════════════════
        ACCUEIL (prénom + avatar 2 lettres)
     ═══════════════════════════════════════════════════════════ */
     function injecterUtilisateur() {
@@ -1006,7 +1312,6 @@
         if (greetEl) greetEl.textContent = getGreeting();
         if (!user) return;
 
-        // Prénom uniquement
         let prenom;
         if (user.displayName && user.displayName.trim()) {
             prenom = user.displayName.trim().split(/\s+/)[0];
@@ -1017,7 +1322,6 @@
         }
         if (nameEl) nameEl.textContent = prenom;
 
-        // Avatar : initiales du nom complet (2 lettres)
         if (avEl) {
             const source = user.displayName || (user.email ? user.email.split('@')[0] : '');
             avEl.textContent = initiales(source);
@@ -1169,13 +1473,11 @@
         $('topNom').textContent = projet.nom || 'Sans nom';
         majBadgeFormule(projet.formule);
 
-        // ═══ INSTALLATIONS ═══
         $('numInstalls').textContent = formatNombre(s.installs_total || 0);
         const evo = (s.installs_7j && s.installs_7j.length) ? s.installs_7j : [0, 0, 0, 0, 0, 0, 0];
         const jours = ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim'];
         const maxEvo = Math.max(...evo, 1);
 
-        // Index du jour actuel
         const idxAujourdhui = (typeof s.index_aujourdhui === 'number')
             ? s.index_aujourdhui
             : indexAujourdhuiCameroun();
@@ -1219,7 +1521,6 @@
             $('installInsight').innerHTML = '<strong>' + formatNombre(aujourdhui) + ' installations aujourd\'hui</strong>, soit <strong>autant qu\'hier</strong>.';
         }
 
-        // ═══ APPAREILS ═══
         const android = isBloquee.appareils ? 0 : (s.installs_android || 0);
         const ios = isBloquee.appareils ? 0 : (s.installs_ios || 0);
         const pc = isBloquee.appareils ? 0 : (s.installs_pc || 0);
@@ -1262,7 +1563,6 @@
             }
         }
 
-        // ═══ USAGE ═══
         const openApp = isBloquee.usage ? 0 : (s.lancements_accueil || 0);
         const openWeb = isBloquee.usage ? 0 : (s.lancements_navigateur || 0);
         const moyApp = openApp > 0 ? Math.round((s.duree_accueil_total_sec || 0) / openApp) : 0;
@@ -1356,7 +1656,6 @@
             capFreq.textContent = 'Pas encore assez de données.';
         }
 
-        // ═══ PAYS ═══
         if (isBloquee.pays) currentPays = [];
         else if (estEnAttente) currentPays = PAYS_DEMO;
         else currentPays = projet.pays || [];
@@ -1510,14 +1809,18 @@
     }
 
     function demanderSortieStats() {
-        if (estProjetEnAttente()) {
+        if (modeFinalisation) {
+            history.back(); 
+        } else if (estProjetEnAttente()) {
             afficherModalSortie();
         } else {
             sortirDesStats();
         }
     }
 
-    function finaliserProjet() {}
+    function finaliserProjet() {
+        afficherFormulaireFinalisation();
+    }
 
     function plusTardStats() {
         cacherModalSortie();
@@ -1637,6 +1940,9 @@
         document.body.classList.remove('in-sub-screen');
 
         projetActif = null;
+        modeFinalisation = false;
+        $('stats-content-wrapper').style.display = 'block';
+        $('finalisation-container').style.display = 'none';
     }
 
     /* ═══════════════════════════════════════════════════════════
@@ -1648,6 +1954,12 @@
     window._projetsPopHandler = function () {
         const statsScreen = $('screen-stats-projets');
         if (!statsScreen || !statsScreen.classList.contains('active')) return;
+
+        if (modeFinalisation) {
+            fermerFormulaireFinalisation(true);
+            try { history.pushState({ screen: 'stats' }, ''); } catch(e) {}
+            return;
+        }
 
         if (_sortieAutorisee) {
             _sortieAutorisee = false;
