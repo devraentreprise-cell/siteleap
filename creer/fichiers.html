@@ -7,18 +7,14 @@
         </div>
     </div>
 
-    <!-- ÉTAT VIDE -->
     <div id="filesEmptyState">
         <p class="state-intro">Choisissez le type de document à importer, puis sélectionnez vos fichiers.</p>
-
-        <!-- Segment Dossier / Fichier -->
         <div class="segment-control">
             <input type="radio" name="sourceType" value="dossier" id="srcDossier" checked>
             <label for="srcDossier">Dossier</label>
             <input type="radio" name="sourceType" value="fichier" id="srcFichier">
             <label for="srcFichier">Fichier</label>
         </div>
-
         <div id="blocDossier">
             <label class="file-drop">
                 <input type="file" id="dossierInput" webkitdirectory multiple>
@@ -29,7 +25,6 @@
                 <div class="file-drop-hint">Le dossier complet de votre site</div>
             </label>
         </div>
-
         <div id="blocFichier" class="hidden">
             <label class="file-drop">
                 <input type="file" id="fichierInput" accept=".html,text/html">
@@ -42,7 +37,6 @@
         </div>
     </div>
 
-    <!-- ÉTAT CHARGEMENT -->
     <div id="filesLoadingState" class="hidden">
         <div class="import-loading">
             <div class="spinner"></div>
@@ -51,7 +45,6 @@
         </div>
     </div>
 
-    <!-- ÉTAT REMPLI -->
     <div id="filesFilledState" class="hidden">
         <div id="mainPageCard" class="main-page-card hidden">
             <div class="main-page-card-icon">
@@ -65,12 +58,10 @@
                 <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
             </div>
         </div>
-
         <div id="mainPageSelectWrapper" class="main-page-select-wrapper hidden">
             <label class="main-page-select-label" for="selectHtmlPrincipal">Choisissez la page d'accueil principale de votre site.</label>
             <select id="selectHtmlPrincipal"></select>
         </div>
-
         <div class="files-header">
             <span class="files-header-text" id="filesCount">0 fichier</span>
             <button type="button" class="delete-all-btn" onclick="openConfirmDeleteAllFiles()">
@@ -78,72 +69,87 @@
                 Tout supprimer
             </button>
         </div>
-
         <div class="files-gallery" id="filesGallery"></div>
     </div>
 </div>
 
 <style>
-/* === Écran === */
-.screen { display: none; }
-.screen.active { display: block; }
+/* ============================================================
+   ÉCRAN FICHIERS — thème sombre émeraude
+   Tous les sélecteurs sont préfixés par #fichiers pour garantir
+   la priorité sur les styles du parent (header blanc, etc.)
+   ============================================================ */
+
+#fichiers.screen { display: none; min-width: 0; max-width: 100%; overflow-x: clip; }
+#fichiers.screen.active { display: block; }
+
 #fichiers {
     max-width: 640px;
     width: 100%;
+    min-height: 100%;
     margin: 0 auto;
     padding: 0 16px 40px;
+    background-color: #000000;
+    background-image:
+        radial-gradient(ellipse 75% 40% at 50% 0%, rgba(16, 185, 129, 0.16), transparent 70%),
+        radial-gradient(ellipse 60% 40% at 85% 95%, rgba(5, 150, 105, 0.12), transparent 72%);
+    color: #ffffff;
 }
 
-/* ============================================
-   EN-TÊTE — titre + sous-titre empilés
-   ============================================ */
-.page-header {
+/* ---------- EN-TÊTE ---------- */
+#fichiers .page-header {
     display: flex;
     align-items: center;
     gap: 12px;
-    padding: 14px 0 22px;
+    padding: 14px 4px 16px;
+    margin-bottom: 18px;
     position: sticky;
     top: 0;
-    background: #fff;
+    background: rgba(0, 0, 0, 0.82);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-bottom: 1px solid rgba(16, 185, 129, 0.18);
     z-index: 10;
 }
-.back-btn {
+#fichiers .back-btn {
     width: 40px; height: 40px;
-    border: none;
-    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    background: rgba(255, 255, 255, 0.04);
     cursor: pointer;
     border-radius: 50%;
     display: flex; align-items: center; justify-content: center;
     flex-shrink: 0;
-    color: #0b1220;
-    transition: background-color .15s ease;
+    color: #ffffff;
+    transition: background-color .15s ease, border-color .15s ease, transform .12s ease;
 }
-.back-btn:hover { background: #f1f5f9; }
-.back-btn:active { transform: scale(.95); }
-.back-btn svg {
+#fichiers .back-btn:hover {
+    background: rgba(16, 185, 129, 0.14);
+    border-color: rgba(52, 211, 153, 0.45);
+}
+#fichiers .back-btn:active { transform: scale(.95); }
+#fichiers .back-btn svg {
     width: 24px; height: 24px;
     stroke: currentColor; fill: none;
     stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round;
 }
-
-.page-title-wrap {
+#fichiers .page-title-wrap {
     flex: 1;
     min-width: 0;
     border-left: 2px solid #10b981;
     padding-left: 14px;
 }
-.page-title {
+#fichiers .page-title {
     font-size: 1.15rem;
     font-weight: 800;
-    color: #0b1220;
+    color: #ffffff;
     line-height: 1.15;
     letter-spacing: -0.025em;
     margin: 0 0 2px;
 }
-.page-sub {
+#fichiers .page-sub {
     font-size: 0.78rem;
     font-weight: 450;
-    color: #64748b;
+    color: rgba(255, 255, 255, 0.65);
     line-height: 1.35;
     margin: 0;
     white-space: nowrap;
@@ -151,231 +157,236 @@
     text-overflow: ellipsis;
 }
 
-/* ============================================
-   INTRO
-   ============================================ */
-.state-intro {
+/* ---------- INTRO ---------- */
+#fichiers .state-intro {
     font-size: 0.88rem;
-    color: #64748b;
+    color: rgba(255, 255, 255, 0.72);
     margin-bottom: 18px;
     line-height: 1.5;
 }
 
-/* ============================================
-   SEGMENT CONTROL
-   ============================================ */
-.segment-control {
+/* ---------- SEGMENT CONTROL ---------- */
+#fichiers .segment-control {
     display: flex;
-    background: #f1f5f9;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 14px;
     padding: 4px;
     margin-bottom: 20px;
     gap: 4px;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
 }
-.segment-control label {
+#fichiers .segment-control label {
     flex: 1;
     text-align: center;
     padding: 11px 14px;
     font-size: 0.9rem;
     font-weight: 600;
-    color: #64748b;
+    color: rgba(255, 255, 255, 0.6);
     cursor: pointer;
     border-radius: 10px;
     transition: background-color .18s ease, color .18s ease, box-shadow .18s ease;
 }
-.segment-control input { display: none; }
-.segment-control input:checked + label {
-    background: #ffffff;
-    color: #0b1220;
+#fichiers .segment-control input { display: none; }
+#fichiers .segment-control input:checked + label {
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.92) 0%, rgba(5, 150, 105, 0.92) 100%);
+    color: #ffffff;
     font-weight: 700;
-    box-shadow: 0 2px 6px rgba(15,23,42,.08);
+    border: 1px solid rgba(110, 231, 183, 0.45);
+    box-shadow: 0 10px 20px -10px rgba(16, 185, 129, 0.6);
 }
 
-/* ============================================
-   ZONE DE DROP
-   ============================================ */
-.file-drop {
+/* ---------- ZONE DE DROP ---------- */
+#fichiers .file-drop {
     display: block;
-    padding: 36px 20px 30px;
-    border: 2px dashed #cbd5e1;
+    padding: 38px 20px 32px;
+    border: 1.5px dashed rgba(52, 211, 153, 0.45);
     border-radius: 18px;
     text-align: center;
     cursor: pointer;
-    background: #fafbfc;
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
     transition: border-color .18s ease, background-color .18s ease, transform .18s ease;
     margin-bottom: 14px;
 }
-.file-drop:hover {
-    border-color: #3b82f6;
-    background: #f0f7ff;
+#fichiers .file-drop:hover {
+    border-color: #34d399;
+    background: rgba(16, 185, 129, 0.1);
 }
-.file-drop:active { transform: scale(.99); }
-.file-drop input { display: none; }
-.file-drop-icon-wrap {
+#fichiers .file-drop:active { transform: scale(.99); }
+#fichiers .file-drop input { display: none; }
+#fichiers .file-drop-icon-wrap {
     width: 60px; height: 60px;
     margin: 0 auto 14px;
-    background: #dbeafe;
-    color: #1e40af;
+    background: rgba(16, 185, 129, 0.16);
+    border: 1px solid rgba(52, 211, 153, 0.35);
+    color: #34d399;
     border-radius: 16px;
     display: flex; align-items: center; justify-content: center;
 }
-.file-drop-icon-wrap svg {
+#fichiers .file-drop-icon-wrap svg {
     width: 28px; height: 28px;
     stroke: currentColor; fill: none;
     stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round;
 }
-.file-drop-text {
+#fichiers .file-drop-text {
     font-size: 0.95rem;
     font-weight: 700;
-    color: #0b1220;
+    color: #ffffff;
     margin-bottom: 5px;
     letter-spacing: -0.01em;
 }
-.file-drop-hint {
+#fichiers .file-drop-hint {
     font-size: 0.8rem;
-    color: #64748b;
+    color: rgba(255, 255, 255, 0.58);
 }
 
-/* ============================================
-   CHARGEMENT
-   ============================================ */
-.import-loading {
-    text-align: center;
-    padding: 70px 20px;
-}
-.import-loading .spinner {
+/* ---------- CHARGEMENT ---------- */
+#fichiers .import-loading { text-align: center; padding: 70px 20px; }
+#fichiers .import-loading .spinner {
     width: 52px; height: 52px;
-    border: 4px solid #e5e5ea;
+    border: 4px solid rgba(255, 255, 255, 0.1);
     border-top-color: #10b981;
     border-radius: 50%;
-    animation: spin 0.8s linear infinite;
+    animation: fichiers-spin 0.8s linear infinite;
     margin: 0 auto 22px;
 }
-@keyframes spin { to { transform: rotate(360deg); } }
-.import-loading p {
+@keyframes fichiers-spin { to { transform: rotate(360deg); } }
+#fichiers .import-loading p {
     font-size: 1rem;
     font-weight: 600;
-    color: #0b1220;
+    color: #ffffff;
     margin-bottom: 6px;
 }
-.import-loading .import-loading-hint {
+#fichiers .import-loading .import-loading-hint {
     font-size: 0.85rem;
-    color: #64748b;
+    color: rgba(255, 255, 255, 0.6);
     font-weight: 400;
 }
 
-/* ============================================
-   CARTE PAGE D'ACCUEIL
-   ============================================ */
-.main-page-card {
+/* ---------- CARTE PAGE D'ACCUEIL ---------- */
+#fichiers .main-page-card {
     display: flex;
     align-items: center;
     gap: 14px;
     padding: 14px 16px;
-    background: linear-gradient(135deg, #f0fdf4 0%, #ffffff 100%);
-    border: 1.5px solid #bbf7d0;
+    background: rgba(255, 255, 255, 0.035);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border: 1px solid rgba(16, 185, 129, 0.35);
     border-radius: 16px;
     margin-bottom: 14px;
-    box-shadow: 0 8px 20px -14px rgba(16,185,129,.35);
+    box-shadow: 0 18px 36px -20px rgba(0, 0, 0, 0.85);
 }
-.main-page-card-icon {
+#fichiers .main-page-card-icon {
     width: 42px; height: 42px;
     border-radius: 11px;
-    background: #dcfce7;
+    background: rgba(16, 185, 129, 0.18);
+    border: 1px solid rgba(52, 211, 153, 0.35);
     display: flex; align-items: center; justify-content: center;
     flex-shrink: 0;
-    color: #16a34a;
+    color: #6ee7b7;
 }
-.main-page-card-icon svg {
+#fichiers .main-page-card-icon svg {
     width: 22px; height: 22px;
     stroke: currentColor; fill: none;
     stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round;
 }
-.main-page-card-info { flex: 1; min-width: 0; }
-.main-page-card-label {
+#fichiers .main-page-card-info { flex: 1; min-width: 0; }
+#fichiers .main-page-card-label {
     font-size: 0.7rem;
     font-weight: 800;
-    color: #16a34a;
+    color: #6ee7b7;
     letter-spacing: 0.08em;
     text-transform: uppercase;
     margin-bottom: 3px;
 }
-.main-page-card-name {
+#fichiers .main-page-card-name {
     font-size: 0.95rem;
     font-weight: 700;
-    color: #0b1220;
+    color: #ffffff;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
     letter-spacing: -0.01em;
 }
-.main-page-card-check {
+#fichiers .main-page-card-check {
     width: 24px; height: 24px;
     border-radius: 50%;
-    background: #16a34a;
+    background: linear-gradient(135deg, #10b981 0%, #047857 100%);
+    border: 1px solid rgba(110, 231, 183, 0.55);
     display: flex; align-items: center; justify-content: center;
-    color: #fff;
+    color: #ffffff;
     flex-shrink: 0;
+    box-shadow: 0 8px 16px -8px rgba(16, 185, 129, 0.65);
 }
-.main-page-card-check svg {
+#fichiers .main-page-card-check svg {
     width: 13px; height: 13px;
     stroke: currentColor; fill: none;
     stroke-width: 3; stroke-linecap: round; stroke-linejoin: round;
 }
 
-/* ============================================
-   SÉLECTEUR DE PAGE
-   ============================================ */
-.main-page-select-wrapper {
-    background: #fafbfc;
-    border: 1px solid #e2e8f0;
+/* ---------- SÉLECTEUR DE PAGE ---------- */
+#fichiers .main-page-select-wrapper {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
     border-radius: 14px;
     padding: 14px;
     margin-bottom: 14px;
     transition: background-color .15s ease, border-color .15s ease;
 }
-.main-page-select-wrapper.has-error {
-    background: #fef2f2;
-    border-color: #ef4444;
-    box-shadow: 0 0 0 2px #ef4444;
-    animation: shake 0.4s ease;
+#fichiers .main-page-select-wrapper.has-error {
+    background: rgba(239, 68, 68, 0.12);
+    border-color: rgba(248, 113, 113, 0.55);
+    box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.55);
+    animation: fichiers-shake 0.4s ease;
 }
-@keyframes shake {
+@keyframes fichiers-shake {
     0%, 100% { transform: translateX(0); }
     25% { transform: translateX(-4px); }
     75% { transform: translateX(4px); }
 }
-.main-page-select-label {
+#fichiers .main-page-select-label {
     font-size: 0.82rem;
     font-weight: 700;
-    color: #0b1220;
+    color: #ffffff;
     margin-bottom: 10px;
     display: block;
     line-height: 1.4;
     letter-spacing: -0.01em;
 }
-.main-page-select-wrapper select {
+#fichiers .main-page-select-wrapper select {
     width: 100%;
-    padding: 11px 12px;
-    border: 1px solid #e2e8f0;
+    padding: 11px 36px 11px 12px;
+    border: 1px solid rgba(255, 255, 255, 0.14);
     border-radius: 10px;
     font-size: 0.9rem;
-    background: #fff;
+    background: rgba(0, 0, 0, 0.4);
+    color: #ffffff;
     font-family: inherit;
     outline: none;
     font-weight: 500;
-    color: #0b1220;
     cursor: pointer;
     transition: border-color .15s ease;
+    appearance: none;
+    -webkit-appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%236ee7b7' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    background-size: 16px 16px;
 }
-.main-page-select-wrapper select:focus {
-    border-color: #3b82f6;
+#fichiers .main-page-select-wrapper select:focus { border-color: #34d399; }
+#fichiers .main-page-select-wrapper select option {
+    background: #0b0f0e;
+    color: #ffffff;
 }
 
-/* ============================================
-   EN-TÊTE FICHIERS
-   ============================================ */
-.files-header {
+/* ---------- EN-TÊTE FICHIERS ---------- */
+#fichiers .files-header {
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -383,16 +394,16 @@
     padding: 0 2px;
     gap: 10px;
 }
-.files-header-text {
+#fichiers .files-header-text {
     font-size: 0.85rem;
-    color: #64748b;
+    color: rgba(255, 255, 255, 0.65);
     font-weight: 600;
     letter-spacing: -0.005em;
 }
-.delete-all-btn {
-    background: #fef2f2;
-    color: #ef4444;
-    border: 1px solid #fecaca;
+#fichiers .delete-all-btn {
+    background: rgba(239, 68, 68, 0.14);
+    color: #fca5a5;
+    border: 1px solid rgba(248, 113, 113, 0.35);
     padding: 8px 14px;
     border-radius: 10px;
     font-size: 0.78rem;
@@ -402,112 +413,118 @@
     display: inline-flex;
     align-items: center;
     gap: 6px;
-    transition: background-color .15s ease, transform .1s ease;
+    transition: background-color .15s ease, color .15s ease, transform .1s ease;
 }
-.delete-all-btn:hover { background: #fee2e2; }
-.delete-all-btn:active { transform: scale(.97); }
-.delete-all-btn svg {
+#fichiers .delete-all-btn:hover {
+    background: rgba(239, 68, 68, 0.24);
+    color: #ffffff;
+}
+#fichiers .delete-all-btn:active { transform: scale(.97); }
+#fichiers .delete-all-btn svg {
     width: 14px; height: 14px;
     stroke: currentColor; fill: none;
     stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round;
 }
 
-/* ============================================
-   GALERIE
-   ============================================ */
-.files-gallery {
+/* ---------- GALERIE ---------- */
+#fichiers .files-gallery {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: 12px;
     margin-bottom: 16px;
 }
-.gallery-item {
+#fichiers .gallery-item {
     display: flex;
     flex-direction: column;
-    background: #ffffff;
-    border: 1px solid #f1f5f9;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
     border-radius: 14px;
     overflow: hidden;
-    box-shadow:
-        0 6px 16px -12px rgba(15,23,42,.12),
-        0 1px 3px rgba(15,23,42,.03);
-    transition: transform .15s ease, box-shadow .15s ease;
+    box-shadow: 0 18px 36px -22px rgba(0, 0, 0, 0.9);
+    transition: transform .15s ease, border-color .15s ease, box-shadow .15s ease;
 }
-.gallery-item:hover {
+#fichiers .gallery-item:hover {
     transform: translateY(-2px);
+    border-color: rgba(52, 211, 153, 0.35);
     box-shadow:
-        0 12px 22px -14px rgba(15,23,42,.2),
-        0 2px 4px rgba(15,23,42,.04);
+        0 22px 40px -22px rgba(0, 0, 0, 0.95),
+        0 0 0 1px rgba(52, 211, 153, 0.18);
 }
-.gallery-thumb {
+#fichiers .gallery-thumb {
     position: relative;
     width: 100%;
     aspect-ratio: 1 / 1;
-    background: #f8fafc;
+    background: rgba(255, 255, 255, 0.04);
     display: flex;
     align-items: center;
     justify-content: center;
     overflow: hidden;
-    border-bottom: 1px solid #f1f5f9;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 }
-.gallery-thumb img {
+#fichiers .gallery-thumb img {
     width: 100%; height: 100%;
     object-fit: cover;
     display: block;
 }
-.gallery-thumb svg {
+#fichiers .gallery-thumb svg {
     width: 42px; height: 42px;
-    stroke: #94a3b8; fill: none;
+    stroke: rgba(255, 255, 255, 0.4); fill: none;
     stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round;
 }
-.gallery-thumb .ext-badge {
+#fichiers .gallery-thumb .ext-badge {
     position: absolute;
     bottom: 8px;
     right: 8px;
     font-size: 0.6rem;
     font-weight: 800;
-    background: #fff;
-    color: #0b1220;
+    background: rgba(0, 0, 0, 0.7);
+    color: #ffffff;
     padding: 3px 7px;
     border-radius: 999px;
     letter-spacing: 0.05em;
-    box-shadow: 0 1px 3px rgba(0,0,0,.15);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
 }
-.ext-badge.html { background: #fee2e2; color: #dc2626; }
-.ext-badge.css { background: #dbeafe; color: #2563eb; }
-.ext-badge.js { background: #fef3c7; color: #d97706; }
-.ext-badge.svg { background: #ede9fe; color: #7c3aed; }
-.ext-badge.json { background: #fce7f3; color: #db2777; }
-.ext-badge.png, .ext-badge.jpg, .ext-badge.jpeg, .ext-badge.gif, .ext-badge.webp {
-    background: #d1fae5;
-    color: #059669;
+#fichiers .ext-badge.html { background: rgba(239, 68, 68, 0.2); color: #fca5a5; border-color: rgba(248, 113, 113, 0.45); }
+#fichiers .ext-badge.css { background: rgba(59, 130, 246, 0.2); color: #93c5fd; border-color: rgba(96, 165, 250, 0.45); }
+#fichiers .ext-badge.js { background: rgba(245, 158, 11, 0.2); color: #fcd34d; border-color: rgba(251, 191, 36, 0.45); }
+#fichiers .ext-badge.svg { background: rgba(139, 92, 246, 0.2); color: #c4b5fd; border-color: rgba(167, 139, 250, 0.45); }
+#fichiers .ext-badge.json { background: rgba(236, 72, 153, 0.2); color: #f9a8d4; border-color: rgba(244, 114, 182, 0.45); }
+#fichiers .ext-badge.png,
+#fichiers .ext-badge.jpg,
+#fichiers .ext-badge.jpeg,
+#fichiers .ext-badge.gif,
+#fichiers .ext-badge.webp {
+    background: rgba(16, 185, 129, 0.2);
+    color: #6ee7b7;
+    border-color: rgba(52, 211, 153, 0.45);
 }
-.gallery-item-info {
-    padding: 10px 12px;
-    min-width: 0;
-}
-.gallery-item-name {
+#fichiers .gallery-item-info { padding: 10px 12px; min-width: 0; }
+#fichiers .gallery-item-name {
     font-size: 0.78rem;
-    color: #0b1220;
+    color: #ffffff;
     font-weight: 600;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
     letter-spacing: -0.005em;
 }
-.gallery-item-size {
+#fichiers .gallery-item-size {
     font-size: 0.68rem;
-    color: #64748b;
+    color: rgba(255, 255, 255, 0.55);
     margin-top: 3px;
     font-weight: 450;
 }
 
-.hidden { display: none !important; }
+#fichiers .hidden { display: none !important; }
 </style>
 
 <script>
 /* ============================================================
-   ÉCRAN FICHIERS SOURCES — FORMULE PRO
+   ÉCRAN FICHIERS SOURCES — logique inchangée
    ============================================================ */
 (function() {
 
@@ -743,10 +760,9 @@
         }
     }
 
-    /* ⭐ Vérifie en temps réel si l'écran fichiers est valide (pas de blocage nécessaire) */
     function estFichiersValide() {
         const htmlFiles = (filesData || []).filter(f => f.name.toLowerCase().endsWith('.html'));
-        if (htmlFiles.length <= 1) return true; // 0 ou 1 fichier : rien à choisir
+        if (htmlFiles.length <= 1) return true;
         const selectEl = document.getElementById('selectHtmlPrincipal');
         if (!selectEl) return true;
         const val = selectEl.value;
@@ -764,14 +780,9 @@
         } catch (e) {}
         await refreshFilesScreenUI();
 
-        /* ⭐ Enregistrer la garde auprès du shell :
-           Bloque la sortie de l'écran fichiers si plusieurs HTML importés
-           et qu'aucune page d'accueil principale n'a été choisie */
         if (typeof window.enregistrerGarde === 'function') {
             window.enregistrerGarde('fichiers', function() {
                 if (estFichiersValide()) return true;
-
-                /* Blocage : montrer l'erreur */
                 const wrap = document.getElementById('mainPageSelectWrapper');
                 if (wrap) {
                     wrap.classList.remove('hidden');
