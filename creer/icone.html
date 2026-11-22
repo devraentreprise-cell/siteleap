@@ -1,11 +1,11 @@
 <div id="icone" class="screen">
     <div class="page-header">
-        <button class="back-btn" onclick="goBack()"><svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg></button>
+        <button type="button" class="back-btn" onclick="goBack()"><svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg></button>
         <div class="page-title-wrap">
             <h1 class="page-title">Icône du site</h1>
             <p class="page-sub">Ce qui apparaîtra sur l'écran d'accueil</p>
         </div>
-        <button id="headerValidateBtn" class="header-validate-btn hidden" onclick="validateIcon()">Valider</button>
+        <button type="button" id="headerValidateBtn" class="header-validate-btn hidden" onclick="validateIcon()">Valider</button>
     </div>
     <input type="file" id="iconFileInput" accept="image/*" style="display:none;">
 
@@ -99,71 +99,84 @@
 </div>
 
 <style>
-.screen { display: none; }
-.screen.active { display: block; }
-#icone {
+#create-sheet-container #icone.screen { display: none; min-width: 0; max-width: 100%; overflow-x: clip; }
+#create-sheet-container #icone.screen.active { display: block; }
+#create-sheet-container #icone {
     max-width: 640px;
     width: 100%;
+    min-height: 100%;
     margin: 0 auto;
     padding: 0 16px 40px;
+    background-color: #000000;
+    background-image:
+        radial-gradient(ellipse 75% 40% at 50% 0%, rgba(16, 185, 129, 0.16), transparent 70%),
+        radial-gradient(ellipse 60% 40% at 85% 95%, rgba(5, 150, 105, 0.12), transparent 72%);
+    color: #ffffff;
 }
 
 /* ============================================
    EN-TÊTE
    ============================================ */
-.page-header {
+#create-sheet-container #icone .page-header {
     display: flex;
     align-items: center;
     gap: 12px;
-    padding: 14px 0 22px;
+    padding: 14px 4px 16px;
+    margin-bottom: 18px;
     position: sticky;
     top: 0;
-    background: #fff;
+    background: rgba(0, 0, 0, 0.82);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-bottom: 1px solid rgba(16, 185, 129, 0.18);
     z-index: 10;
 }
-.back-btn {
+#create-sheet-container #icone .back-btn {
     width: 40px; height: 40px;
-    border: none;
-    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    background: rgba(255, 255, 255, 0.04);
     cursor: pointer;
     border-radius: 50%;
     display: flex; align-items: center; justify-content: center;
     flex-shrink: 0;
-    color: #0b1220;
-    transition: background-color .15s ease;
+    color: #ffffff;
+    transition: background-color .15s ease, border-color .15s ease, transform .12s ease;
 }
-.back-btn:hover { background: #f1f5f9; }
-.back-btn:active { transform: scale(.95); }
-.back-btn svg {
+#create-sheet-container #icone .back-btn:hover {
+    background: rgba(16, 185, 129, 0.14);
+    border-color: rgba(52, 211, 153, 0.45);
+}
+#create-sheet-container #icone .back-btn:active { transform: scale(.95); }
+#create-sheet-container #icone .back-btn svg {
     width: 24px; height: 24px;
     stroke: currentColor; fill: none;
     stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round;
 }
-.page-title-wrap {
+#create-sheet-container #icone .page-title-wrap {
     flex: 1;
     min-width: 0;
     border-left: 2px solid #10b981;
     padding-left: 14px;
 }
-.page-title {
+#create-sheet-container #icone .page-title {
     font-size: 1.15rem;
     font-weight: 800;
-    color: #0b1220;
+    color: #ffffff;
     line-height: 1.15;
     letter-spacing: -0.025em;
     margin: 0 0 2px;
 }
-.page-sub {
+#create-sheet-container #icone .page-sub {
     font-size: 0.78rem;
     font-weight: 450;
-    color: #64748b;
+    color: rgba(255, 255, 255, 0.65);
     line-height: 1.35;
     margin: 0;
 }
-.header-validate-btn {
-    background: #10b981;
-    color: #fff;
-    border: none;
+#create-sheet-container #icone .header-validate-btn {
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.92) 0%, rgba(5, 150, 105, 0.92) 100%);
+    color: #ffffff;
+    border: 1px solid rgba(110, 231, 183, 0.45);
     padding: 10px 16px;
     border-radius: 10px;
     font-size: 0.85rem;
@@ -171,153 +184,160 @@
     cursor: pointer;
     font-family: inherit;
     flex-shrink: 0;
-    transition: background-color .15s ease, transform .1s ease;
-    box-shadow: 0 8px 16px -8px rgba(16,185,129,.75);
+    transition: background-color .15s ease, transform .1s ease, border-color .15s ease;
+    box-shadow: 0 10px 20px -8px rgba(16, 185, 129, 0.65);
 }
-.header-validate-btn:hover { background: #059669; }
-.header-validate-btn:active { transform: scale(.96); }
-.header-validate-btn:disabled { opacity: .55; cursor: not-allowed; }
+#create-sheet-container #icone .header-validate-btn:hover {
+    background: linear-gradient(135deg, #10b981 0%, #047857 100%);
+    border-color: #ffffff;
+}
+#create-sheet-container #icone .header-validate-btn:active { transform: scale(.96); }
+#create-sheet-container #icone .header-validate-btn:disabled { opacity: .45; cursor: not-allowed; }
 
 /* ============================================
    ÉTAT 1 — VIDE
    ============================================ */
-.state-intro {
+#create-sheet-container #icone .state-intro {
     font-size: 0.88rem;
-    color: #64748b;
+    color: rgba(255, 255, 255, 0.72);
     margin-bottom: 18px;
     line-height: 1.5;
 }
 
-.file-drop {
+#create-sheet-container #icone .file-drop {
     display: block;
-    padding: 36px 20px 30px;
-    border: 2px dashed #cbd5e1;
+    padding: 38px 20px 32px;
+    border: 1.5px dashed rgba(52, 211, 153, 0.45);
     border-radius: 18px;
     text-align: center;
     cursor: pointer;
-    background: #fafbfc;
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
     transition: border-color .18s ease, background-color .18s ease, transform .18s ease;
     margin-bottom: 14px;
 }
-.file-drop:hover {
-    border-color: #3b82f6;
-    background: #f0f7ff;
+#create-sheet-container #icone .file-drop:hover {
+    border-color: #34d399;
+    background: rgba(16, 185, 129, 0.1);
 }
-.file-drop:active { transform: scale(.99); }
+#create-sheet-container #icone .file-drop:active { transform: scale(.99); }
 
-.file-drop-icon-wrap {
+#create-sheet-container #icone .file-drop-icon-wrap {
     width: 60px; height: 60px;
     margin: 0 auto 14px;
-    background: #dbeafe;
-    color: #1e40af;
+    background: rgba(16, 185, 129, 0.16);
+    border: 1px solid rgba(52, 211, 153, 0.35);
+    color: #34d399;
     border-radius: 16px;
     display: flex; align-items: center; justify-content: center;
 }
-.file-drop-icon-wrap svg {
+#create-sheet-container #icone .file-drop-icon-wrap svg {
     width: 28px; height: 28px;
     stroke: currentColor; fill: none;
     stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round;
 }
-.file-drop-text {
+#create-sheet-container #icone .file-drop-text {
     font-size: 0.95rem;
     font-weight: 700;
-    color: #0b1220;
+    color: #ffffff;
     margin-bottom: 5px;
     letter-spacing: -0.01em;
 }
-.file-drop-hint {
+#create-sheet-container #icone .file-drop-hint {
     font-size: 0.8rem;
-    color: #64748b;
+    color: rgba(255, 255, 255, 0.58);
 }
 
 /* ============================================
    ÉTAT 2 — APERÇU
    ============================================ */
-.icon-hero {
+#create-sheet-container #icone .icon-hero {
     display: flex;
     flex-direction: column;
     align-items: center;
     padding: 32px 20px 26px;
-    background: #ffffff;
-    border: 1px solid #f1f5f9;
+    background: rgba(255, 255, 255, 0.035);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border: 1px solid rgba(16, 185, 129, 0.22);
     border-radius: 20px;
     margin-bottom: 18px;
-    box-shadow:
-        0 8px 20px -14px rgba(15,23,42,.14),
-        0 2px 6px -2px rgba(15,23,42,.04);
+    box-shadow: 0 18px 36px -20px rgba(0, 0, 0, 0.85);
 }
-.icon-preview-box {
+#create-sheet-container #icone .icon-preview-box {
     width: 140px; height: 140px;
     border-radius: 50%;
-    background: #f1f5f9;
+    background: rgba(255, 255, 255, 0.06);
     overflow: hidden;
     position: relative;
     margin-bottom: 20px;
     box-shadow:
-        0 20px 40px -16px rgba(15,23,42,.28),
-        0 0 0 6px #fff,
-        0 0 0 7px #e2e8f0;
+        0 20px 40px -16px rgba(0, 0, 0, 0.9),
+        0 0 0 4px rgba(16, 185, 129, 0.35),
+        0 0 0 5px rgba(255, 255, 255, 0.14);
 }
-.icon-preview-box img {
+#create-sheet-container #icone .icon-preview-box img {
     width: 100%; height: 100%;
     object-fit: cover;
     display: block;
 }
-.icon-info {
+#create-sheet-container #icone .icon-info {
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 8px;
 }
-.icon-info-badge {
+#create-sheet-container #icone .icon-info-badge {
     display: inline-flex;
     align-items: center;
     gap: 6px;
-    background: #ecfdf5;
-    color: #0e9f6e;
+    background: rgba(16, 185, 129, 0.18);
+    border: 1px solid rgba(52, 211, 153, 0.45);
+    color: #6ee7b7;
     padding: 5px 12px;
     border-radius: 999px;
     font-size: 0.75rem;
     font-weight: 700;
 }
-.icon-info-badge svg {
+#create-sheet-container #icone .icon-info-badge svg {
     width: 12px; height: 12px;
     stroke: currentColor; fill: none;
     stroke-width: 3; stroke-linecap: round; stroke-linejoin: round;
 }
-.icon-info-detail {
+#create-sheet-container #icone .icon-info-detail {
     font-size: 0.78rem;
-    color: #64748b;
+    color: rgba(255, 255, 255, 0.62);
     font-weight: 450;
 }
 
 /* ============================================
    SECTION DES APERÇUS
    ============================================ */
-.previews-section {
-    background: #fafbfc;
+#create-sheet-container #icone .previews-section {
+    background: rgba(255, 255, 255, 0.03);
     border-radius: 18px;
     padding: 20px 14px 18px;
     margin-bottom: 18px;
-    border: 1px solid #f1f5f9;
+    border: 1px solid rgba(255, 255, 255, 0.1);
 }
-.previews-section-title {
+#create-sheet-container #icone .previews-section-title {
     font-size: 0.72rem;
     font-weight: 800;
-    color: #64748b;
+    color: #6ee7b7;
     text-transform: uppercase;
     letter-spacing: 0.1em;
     text-align: center;
     margin-bottom: 18px;
 }
 
-.live-previews {
+#create-sheet-container #icone .live-previews {
     display: flex;
     gap: 10px;
     justify-content: space-around;
     flex-wrap: nowrap;
 }
-.preview-item {
+#create-sheet-container #icone .preview-item {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -325,18 +345,17 @@
     min-width: 0;
     flex: 1;
 }
-.preview-frame {
+#create-sheet-container #icone .preview-frame {
     width: 62px; height: 62px;
     overflow: hidden;
     position: relative;
-    background: #fff;
-    box-shadow:
-        0 6px 14px -6px rgba(15,23,42,.18),
-        0 1px 3px rgba(15,23,42,.04);
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    box-shadow: 0 8px 18px -6px rgba(0, 0, 0, 0.8);
     margin-bottom: 8px;
     flex-shrink: 0;
 }
-.preview-frame .preview-img-live {
+#create-sheet-container #icone .preview-frame .preview-img-live {
     position: absolute;
     top: 50%; left: 50%;
     max-width: none;
@@ -344,19 +363,19 @@
     user-select: none;
     -webkit-user-drag: none;
 }
-.preview-frame .preview-img-static {
+#create-sheet-container #icone .preview-frame .preview-img-static {
     width: 100%; height: 100%;
     object-fit: cover;
     display: block;
 }
-.shape-android-circle { border-radius: 50%; }
-.shape-android-rounded { border-radius: 13px; }
-.shape-iphone-squircle { border-radius: 15px; }
-.shape-pc-square { border-radius: 4px; }
+#create-sheet-container #icone .shape-android-circle { border-radius: 50%; }
+#create-sheet-container #icone .shape-android-rounded { border-radius: 13px; }
+#create-sheet-container #icone .shape-iphone-squircle { border-radius: 15px; }
+#create-sheet-container #icone .shape-pc-square { border-radius: 4px; }
 
-.preview-item span {
+#create-sheet-container #icone .preview-item span {
     font-size: 10.5px;
-    color: #64748b;
+    color: rgba(255, 255, 255, 0.72);
     font-weight: 700;
     line-height: 1.3;
     letter-spacing: 0.01em;
@@ -365,12 +384,12 @@
 /* ============================================
    BOUTONS D'ACTION
    ============================================ */
-.preview-actions {
+#create-sheet-container #icone .preview-actions {
     display: flex;
     gap: 10px;
     margin-top: 4px;
 }
-.preview-actions button {
+#create-sheet-container #icone .preview-actions button {
     flex: 1;
     padding: 15px;
     border-radius: 13px;
@@ -383,56 +402,65 @@
     align-items: center;
     justify-content: center;
     gap: 8px;
-    transition: transform .12s ease, background-color .15s ease;
+    transition: transform .12s ease, background-color .15s ease, border-color .15s ease;
 }
-.preview-actions button:active { transform: scale(.98); }
-.preview-actions button svg {
+#create-sheet-container #icone .preview-actions button:active { transform: scale(.98); }
+#create-sheet-container #icone .preview-actions button svg {
     width: 16px; height: 16px;
     stroke: currentColor; fill: none;
     stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round;
 }
-.btn-preview-edit {
-    background: #0b1220;
-    color: #fff;
+#create-sheet-container #icone .btn-preview-edit {
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.92) 0%, rgba(5, 150, 105, 0.92) 100%);
+    border: 1px solid rgba(110, 231, 183, 0.45);
+    color: #ffffff;
+    box-shadow: 0 12px 24px -10px rgba(16, 185, 129, 0.6);
 }
-.btn-preview-edit:hover { background: #1e293b; }
-.btn-preview-delete {
-    background: #fef2f2;
-    color: #ef4444;
+#create-sheet-container #icone .btn-preview-edit:hover {
+    background: linear-gradient(135deg, #10b981 0%, #047857 100%);
+    border-color: #ffffff;
 }
-.btn-preview-delete:hover { background: #fee2e2; }
+#create-sheet-container #icone .btn-preview-delete {
+    background: rgba(239, 68, 68, 0.14);
+    border: 1px solid rgba(248, 113, 113, 0.35);
+    color: #fca5a5;
+}
+#create-sheet-container #icone .btn-preview-delete:hover {
+    background: rgba(239, 68, 68, 0.24);
+    color: #ffffff;
+}
 
 /* ============================================
    ÉTAT 3 — ÉDITION
    ============================================ */
-.crop-title {
+#create-sheet-container #icone .crop-title {
     font-size: 1.15rem;
     font-weight: 800;
-    color: #0b1220;
+    color: #ffffff;
     line-height: 1.2;
     letter-spacing: -0.02em;
     margin-bottom: 16px;
     text-align: center;
 }
-.crop-square {
+#create-sheet-container #icone .crop-square {
     position: relative;
     width: 100%;
     max-width: 320px;
     aspect-ratio: 1 / 1;
     margin: 0 auto 18px;
     overflow: hidden;
-    background: #f1f5f9;
+    background: rgba(255, 255, 255, 0.04);
     border-radius: 20px;
     cursor: grab;
     touch-action: none;
     user-select: none;
     -webkit-user-select: none;
     box-shadow:
-        0 20px 40px -20px rgba(15,23,42,.28),
-        0 0 0 1px #e2e8f0;
+        0 20px 40px -20px rgba(0, 0, 0, 0.9),
+        0 0 0 1px rgba(52, 211, 153, 0.35);
 }
-.crop-square:active { cursor: grabbing; }
-.crop-square img {
+#create-sheet-container #icone .crop-square:active { cursor: grabbing; }
+#create-sheet-container #icone .crop-square img {
     position: absolute;
     top: 50%; left: 50%;
     max-width: none;
@@ -440,26 +468,26 @@
     -webkit-user-drag: none;
     pointer-events: none;
 }
-.crop-safe-zone {
+#create-sheet-container #icone .crop-safe-zone {
     position: absolute;
     top: 50%; left: 50%;
     width: 80%; height: 80%;
     transform: translate(-50%, -50%);
     border-radius: 50%;
-    border: 2px dashed rgba(255,255,255,0.95);
-    box-shadow: 0 0 0 9999px rgba(15,23,42,0.45);
+    border: 2px dashed rgba(110, 231, 183, 0.95);
+    box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.58);
     pointer-events: none;
     z-index: 2;
 }
-.crop-help {
+#create-sheet-container #icone .crop-help {
     font-size: 0.8rem;
-    color: #64748b;
+    color: rgba(255, 255, 255, 0.68);
     text-align: center;
     margin-bottom: 18px;
     line-height: 1.55;
 }
 
-.hidden { display: none !important; }
+#create-sheet-container #icone .hidden { display: none !important; }
 </style>
 
 <script>
@@ -517,7 +545,7 @@
             if (iconCurrentObjectURL) URL.revokeObjectURL(iconCurrentObjectURL);
             iconCurrentObjectURL = URL.createObjectURL(logo);
             document.getElementById('iconPreviewImg').src = iconCurrentObjectURL;
-            document.querySelectorAll('.preview-img-static').forEach(img => { img.src = iconCurrentObjectURL; });
+            document.querySelectorAll('#icone .preview-img-static').forEach(img => { img.src = iconCurrentObjectURL; });
             previewState.classList.remove('hidden');
         } else {
             headerValidateBtn.classList.add('hidden');
@@ -537,8 +565,8 @@
                     resetIconCropState();
                     iconEditing = true;
                     document.getElementById('cropImg').src = e.target.result;
-                    document.querySelectorAll('.preview-img-live').forEach(img => { img.src = e.target.result; });
-                    history.pushState({ screen: 'icone', mode: 'editing' }, '', '#icone-edit');
+                    document.querySelectorAll('#icone .preview-img-live').forEach(img => { img.src = e.target.result; });
+                    try { history.pushState({ screen: 'icone', mode: 'editing' }, '', '#icone-edit'); } catch (err) {}
                     updateIconScreen();
                     document.getElementById('iconFileInput').value = '';
                 };
@@ -582,7 +610,7 @@
         const displayH = iconBaseH * iconScale * factor;
         const offsetX = iconPosX * factor;
         const offsetY = iconPosY * factor;
-        document.querySelectorAll('.preview-img-live').forEach(img => {
+        document.querySelectorAll('#icone .preview-img-live').forEach(img => {
             img.style.width = displayW + 'px';
             img.style.height = displayH + 'px';
             img.style.left = '50%'; img.style.top = '50%';
@@ -666,8 +694,8 @@
             resetIconCropState();
             iconEditing = true;
             document.getElementById('cropImg').src = url;
-            document.querySelectorAll('.preview-img-live').forEach(img => { img.src = url; });
-            history.pushState({ screen: 'icone', mode: 'editing' }, '', '#icone-edit');
+            document.querySelectorAll('#icone .preview-img-live').forEach(img => { img.src = url; });
+            try { history.pushState({ screen: 'icone', mode: 'editing' }, '', '#icone-edit'); } catch (err) {}
             updateIconScreen();
         };
         iconImageObj.src = url;
@@ -719,10 +747,10 @@
                 iconImageObj = null;
                 iconOriginalBlob = null;
                 resetIconCropState();
-                history.back();
+                try { history.back(); } catch (err) { updateIconScreen(); }
             } catch (err) {
                 headerValidateBtn.disabled = false;
-                showNotification('❌ Erreur : ' + err.message, 'error');
+                showNotification('Erreur : ' + err.message, 'error');
             }
         }, 'image/png');
     }
