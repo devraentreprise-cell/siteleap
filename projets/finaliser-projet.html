@@ -1,16 +1,5 @@
 <!-- ============================================================ -->
 <!-- FINALISER-PROJET.HTML                                         -->
-<!-- Tiroir d'instructions + génération du ZIP + activation        -->
-<!--                                                               -->
-<!-- 5 éléments intégrés :                                         -->
-<!--  1. Icônes générées dans icons/ (reproduction du générateur)   -->
-<!--  2. Service Worker copié à la racine (pwa-kit/sw.js)          -->
-<!--  3. Bannière injectée (pwa-kit/banniere.html) + SW enregistré -->
-<!--  4. Pas de manifest.webmanifest dans le zip                   -->
-<!--  5. <link rel="manifest"> injecté vers servir-manifeste       -->
-<!--                                                               -->
-<!-- Ordre au clic OK :                                            -->
-<!--  ZIP généré + téléchargé → activation → retour principal      -->
 <!-- ============================================================ -->
 
 <div id="finaliser-projet-container">
@@ -72,10 +61,6 @@
 </div>
 
 <style>
-/* ============================================================ */
-/* Styles scopés sous #finaliser-projet-container                */
-/* ============================================================ */
-
 #finaliser-projet-container,
 #finaliser-projet-container *,
 #finaliser-projet-container *::before,
@@ -96,9 +81,6 @@
     --line: #e2e8f0;
     --bg: #ffffff;
 
-    position: fixed;
-    inset: 0;
-    z-index: 70;
     width: 100%;
     max-width: 640px;
     margin: 0 auto;
@@ -106,26 +88,16 @@
     color: var(--ink);
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Helvetica, Arial, sans-serif;
     -webkit-font-smoothing: antialiased;
-    overflow: hidden;
 }
 
 #finaliser-projet-container button { font-family: inherit; }
-
 #finaliser-projet-container .screen { display: none; min-width: 0; max-width: 100%; overflow-x: clip; }
-#finaliser-projet-container .screen.active { display: flex; flex-direction: column; }
-
-#finaliser-projet-container #finaliser-projet {
-    height: 100vh;
-    height: 100dvh;
-    overflow: hidden;
-}
+#finaliser-projet-container .screen.active { display: block; }
 
 #finaliser-projet-container .slide-up-shell {
-    flex: 1;
-    min-height: 0;
     display: flex;
     flex-direction: column;
-    overflow: hidden;
+    min-height: 100%;
     transform: translate3d(0, 100%, 0);
     opacity: 0;
     transition:
@@ -145,7 +117,6 @@
     padding: 14px 16px 12px;
     border-bottom: 1px solid var(--line);
     background: #ffffff;
-    flex-shrink: 0;
 }
 #finaliser-projet-container .final-back {
     width: 40px;
@@ -161,7 +132,6 @@
     flex-shrink: 0;
     padding: 0;
 }
-#finaliser-projet-container .final-back:active { transform: scale(.95); }
 #finaliser-projet-container .final-back svg {
     width: 24px;
     height: 24px;
@@ -181,25 +151,18 @@
     font-size: 1.15rem;
     font-weight: 800;
     color: var(--ink);
-    line-height: 1.15;
-    letter-spacing: -0.025em;
-    margin: 0 0 2px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    margin: 0 0 2px;
 }
 #finaliser-projet-container .final-head-sub {
     font-size: 0.78rem;
     color: var(--muted);
-    line-height: 1.35;
     margin: 0;
 }
 
 #finaliser-projet-container .final-sheet-body {
-    flex: 1 1 auto;
-    min-height: 0;
-    overflow-y: auto;
-    -webkit-overflow-scrolling: touch;
     padding: 18px 20px 10px;
 }
 #finaliser-projet-container .final-sheet-text {
@@ -261,19 +224,16 @@
     font-weight: 600;
     color: #94a3b8;
     text-decoration: line-through;
-    text-decoration-thickness: 2px;
 }
 #finaliser-projet-container .final-price-new {
     font-size: 1.9rem;
     font-weight: 800;
     color: #047857;
-    letter-spacing: -0.03em;
     line-height: 1;
 }
 #finaliser-projet-container .final-price-period {
     font-size: 0.9rem;
     color: #64748b;
-    font-weight: 500;
 }
 #finaliser-projet-container .final-discount {
     display: inline-block;
@@ -298,10 +258,10 @@
 #finaliser-projet-container .final-sheet-highlight strong { color: #047857; font-weight: 800; }
 
 #finaliser-projet-container .final-sheet-footer {
-    flex-shrink: 0;
     padding: 10px 20px calc(14px + env(safe-area-inset-bottom, 0px));
     background: #ffffff;
     border-top: 1px solid #f1f5f9;
+    margin-top: 12px;
 }
 #finaliser-projet-container .final-sheet-action {
     width: 100%;
@@ -315,9 +275,7 @@
     text-align: center;
     cursor: pointer;
     box-shadow: 0 12px 24px -10px rgba(16,185,129,.7);
-    transition: opacity .15s ease, transform .15s ease;
 }
-#finaliser-projet-container .final-sheet-action:active:not(:disabled) { transform: scale(.98); }
 #finaliser-projet-container .final-sheet-action:disabled {
     opacity: 0.75;
     cursor: not-allowed;
@@ -336,9 +294,6 @@
 
     const $ = id => document.getElementById(id);
 
-    /* ============================================================ */
-    /* UTILITAIRES                                                   */
-    /* ============================================================ */
     function echapper(str) {
         return String(str == null ? '' : str)
             .replace(/&/g, '&amp;')
@@ -370,9 +325,6 @@
         });
     }
 
-    /* ============================================================ */
-    /* CHARGEMENT DU PROJET (toujours depuis la base, sans cache)    */
-    /* ============================================================ */
     async function chargerProjet(projetId) {
         projetIdCourant = projetId;
         projetActif = null;
@@ -400,9 +352,6 @@
         }
     }
 
-    /* ============================================================ */
-    /* CHARGEMENT DE JSZIP                                           */
-    /* ============================================================ */
     async function assurerJSZip() {
         if (typeof window.JSZip === 'function') return;
         await new Promise((resolve, reject) => {
@@ -414,39 +363,25 @@
         });
     }
 
-    /* ============================================================ */
-    /* LECTURE D'UN FICHIER SOURCE                                   */
-    /* files_data contient { name, webkitRelativePath, buffer, type } */
-    /* ============================================================ */
     function lireContenuFichier(fileObj) {
         if (!fileObj || !fileObj.buffer) {
             return { data: new ArrayBuffer(0), size: 0, isText: false, nom: '' };
         }
-
         const nomFichier = fileObj.name || '';
         const nomZip = (fileObj.webkitRelativePath && fileObj.webkitRelativePath.trim())
             ? fileObj.webkitRelativePath
             : nomFichier;
-
         const buf = fileObj.buffer;
         const taille = (buf && typeof buf.byteLength === 'number') ? buf.byteLength : 0;
 
         if (estFichierTexte(nomFichier)) {
             let texte = '';
-            try {
-                texte = new TextDecoder('utf-8').decode(buf);
-            } catch (e) {
-                texte = '';
-            }
+            try { texte = new TextDecoder('utf-8').decode(buf); } catch (e) { texte = ''; }
             return { data: texte, size: taille, isText: true, nom: nomZip };
         }
-
         return { data: buf, size: taille, isText: false, nom: nomZip };
     }
 
-    /* ============================================================ */
-    /* GÉNÉRATION DES ICÔNES (reproduction du générateur)            */
-    /* ============================================================ */
     const ICONES_A_GENERER = [
         { dossier: 'android', nom: 'icon-192.png',             taille: 192, padding: 0,  bg: null },
         { dossier: 'android', nom: 'icon-512.png',             taille: 512, padding: 0,  bg: null },
@@ -461,14 +396,8 @@
         return new Promise((resolve, reject) => {
             const url = URL.createObjectURL(blob);
             const img = new Image();
-            img.onload = () => {
-                URL.revokeObjectURL(url);
-                resolve(img);
-            };
-            img.onerror = () => {
-                URL.revokeObjectURL(url);
-                reject(new Error("Impossible de charger l'image source"));
-            };
+            img.onload = () => { URL.revokeObjectURL(url); resolve(img); };
+            img.onerror = () => { URL.revokeObjectURL(url); reject(new Error("Image invalide")); };
             img.src = url;
         });
     }
@@ -511,10 +440,7 @@
             }
         } catch (e) {}
 
-        if (!logoBlob) {
-            console.warn('[Finaliser] Aucun logo trouvé, icônes ignorées.');
-            return 0;
-        }
+        if (!logoBlob) return 0;
 
         const img = await blobVersImage(logoBlob);
         const dossierIcons = zip.folder('icons');
@@ -534,16 +460,12 @@
         return total;
     }
 
-    /* ============================================================ */
-    /* GÉNÉRATION DU ZIP COMPLET                                     */
-    /* ============================================================ */
     async function genererZipProjet(projet) {
         await assurerJSZip();
 
         const zip = new window.JSZip();
         const nomSite = (projet && projet.nom) || 'Mon site';
 
-        /* ---- 1. Fichiers sources de l'utilisateur ---- */
         let storedFiles = [];
         try {
             if (typeof window.recupererNatif === 'function') {
@@ -559,11 +481,9 @@
             fichiersLus.push(lu);
         }
 
-        /* ---- 2. Icônes générées ---- */
         const poidsIcones = await genererIconesDansZip(zip);
         totalOctets += poidsIcones;
 
-        /* ---- 3. Service Worker (pwa-kit/sw.js → sw.js à la racine) ---- */
         let swCode = '';
         try {
             if (window._swDefaut) {
@@ -581,7 +501,6 @@
             totalOctets += new Blob([swCode]).size;
         }
 
-        /* ---- 4. Bannière (pwa-kit/banniere.html) avec les 4 placeholders ---- */
         let banniereTemplate = '';
         try {
             const resBanner = await fetch('pwa-kit/banniere.html');
@@ -598,7 +517,6 @@
 
         const blocInjection = banniereInjectee + '\n';
 
-        /* ---- 5. <link rel="manifest"> vers servir-manifeste ---- */
         const manifestUrl =
             '/.netlify/functions/servir-manifeste?id=' + encodeURIComponent(projetIdCourant || '');
 
@@ -606,7 +524,6 @@
             '<link rel="manifest" href="' + manifestUrl + '">\n' +
             '<link rel="apple-touch-icon" href="icons/ios/apple-touch-icon-180.png">\n';
 
-        /* ---- Détection du HTML principal ---- */
         let htmlCibleIndex = -1;
         fichiersLus.forEach((f, idx) => {
             if (f.isText && f.nom.toLowerCase().endsWith('.html')) {
@@ -616,25 +533,15 @@
             }
         });
 
-        /* ---- 6. Ajout des fichiers au zip avec injections ---- */
         fichiersLus.forEach((f, idx) => {
             let contenuFinal = f.data;
 
             if (idx === htmlCibleIndex && typeof contenuFinal === 'string') {
-                /* <link> manifeste + apple-touch-icon dans le <head> */
                 if (/<head[^>]*>/i.test(contenuFinal)) {
-                    contenuFinal = contenuFinal.replace(
-                        /(<head[^>]*>)/i,
-                        '$1\n' + linkManifeste
-                    );
+                    contenuFinal = contenuFinal.replace(/(<head[^>]*>)/i, '$1\n' + linkManifeste);
                 }
-
-                /* Bannière + SW enregistré avant </body> */
                 if (/<\/body>/i.test(contenuFinal)) {
-                    contenuFinal = contenuFinal.replace(
-                        /<\/body>/i,
-                        blocInjection + '</body>'
-                    );
+                    contenuFinal = contenuFinal.replace(/<\/body>/i, blocInjection + '</body>');
                 } else {
                     contenuFinal = contenuFinal + '\n' + blocInjection;
                 }
@@ -643,7 +550,6 @@
             zip.file(f.nom.replace(/^\/+/, ''), contenuFinal);
         });
 
-        /* ---- 7. Génération finale du blob + téléchargement ---- */
         const blobZip = await zip.generateAsync({ type: 'blob' });
 
         const url = URL.createObjectURL(blobZip);
@@ -657,9 +563,6 @@
         setTimeout(() => URL.revokeObjectURL(url), 1500);
     }
 
-    /* ============================================================ */
-    /* ACTIVATION DU PROJET                                          */
-    /* ============================================================ */
     async function activerProjet(projetId) {
         const jeton = await window._authUser.getIdToken();
         const response = await fetch('/.netlify/functions/activer-projet', {
@@ -669,13 +572,10 @@
         });
         const data = await response.json().catch(() => ({}));
         if (!response.ok || !data.success) {
-            throw new Error(data.message || "Échec de l'activation du projet.");
+            throw new Error(data.message || "Échec de l'activation.");
         }
     }
 
-    /* ============================================================ */
-    /* RETOUR À LA LISTE PRINCIPALE                                  */
-    /* ============================================================ */
     function retourListePrincipale() {
         try {
             if (typeof window.fermerEcran === 'function') {
@@ -683,6 +583,8 @@
                 window.fermerEcran('stats-projet');
             }
         } catch (e) {}
+
+        try { if (typeof window.sortirDuProjet === 'function') window.sortirDuProjet(); } catch (e) {}
 
         if (typeof window.openScreen === 'function') {
             window.openScreen('principal-projets');
@@ -693,9 +595,6 @@
         }
     }
 
-    /* ============================================================ */
-    /* CLIC SUR OK                                                   */
-    /* ============================================================ */
     async function onOkClick() {
         if (_zipEnCours) return;
         _zipEnCours = true;
@@ -708,17 +607,11 @@
         }
 
         try {
-            /* 1) Génération du ZIP (blob + téléchargement déclenché) */
             await genererZipProjet(projetActif);
-
-            /* 2) Activation du projet après le téléchargement */
             if (projetIdCourant) {
                 await activerProjet(projetIdCourant);
             }
-
-            /* 3) Retour à la liste principale + relecture depuis la base */
             retourListePrincipale();
-
         } catch (err) {
             console.error('[Finaliser] Erreur :', err);
         } finally {
@@ -730,9 +623,6 @@
         }
     }
 
-    /* ============================================================ */
-    /* RETOUR (flèche + natif)                                       */
-    /* ============================================================ */
     function retourStats() {
         if (typeof window.openScreen === 'function') {
             window.openScreen('stats-projet', { projetId: projetIdCourant });
@@ -748,9 +638,6 @@
         }
     }
 
-    /* ============================================================ */
-    /* ÉVÉNEMENTS                                                    */
-    /* ============================================================ */
     function brancherEvenements() {
         if (_initialise) return;
         _initialise = true;
@@ -768,15 +655,15 @@
         });
     }
 
-    /* ============================================================ */
-    /* POINT D'ENTRÉE EXPOSÉ                                         */
-    /* ============================================================ */
     window.init_finaliserProjet = async function(opts) {
         const projetId = opts && opts.projetId;
         if (!projetId) {
             console.warn('[Finaliser] Aucun projetId fourni.');
             return;
         }
+
+        // On demande au shell de masquer header + navbar
+        try { if (typeof window.entrerDansProjet === 'function') window.entrerDansProjet(); } catch (e) {}
 
         brancherEvenements();
         jouerEntreeRapideDepuisBas();
