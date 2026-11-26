@@ -1,0 +1,805 @@
+<!-- ============================================================ -->
+<!-- FINALISER-PROJET.HTML                                         -->
+<!-- Tiroir d'instructions + génération du ZIP + activation        -->
+<!--                                                               -->
+<!-- 5 éléments intégrés :                                         -->
+<!--  1. Icônes générées dans icons/ (reproduction du générateur)   -->
+<!--  2. Service Worker copié à la racine (pwa-kit/sw.js)          -->
+<!--  3. Bannière injectée (pwa-kit/banniere.html) + SW enregistré -->
+<!--  4. Pas de manifest.webmanifest dans le zip                   -->
+<!--  5. <link rel="manifest"> injecté vers servir-manifeste       -->
+<!--                                                               -->
+<!-- Ordre au clic OK :                                            -->
+<!--  ZIP généré + téléchargé → activation → retour principal      -->
+<!-- ============================================================ -->
+
+<div id="finaliser-projet-container">
+
+    <div id="finaliser-projet" class="screen active">
+        <div class="slide-up-shell" id="finaliserProjetSlideShell">
+
+            <div class="final-head">
+                <button type="button" class="final-back" id="btnBackFinaliser" aria-label="Retour">
+                    <svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg>
+                </button>
+                <div class="final-head-texts">
+                    <h1 class="final-head-title" id="finalNomProjet">Mon site web</h1>
+                    <p class="final-head-sub">Finalisation du projet</p>
+                </div>
+            </div>
+
+            <div class="final-sheet-body">
+                <p class="final-sheet-text">
+                    En cliquant sur <span class="final-em">OK</span>, vous allez lancer le téléchargement
+                    d'un dossier zip contenant tous vos fichiers sources, ainsi que les fichiers
+                    nécessaires à l'installation du site web et au suivi des statistiques.
+                </p>
+
+                <div class="final-sheet-subtitle">Prochaines étapes :</div>
+                <ul class="final-sheet-list">
+                    <li>Décompressez ce dossier.</li>
+                    <li>Hébergez-le sur votre hébergeur web.</li>
+                </ul>
+
+                <div class="final-sheet-nb">
+                    <strong>NB :</strong> Par mesure de prudence, veillez à ne pas remplacer
+                    vos anciens fichiers sources par ceux-ci.
+                </div>
+
+                <div class="final-sheet-subtitle">Tarification :</div>
+                <p class="final-sheet-text" style="margin-bottom: 0;">
+                    Profitez de notre offre spéciale <span class="final-discount">-44 %</span>
+                </p>
+                <div class="final-price-line">
+                    <span class="final-price-old">9 €</span>
+                    <span class="final-price-new">5 €</span>
+                    <span class="final-price-period">/ mois</span>
+                </div>
+
+                <div class="final-sheet-highlight">
+                    Ces frais ne s'appliqueront qu'à partir du moment où vous aurez atteint
+                    <strong>50 installations</strong>.
+                </div>
+            </div>
+
+            <div class="final-sheet-footer">
+                <button type="button" class="final-sheet-action" id="finalSheetOkBtn">OK</button>
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+<style>
+/* ============================================================ */
+/* Styles scopés sous #finaliser-projet-container                */
+/* ============================================================ */
+
+#finaliser-projet-container,
+#finaliser-projet-container *,
+#finaliser-projet-container *::before,
+#finaliser-projet-container *::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
+}
+
+#finaliser-projet-container {
+    --green: #10b981;
+    --green-dark: #059669;
+    --green-deep: #047857;
+    --green-soft: #ecfdf5;
+    --ink: #0b1220;
+    --muted: #64748b;
+    --line: #e2e8f0;
+    --bg: #ffffff;
+
+    position: fixed;
+    inset: 0;
+    z-index: 70;
+    width: 100%;
+    max-width: 640px;
+    margin: 0 auto;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Helvetica, Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    overflow: hidden;
+}
+
+#finaliser-projet-container button { font-family: inherit; }
+
+#finaliser-projet-container .screen { display: none; min-width: 0; max-width: 100%; overflow-x: clip; }
+#finaliser-projet-container .screen.active { display: flex; flex-direction: column; }
+
+#finaliser-projet-container #finaliser-projet {
+    height: 100vh;
+    height: 100dvh;
+    overflow: hidden;
+}
+
+#finaliser-projet-container .slide-up-shell {
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    transform: translate3d(0, 100%, 0);
+    opacity: 0;
+    transition:
+        transform 0.36s cubic-bezier(0.22, 1, 0.36, 1),
+        opacity 0.22s ease-out;
+    will-change: transform, opacity;
+}
+#finaliser-projet-container .slide-up-shell.is-entered {
+    transform: translate3d(0, 0, 0);
+    opacity: 1;
+}
+
+#finaliser-projet-container .final-head {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 16px 12px;
+    border-bottom: 1px solid var(--line);
+    background: #ffffff;
+    flex-shrink: 0;
+}
+#finaliser-projet-container .final-back {
+    width: 40px;
+    height: 40px;
+    border: none;
+    background: transparent;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--ink);
+    flex-shrink: 0;
+    padding: 0;
+}
+#finaliser-projet-container .final-back:active { transform: scale(.95); }
+#finaliser-projet-container .final-back svg {
+    width: 24px;
+    height: 24px;
+    stroke: currentColor;
+    fill: none;
+    stroke-width: 2.2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+#finaliser-projet-container .final-head-texts {
+    flex: 1;
+    min-width: 0;
+    border-left: 2px solid var(--green);
+    padding-left: 14px;
+}
+#finaliser-projet-container .final-head-title {
+    font-size: 1.15rem;
+    font-weight: 800;
+    color: var(--ink);
+    line-height: 1.15;
+    letter-spacing: -0.025em;
+    margin: 0 0 2px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+#finaliser-projet-container .final-head-sub {
+    font-size: 0.78rem;
+    color: var(--muted);
+    line-height: 1.35;
+    margin: 0;
+}
+
+#finaliser-projet-container .final-sheet-body {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    padding: 18px 20px 10px;
+}
+#finaliser-projet-container .final-sheet-text {
+    font-size: 0.95rem;
+    line-height: 1.45;
+    color: #0b1220;
+    margin-bottom: 8px;
+}
+#finaliser-projet-container .final-em { color: #10b981; font-weight: 700; }
+#finaliser-projet-container .final-sheet-subtitle {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: #0b1220;
+    margin-bottom: 3px;
+}
+#finaliser-projet-container .final-sheet-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    margin-bottom: 8px;
+    padding-left: 2px;
+}
+#finaliser-projet-container .final-sheet-list li {
+    position: relative;
+    padding-left: 18px;
+    font-size: 0.92rem;
+    line-height: 1.4;
+    color: #1e293b;
+}
+#finaliser-projet-container .final-sheet-list li::before {
+    content: "–";
+    position: absolute;
+    left: 0;
+    top: 0;
+    color: #10b981;
+    font-weight: 700;
+}
+#finaliser-projet-container .final-sheet-nb {
+    margin-bottom: 8px;
+    padding: 8px 12px;
+    border-left: 3px solid #f59e0b;
+    background: #fffbeb;
+    border-radius: 0 8px 8px 0;
+    font-size: 0.86rem;
+    line-height: 1.4;
+    color: #78350f;
+}
+#finaliser-projet-container .final-sheet-nb strong { color: #b45309; font-weight: 800; }
+#finaliser-projet-container .final-price-line {
+    display: flex;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 2px 0 0;
+}
+#finaliser-projet-container .final-price-old {
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: #94a3b8;
+    text-decoration: line-through;
+    text-decoration-thickness: 2px;
+}
+#finaliser-projet-container .final-price-new {
+    font-size: 1.9rem;
+    font-weight: 800;
+    color: #047857;
+    letter-spacing: -0.03em;
+    line-height: 1;
+}
+#finaliser-projet-container .final-price-period {
+    font-size: 0.9rem;
+    color: #64748b;
+    font-weight: 500;
+}
+#finaliser-projet-container .final-discount {
+    display: inline-block;
+    background: #ecfdf5;
+    color: #047857;
+    font-size: 0.78rem;
+    font-weight: 800;
+    padding: 3px 8px;
+    border-radius: 6px;
+    margin-left: 4px;
+}
+#finaliser-projet-container .final-sheet-highlight {
+    margin-top: 8px;
+    padding: 10px 13px;
+    background: #ecfdf5;
+    border: 1px solid #a7f3d0;
+    border-radius: 12px;
+    font-size: 0.9rem;
+    line-height: 1.4;
+    color: #065f46;
+}
+#finaliser-projet-container .final-sheet-highlight strong { color: #047857; font-weight: 800; }
+
+#finaliser-projet-container .final-sheet-footer {
+    flex-shrink: 0;
+    padding: 10px 20px calc(14px + env(safe-area-inset-bottom, 0px));
+    background: #ffffff;
+    border-top: 1px solid #f1f5f9;
+}
+#finaliser-projet-container .final-sheet-action {
+    width: 100%;
+    padding: 14px 18px;
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    color: #ffffff;
+    border: none;
+    border-radius: 12px;
+    font-size: 1rem;
+    font-weight: 700;
+    text-align: center;
+    cursor: pointer;
+    box-shadow: 0 12px 24px -10px rgba(16,185,129,.7);
+    transition: opacity .15s ease, transform .15s ease;
+}
+#finaliser-projet-container .final-sheet-action:active:not(:disabled) { transform: scale(.98); }
+#finaliser-projet-container .final-sheet-action:disabled {
+    opacity: 0.75;
+    cursor: not-allowed;
+}
+</style>
+
+<script>
+(function() {
+    'use strict';
+
+    let projetActif = null;
+    let projetIdCourant = null;
+    let _zipEnCours = false;
+    let _initialise = false;
+    let _historiquePousse = false;
+
+    const $ = id => document.getElementById(id);
+
+    /* ============================================================ */
+    /* UTILITAIRES                                                   */
+    /* ============================================================ */
+    function echapper(str) {
+        return String(str == null ? '' : str)
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#39;');
+    }
+
+    function formatPoidsOctets(octets) {
+        const n = Number(octets) || 0;
+        if (n >= 1024 * 1024) {
+            return (n / (1024 * 1024)).toFixed(1).replace('.', ',') + ' Mo';
+        }
+        return Math.max(1, Math.round(n / 1024)) + ' Ko';
+    }
+
+    function estFichierTexte(nom) {
+        return /\.(html?|css|js|json|txt|svg|xml|md|webmanifest)$/i.test(nom || '');
+    }
+
+    function jouerEntreeRapideDepuisBas() {
+        const shell = $('finaliserProjetSlideShell');
+        if (!shell) return;
+        shell.classList.remove('is-entered');
+        void shell.offsetWidth;
+        requestAnimationFrame(() => {
+            requestAnimationFrame(() => shell.classList.add('is-entered'));
+        });
+    }
+
+    /* ============================================================ */
+    /* CHARGEMENT DU PROJET (toujours depuis la base, sans cache)    */
+    /* ============================================================ */
+    async function chargerProjet(projetId) {
+        projetIdCourant = projetId;
+        projetActif = null;
+
+        try {
+            const jeton = await window._authUser.getIdToken();
+            const response = await fetch('/.netlify/functions/lister-projets', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ jeton: jeton })
+            });
+            const resultat = await response.json();
+            if (resultat && resultat.success && Array.isArray(resultat.projets)) {
+                projetActif = resultat.projets.find(
+                    p => String(p.id || p.nom) === String(projetId)
+                ) || null;
+            }
+        } catch (e) {
+            console.error('[Finaliser] Erreur chargement projet :', e);
+        }
+
+        if (projetActif) {
+            const nomEl = $('finalNomProjet');
+            if (nomEl) nomEl.textContent = projetActif.nom || 'Mon site web';
+        }
+    }
+
+    /* ============================================================ */
+    /* CHARGEMENT DE JSZIP                                           */
+    /* ============================================================ */
+    async function assurerJSZip() {
+        if (typeof window.JSZip === 'function') return;
+        await new Promise((resolve, reject) => {
+            const s = document.createElement('script');
+            s.src = 'https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js';
+            s.onload = resolve;
+            s.onerror = () => reject(new Error('Impossible de charger JSZip'));
+            document.head.appendChild(s);
+        });
+    }
+
+    /* ============================================================ */
+    /* LECTURE D'UN FICHIER SOURCE                                   */
+    /* files_data contient { name, webkitRelativePath, buffer, type } */
+    /* ============================================================ */
+    function lireContenuFichier(fileObj) {
+        if (!fileObj || !fileObj.buffer) {
+            return { data: new ArrayBuffer(0), size: 0, isText: false, nom: '' };
+        }
+
+        const nomFichier = fileObj.name || '';
+        const nomZip = (fileObj.webkitRelativePath && fileObj.webkitRelativePath.trim())
+            ? fileObj.webkitRelativePath
+            : nomFichier;
+
+        const buf = fileObj.buffer;
+        const taille = (buf && typeof buf.byteLength === 'number') ? buf.byteLength : 0;
+
+        if (estFichierTexte(nomFichier)) {
+            let texte = '';
+            try {
+                texte = new TextDecoder('utf-8').decode(buf);
+            } catch (e) {
+                texte = '';
+            }
+            return { data: texte, size: taille, isText: true, nom: nomZip };
+        }
+
+        return { data: buf, size: taille, isText: false, nom: nomZip };
+    }
+
+    /* ============================================================ */
+    /* GÉNÉRATION DES ICÔNES (reproduction du générateur)            */
+    /* ============================================================ */
+    const ICONES_A_GENERER = [
+        { dossier: 'android', nom: 'icon-192.png',             taille: 192, padding: 0,  bg: null },
+        { dossier: 'android', nom: 'icon-512.png',             taille: 512, padding: 0,  bg: null },
+        { dossier: 'android', nom: 'icon-192-maskable.png',    taille: 192, padding: 19, bg: '#ffffff' },
+        { dossier: 'android', nom: 'icon-512-maskable.png',    taille: 512, padding: 51, bg: '#ffffff' },
+        { dossier: 'ios',     nom: 'apple-touch-icon-180.png', taille: 180, padding: 0,  bg: '#ffffff' },
+        { dossier: 'ios',     nom: 'apple-touch-icon-152.png', taille: 152, padding: 0,  bg: '#ffffff' },
+        { dossier: 'favicon', nom: 'favicon-32.png',           taille: 32,  padding: 0,  bg: null }
+    ];
+
+    function blobVersImage(blob) {
+        return new Promise((resolve, reject) => {
+            const url = URL.createObjectURL(blob);
+            const img = new Image();
+            img.onload = () => {
+                URL.revokeObjectURL(url);
+                resolve(img);
+            };
+            img.onerror = () => {
+                URL.revokeObjectURL(url);
+                reject(new Error("Impossible de charger l'image source"));
+            };
+            img.src = url;
+        });
+    }
+
+    function genererIcone(img, taille, padding, backgroundColor) {
+        return new Promise((resolve) => {
+            const canvas = document.createElement('canvas');
+            canvas.width = taille;
+            canvas.height = taille;
+            const ctx = canvas.getContext('2d');
+
+            if (backgroundColor) {
+                ctx.fillStyle = backgroundColor;
+                ctx.fillRect(0, 0, taille, taille);
+            } else {
+                ctx.clearRect(0, 0, taille, taille);
+            }
+
+            const pad = padding || 0;
+            const zoneInterne = taille - (pad * 2);
+            const ratio = Math.min(zoneInterne / img.width, zoneInterne / img.height);
+            const largeur = img.width * ratio;
+            const hauteur = img.height * ratio;
+            const x = (taille - largeur) / 2;
+            const y = (taille - hauteur) / 2;
+
+            ctx.imageSmoothingEnabled = true;
+            ctx.imageSmoothingQuality = 'high';
+            ctx.drawImage(img, x, y, largeur, hauteur);
+
+            canvas.toBlob((blob) => resolve(blob), 'image/png', 1.0);
+        });
+    }
+
+    async function genererIconesDansZip(zip) {
+        let logoBlob = null;
+        try {
+            if (typeof window.recupererNatif === 'function') {
+                logoBlob = await window.recupererNatif('logo');
+            }
+        } catch (e) {}
+
+        if (!logoBlob) {
+            console.warn('[Finaliser] Aucun logo trouvé, icônes ignorées.');
+            return 0;
+        }
+
+        const img = await blobVersImage(logoBlob);
+        const dossierIcons = zip.folder('icons');
+        const dossierAndroid = dossierIcons.folder('android');
+        const dossierIos = dossierIcons.folder('ios');
+        const dossierFavicon = dossierIcons.folder('favicon');
+
+        let total = 0;
+        for (const item of ICONES_A_GENERER) {
+            const iconeBlob = await genererIcone(img, item.taille, item.padding, item.bg);
+            const cible = item.dossier === 'android' ? dossierAndroid
+                        : item.dossier === 'ios'     ? dossierIos
+                        : dossierFavicon;
+            cible.file(item.nom, iconeBlob);
+            total += iconeBlob.size;
+        }
+        return total;
+    }
+
+    /* ============================================================ */
+    /* GÉNÉRATION DU ZIP COMPLET                                     */
+    /* ============================================================ */
+    async function genererZipProjet(projet) {
+        await assurerJSZip();
+
+        const zip = new window.JSZip();
+        const nomSite = (projet && projet.nom) || 'Mon site';
+        const nomCourt = (projet && projet.nomCourt) || nomSite.slice(0, 12);
+
+        /* ---- 1. Fichiers sources de l'utilisateur ---- */
+        let storedFiles = [];
+        try {
+            if (typeof window.recupererNatif === 'function') {
+                storedFiles = (await window.recupererNatif('files_data')) || [];
+            }
+        } catch (e) {}
+
+        let totalOctets = 0;
+        const fichiersLus = [];
+        for (const item of storedFiles) {
+            const lu = lireContenuFichier(item);
+            totalOctets += lu.size;
+            fichiersLus.push(lu);
+        }
+
+        /* ---- 2. Icônes générées ---- */
+        const poidsIcones = await genererIconesDansZip(zip);
+        totalOctets += poidsIcones;
+
+        /* ---- 3. Service Worker (pwa-kit/sw.js → sw.js à la racine) ---- */
+        let swCode = '';
+        try {
+            if (window._swDefaut) {
+                swCode = window._swDefaut;
+            } else {
+                const resSw = await fetch('pwa-kit/sw.js');
+                if (resSw.ok) swCode = await resSw.text();
+            }
+        } catch (e) {}
+        if (swCode) {
+            if (!swCode.includes('// @siteleap-sw')) {
+                swCode = '// @siteleap-sw\n' + swCode;
+            }
+            zip.file('sw.js', swCode);
+            totalOctets += new Blob([swCode]).size;
+        }
+
+        /* ---- 4. Bannière (pwa-kit/banniere.html) + SW enregistré ---- */
+        let banniereTemplate = '';
+        try {
+            const resBanner = await fetch('pwa-kit/banniere.html');
+            if (resBanner.ok) banniereTemplate = await resBanner.text();
+        } catch (e) {}
+
+        const poidsFormate = formatPoidsOctets(totalOctets);
+
+        const swRegisterSnippet =
+            '<script>\n' +
+            'if ("serviceWorker" in navigator) {\n' +
+            '  window.addEventListener("load", function () {\n' +
+            '    navigator.serviceWorker.register("sw.js").catch(function () {});\n' +
+            '  });\n' +
+            '}\n' +
+            '<\/script>\n';
+
+        const banniereInjectee = banniereTemplate
+            .replace(/__APP_ICON__/g, 'icons/android/icon-192.png')
+            .replace(/__APP_NAME__/g, echapper(nomSite))
+            .replace(/__APP_SIZE__/g, echapper(poidsFormate));
+
+        const blocInjection =
+            swRegisterSnippet +
+            banniereInjectee +
+            '\n';
+
+        /* ---- 5. <link rel="manifest"> vers servir-manifeste ---- */
+        const manifestUrl =
+            '/.netlify/functions/servir-manifeste?id=' + encodeURIComponent(projetIdCourant || '');
+
+        const linkManifeste =
+            '<link rel="manifest" href="' + manifestUrl + '">\n' +
+            '<link rel="apple-touch-icon" href="icons/ios/apple-touch-icon-180.png">\n';
+
+        /* ---- Détection du HTML principal ---- */
+        let htmlCibleIndex = -1;
+        fichiersLus.forEach((f, idx) => {
+            if (f.isText && f.nom.toLowerCase().endsWith('.html')) {
+                if (f.nom.toLowerCase() === 'index.html' || htmlCibleIndex === -1) {
+                    htmlCibleIndex = idx;
+                }
+            }
+        });
+
+        /* ---- 6. Ajout des fichiers au zip avec injections ---- */
+        fichiersLus.forEach((f, idx) => {
+            let contenuFinal = f.data;
+
+            if (idx === htmlCibleIndex && typeof contenuFinal === 'string') {
+                /* <link> manifeste dans le <head> */
+                if (/<head[^>]*>/i.test(contenuFinal)) {
+                    contenuFinal = contenuFinal.replace(
+                        /(<head[^>]*>)/i,
+                        '$1\n' + linkManifeste
+                    );
+                }
+
+                /* bannière + SW avant </body> */
+                if (/<\/body>/i.test(contenuFinal)) {
+                    contenuFinal = contenuFinal.replace(
+                        /<\/body>/i,
+                        blocInjection + '</body>'
+                    );
+                } else {
+                    contenuFinal = contenuFinal + '\n' + blocInjection;
+                }
+            }
+
+            zip.file(f.nom.replace(/^\/+/, ''), contenuFinal);
+        });
+
+        /* ---- 7. Génération finale du blob + téléchargement ---- */
+        const blobZip = await zip.generateAsync({ type: 'blob' });
+
+        const url = URL.createObjectURL(blobZip);
+        const a = document.createElement('a');
+        const nomSlug = nomSite.toLowerCase().replace(/[^a-z0-9]+/gi, '-').replace(/^-|-$/g, '') || 'projet';
+        a.href = url;
+        a.download = nomSlug + '-pwa.zip';
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        setTimeout(() => URL.revokeObjectURL(url), 1500);
+    }
+
+    /* ============================================================ */
+    /* ACTIVATION DU PROJET                                          */
+    /* ============================================================ */
+    async function activerProjet(projetId) {
+        const jeton = await window._authUser.getIdToken();
+        const response = await fetch('/.netlify/functions/activer-projet', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ jeton: jeton, projetId: projetId })
+        });
+        const data = await response.json().catch(() => ({}));
+        if (!response.ok || !data.success) {
+            throw new Error(data.message || "Échec de l'activation du projet.");
+        }
+    }
+
+    /* ============================================================ */
+    /* RETOUR À LA LISTE PRINCIPALE                                  */
+    /* ============================================================ */
+    function retourListePrincipale() {
+        try {
+            if (typeof window.fermerEcran === 'function') {
+                window.fermerEcran('finaliser-projet');
+                window.fermerEcran('stats-projet');
+            }
+        } catch (e) {}
+
+        if (typeof window.openScreen === 'function') {
+            window.openScreen('principal-projets');
+        }
+
+        if (typeof window.init_principalProjets === 'function') {
+            window.init_principalProjets();
+        }
+    }
+
+    /* ============================================================ */
+    /* CLIC SUR OK                                                   */
+    /* ============================================================ */
+    async function onOkClick() {
+        if (_zipEnCours) return;
+        _zipEnCours = true;
+
+        const btn = $('finalSheetOkBtn');
+        const texteOrigine = btn ? btn.textContent : 'OK';
+        if (btn) {
+            btn.disabled = true;
+            btn.textContent = 'Génération du dossier ZIP...';
+        }
+
+        try {
+            /* 1) Génération du ZIP (blob + téléchargement déclenché) */
+            await genererZipProjet(projetActif);
+
+            /* 2) Activation du projet après le téléchargement */
+            if (projetIdCourant) {
+                await activerProjet(projetIdCourant);
+            }
+
+            /* 3) Retour à la liste principale + relecture depuis la base */
+            retourListePrincipale();
+
+        } catch (err) {
+            console.error('[Finaliser] Erreur :', err);
+        } finally {
+            _zipEnCours = false;
+            if (btn) {
+                btn.disabled = false;
+                btn.textContent = texteOrigine;
+            }
+        }
+    }
+
+    /* ============================================================ */
+    /* RETOUR (flèche + natif)                                       */
+    /* ============================================================ */
+    function retourStats() {
+        if (typeof window.openScreen === 'function') {
+            window.openScreen('stats-projet', { projetId: projetIdCourant });
+        }
+    }
+
+    function gererRetourNatif() {
+        if (_historiquePousse) {
+            _historiquePousse = false;
+            try { history.back(); } catch (e) {}
+        } else {
+            retourStats();
+        }
+    }
+
+    /* ============================================================ */
+    /* ÉVÉNEMENTS                                                    */
+    /* ============================================================ */
+    function brancherEvenements() {
+        if (_initialise) return;
+        _initialise = true;
+
+        const btnBack = $('btnBackFinaliser');
+        if (btnBack) btnBack.addEventListener('click', gererRetourNatif);
+
+        const btnOk = $('finalSheetOkBtn');
+        if (btnOk) btnOk.addEventListener('click', onOkClick);
+
+        window.addEventListener('popstate', function() {
+            if (!_historiquePousse) return;
+            _historiquePousse = false;
+            retourStats();
+        });
+    }
+
+    /* ============================================================ */
+    /* POINT D'ENTRÉE EXPOSÉ                                         */
+    /* ============================================================ */
+    window.init_finaliserProjet = async function(opts) {
+        const projetId = opts && opts.projetId;
+        if (!projetId) {
+            console.warn('[Finaliser] Aucun projetId fourni.');
+            return;
+        }
+
+        brancherEvenements();
+        jouerEntreeRapideDepuisBas();
+
+        try {
+            history.pushState({ screen: 'finaliser-projet', projetId: projetId }, '');
+            _historiquePousse = true;
+        } catch (e) {}
+
+        await chargerProjet(projetId);
+    };
+
+})();
+</script>
