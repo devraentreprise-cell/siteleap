@@ -2,6 +2,9 @@
 // Fichier : servir-manifeste.js
 // Sert le manifeste d'un projet à partir de son identifiant à la racine
 // Appel : /.netlify/functions/servir-manifeste?id=IDENTIFIANT_DU_PROJET
+//
+// Ne renvoie JAMAIS start_url ni scope : le navigateur utilise alors
+// les valeurs par défaut (URL du document qui a chargé le manifeste).
 // ==========================================
 
 import admin from "firebase-admin";
@@ -24,10 +27,13 @@ const DUREE_CACHE_SEC = 86400;
 const SEUIL_INSTALLS = 50;
 const DUREE_GRACE_MS = 30 * 24 * 60 * 60 * 1000;
 
+// Champs autorisés dans le manifeste renvoyé.
+// ATTENTION : start_url et scope sont volontairement exclus.
 const CHAMPS_AUTORISES = [
-    "name", "short_name", "description", "id", "start_url", "scope",
-    "display", "display_override", "orientation", "background_color",
-    "theme_color", "lang", "dir", "categories", "icons"
+    "name", "short_name", "description", "id",
+    "display", "display_override", "orientation",
+    "background_color", "theme_color",
+    "lang", "dir", "categories", "icons"
 ];
 
 const ENTETES_CORS = {
@@ -68,28 +74,7 @@ function estProjetBloque(creeLe, installsTotal, maintenantMs) {
     return maintenantMs > (dateCreation + DUREE_GRACE_MS);
 }
 
-function lireOrigine(valeur) {
-    if (typeof valeur !== "string" || valeur.length > 200) return "";
-    try {
-        const u = new URL(valeur);
-        if (u.protocol !== "https:" && u.protocol !== "http:") return "";
-        return u.origin;
-    } catch (e) {
-        return "";
-    }
-}
-
-function absolutiser(valeur, origine) {
-    if (typeof valeur !== "string" || !origine) return valeur;
-    if (/^(https?:|data:|blob:)/i.test(valeur)) return valeur;
-    try {
-        return new URL(valeur, origine + "/").href;
-    } catch (e) {
-        return valeur;
-    }
-}
-
-function preparerManifeste(brut, origine) {
+function preparerManifeste(brut) {
     const resultat = {};
     CHAMPS_AUTORISES.forEach(function (champ) {
         if (brut[champ] !== undefined && brut[champ] !== null) {
@@ -97,14 +82,11 @@ function preparerManifeste(brut, origine) {
         }
     });
 
-    if (resultat.start_url) resultat.start_url = absolutiser(resultat.start_url, origine);
-    if (resultat.scope) resultat.scope = absolutiser(resultat.scope, origine);
-
     if (Array.isArray(resultat.icons)) {
         resultat.icons = resultat.icons
             .filter(function (ic) { return ic && typeof ic === "object" && typeof ic.src === "string"; })
             .map(function (ic) {
-                const icone = { src: absolutiser(ic.src, origine) };
+                const icone = { src: ic.src };
                 if (ic.sizes) icone.sizes = ic.sizes;
                 if (ic.type) icone.type = ic.type;
                 if (ic.purpose) icone.purpose = ic.purpose;
@@ -149,12 +131,10 @@ export async function handler(event, context) {
         const installsTotal = snapInstalls.val();
 
         if (estProjetBloque(creeLe, installsTotal, Date.now())) {
-            // Mis en cache sur le CDN pour éviter de relire la base en boucle
             return reponseJson(403, { success: false, message: "Manifeste indisponible." }, DUREE_CACHE_SEC);
         }
 
-        const origine = lireOrigine(params.o);
-        const manifeste = preparerManifeste(brutManifeste, origine);
+        const manifeste = preparerManifeste(brutManifeste);
 
         return {
             statusCode: 200,
