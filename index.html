@@ -44,6 +44,13 @@ button:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
     position: relative;
 }
 body.create-open .header, body.create-open .navbar-container { visibility: hidden; }
+body.project-detail-open .header,
+body.project-detail-open .navbar-container {
+    display: none !important;
+}
+body.project-detail-open .main-content {
+    height: 100dvh;
+}
 body.modal-open .main-content { overflow: hidden; }
 
 /* Page dédiée à "Créer" : glisse du bas vers le haut en plein écran */
@@ -435,6 +442,18 @@ const cacheOnglets = {
     projets: { html: null, codesScripts: [], scroll: 0 }
 };
 
+/* ═══════════════════════════════════════════════════════════════
+   BARRE DE NAVIGATION & EN-TÊTE — Masqués dans le détail d'un projet
+═══════════════════════════════════════════════════════════════ */
+function entrerDansProjet() {
+    document.body.classList.add('project-detail-open');
+}
+function sortirDuProjet() {
+    document.body.classList.remove('project-detail-open');
+}
+window.entrerDansProjet = entrerDansProjet;
+window.sortirDuProjet = sortirDuProjet;
+
 function definirEtatStylesCreer(actif) {
     stylesInjectesCreer.forEach(function(st) {
         st.disabled = !actif;
@@ -595,6 +614,7 @@ function fermerCreateSheet() {
 function restaurerVueArrierePlan(tab) {
     definirEtatStylesCreer(false);
     if (tab === 'notifications') {
+        sortirDuProjet();
         setLinkActive(btnNotifications);
         headerTitle.textContent = 'Notifications';
         contentArea.innerHTML =
@@ -603,6 +623,7 @@ function restaurerVueArrierePlan(tab) {
                 '<p style="font-size: 0.9rem; line-height: 1.5;">Aucune nouvelle notification pour le moment.</p>' +
             '</div>';
     } else if (tab === 'infos') {
+        sortirDuProjet();
         setLinkActive(btnGuide);
         headerTitle.textContent = 'Infos';
         if (cacheOnglets.infos.html) {
@@ -666,6 +687,12 @@ window.addEventListener('popstate', function(e) {
         const targetTab = (tab === 'home' && ongletAvantCreer) ? ongletAvantCreer : tab;
         restaurerVueArrierePlan(targetTab);
         return;
+    }
+
+    if (tab === 'home' && screenId !== 'main' && screenId !== 'principal') {
+        entrerDansProjet();
+    } else if (tab === 'home') {
+        sortirDuProjet();
     }
 
     if (tab === 'create') {
@@ -741,6 +768,7 @@ document.getElementById('modalGoogleLoginBtn').addEventListener('click', async f
 ═══════════════════════════════════════════════════════════════ */
 async function runHomeView() {
     closeAllOverlays();
+    sortirDuProjet();
     if (ongletActif === 'creer') {
         sauvegarderOngletCourant();
         fermerCreateSheet();
@@ -929,6 +957,7 @@ async function chargerFichiersCreate(token) {
 
 function runCreateView() {
     closeAllOverlays();
+    sortirDuProjet();
     if (ongletActif !== 'creer') {
         if (btnNotifications.classList.contains('active')) ongletAvantCreer = 'notifications';
         else if (btnGuide.classList.contains('active')) ongletAvantCreer = 'infos';
@@ -992,6 +1021,7 @@ function runCreateView() {
 ═══════════════════════════════════════════════════════════════ */
 function runNotificationsView() {
     closeAllOverlays();
+    sortirDuProjet();
     if (ongletActif === 'creer') {
         sauvegarderOngletCourant();
         fermerCreateSheet();
@@ -1048,6 +1078,7 @@ function prechargerInfos() {
 
 async function runGuideView() {
     closeAllOverlays();
+    sortirDuProjet();
     if (ongletActif === 'creer') {
         sauvegarderOngletCourant();
         fermerCreateSheet();
@@ -1156,7 +1187,7 @@ function closeAllOverlays() {
 }
 
 /* ═══════════════════════════════════════════════════════════════
-   CRÉATION DU PROJET — Appel Netlify creer-projet
+   CRÉATION DU PROJET — Appel Netlify creer-projet (formule decouverte)
 ═══════════════════════════════════════════════════════════════ */
 async function lancerCreationProjet() {
     try {
@@ -1240,9 +1271,13 @@ async function lancerCreationProjet() {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
                 jeton: jeton,
+                formule: 'decouverte',
+                plan: 'decouverte',
                 manifeste: manifeste,
                 projet: {
-                    image: logo
+                    image: logo,
+                    formule: 'decouverte',
+                    plan: 'decouverte'
                 }
             })
         });
