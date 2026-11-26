@@ -542,7 +542,6 @@
 
         const zip = new window.JSZip();
         const nomSite = (projet && projet.nom) || 'Mon site';
-        const nomCourt = (projet && projet.nomCourt) || nomSite.slice(0, 12);
 
         /* ---- 1. Fichiers sources de l'utilisateur ---- */
         let storedFiles = [];
@@ -582,7 +581,7 @@
             totalOctets += new Blob([swCode]).size;
         }
 
-        /* ---- 4. Bannière (pwa-kit/banniere.html) + SW enregistré ---- */
+        /* ---- 4. Bannière (pwa-kit/banniere.html) avec les 4 placeholders ---- */
         let banniereTemplate = '';
         try {
             const resBanner = await fetch('pwa-kit/banniere.html');
@@ -591,24 +590,13 @@
 
         const poidsFormate = formatPoidsOctets(totalOctets);
 
-        const swRegisterSnippet =
-            '<script>\n' +
-            'if ("serviceWorker" in navigator) {\n' +
-            '  window.addEventListener("load", function () {\n' +
-            '    navigator.serviceWorker.register("sw.js").catch(function () {});\n' +
-            '  });\n' +
-            '}\n' +
-            '<\/script>\n';
-
         const banniereInjectee = banniereTemplate
             .replace(/__APP_ICON__/g, 'icons/android/icon-192.png')
             .replace(/__APP_NAME__/g, echapper(nomSite))
-            .replace(/__APP_SIZE__/g, echapper(poidsFormate));
+            .replace(/__APP_SIZE__/g, echapper(poidsFormate))
+            .replace(/__PROJECT_ID__/g, echapper(projetIdCourant || ''));
 
-        const blocInjection =
-            swRegisterSnippet +
-            banniereInjectee +
-            '\n';
+        const blocInjection = banniereInjectee + '\n';
 
         /* ---- 5. <link rel="manifest"> vers servir-manifeste ---- */
         const manifestUrl =
@@ -633,7 +621,7 @@
             let contenuFinal = f.data;
 
             if (idx === htmlCibleIndex && typeof contenuFinal === 'string') {
-                /* <link> manifeste dans le <head> */
+                /* <link> manifeste + apple-touch-icon dans le <head> */
                 if (/<head[^>]*>/i.test(contenuFinal)) {
                     contenuFinal = contenuFinal.replace(
                         /(<head[^>]*>)/i,
@@ -641,7 +629,7 @@
                     );
                 }
 
-                /* bannière + SW avant </body> */
+                /* Bannière + SW enregistré avant </body> */
                 if (/<\/body>/i.test(contenuFinal)) {
                     contenuFinal = contenuFinal.replace(
                         /<\/body>/i,
