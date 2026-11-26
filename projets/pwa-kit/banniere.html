@@ -84,7 +84,6 @@
     color: #1a1a1a;
   }
 
-  /* ===== GUIDE iOS (DU BAS VERS LE HAUT) ===== */
   #sl-ios-backdrop {
     position: fixed;
     inset: 0;
@@ -236,20 +235,45 @@
 
 <script>
   (function () {
-    const banner = document.getElementById('sl-install-banner');
-    const btnInstall = document.getElementById('sl-btn-install');
-    const btnCancel = document.getElementById('sl-btn-cancel');
-    const iosBackdrop = document.getElementById('sl-ios-backdrop');
-    const iosSheet = document.getElementById('sl-ios-sheet');
-    const iosClose = document.getElementById('sl-ios-close');
+    var ID_PROJET = "__PROJECT_ID__";
+    var URL_STAT = "/.netlify/functions/enregistrer-stat";
+    var dejaSignale = false;
 
-    let deferredPrompt = null;
+    var banner = document.getElementById('sl-install-banner');
+    var btnInstall = document.getElementById('sl-btn-install');
+    var btnCancel = document.getElementById('sl-btn-cancel');
+    var iosBackdrop = document.getElementById('sl-ios-backdrop');
+    var iosSheet = document.getElementById('sl-ios-sheet');
+    var iosClose = document.getElementById('sl-ios-close');
 
-    const estDejaInstalle =
+    var deferredPrompt = null;
+
+    var estDejaInstalle =
       window.matchMedia('(display-mode: standalone)').matches ||
       window.navigator.standalone === true;
 
-    const estIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
+    var estIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
+
+    function envoyerStat() {
+      if (dejaSignale) return;
+      if (!ID_PROJET || ID_PROJET.indexOf("__") === 0) return;
+      dejaSignale = true;
+
+      try {
+        var payload = JSON.stringify({ id: ID_PROJET });
+        if (navigator.sendBeacon) {
+          var blob = new Blob([payload], { type: "application/json" });
+          navigator.sendBeacon(URL_STAT, blob);
+        } else {
+          fetch(URL_STAT, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: payload,
+            keepalive: true
+          }).catch(function () {});
+        }
+      } catch (e) {}
+    }
 
     if (estDejaInstalle) return;
 
@@ -257,7 +281,7 @@
       banner.classList.add('show');
     }
 
-    window.addEventListener('beforeinstallprompt', (e) => {
+    window.addEventListener('beforeinstallprompt', function (e) {
       e.preventDefault();
       deferredPrompt = e;
       banner.classList.add('show');
@@ -275,31 +299,44 @@
       iosSheet.setAttribute('aria-hidden', 'true');
     }
 
-    btnInstall.addEventListener('click', async () => {
+    btnInstall.addEventListener('click', async function () {
       if (estIOS) {
+        /* iOS : on compte l'intention d'installation */
+        envoyerStat();
         ouvrirGuideIOS();
         return;
       }
       if (!deferredPrompt) return;
       deferredPrompt.prompt();
-      const { outcome } = await deferredPrompt.userChoice;
+      var choix = await deferredPrompt.userChoice;
       deferredPrompt = null;
-      if (outcome === 'accepted') {
+      if (choix && choix.outcome === 'accepted') {
+        /* Installation acceptée : on signale */
+        envoyerStat();
         banner.classList.remove('show');
       }
     });
 
-    btnCancel.addEventListener('click', () => {
+    btnCancel.addEventListener('click', function () {
       banner.classList.remove('show');
     });
 
     iosClose.addEventListener('click', fermerGuideIOS);
     iosBackdrop.addEventListener('click', fermerGuideIOS);
 
-    window.addEventListener('appinstalled', () => {
+    window.addEventListener('appinstalled', function () {
+      /* Android / Desktop : confirmation officielle */
+      envoyerStat();
       deferredPrompt = null;
       banner.classList.remove('show');
       fermerGuideIOS();
     });
+
+    /* Enregistrement du Service Worker */
+    if ("serviceWorker" in navigator) {
+      window.addEventListener("load", function () {
+        navigator.serviceWorker.register("sw.js").catch(function () {});
+      });
+    }
   })();
 </script>
