@@ -1,0 +1,604 @@
+<!-- ============================================================ -->
+<!-- DEBLOCAGE-PROJET.HTML                                         -->
+<!-- Réactivation d'un projet suspendu                             -->
+<!-- - Chargé à la demande via projetId                            -->
+<!-- - Étape 1 : paiement (Selar)                                  -->
+<!-- - Étape 2 : saisie référence + double confirmation            -->
+<!-- - Envoi { jeton, projetId, reference } → verifier-reference   -->
+<!-- - Succès → vue « attente 24 h »                               -->
+<!-- - Retour natif ET flèche gérés                                -->
+<!-- ============================================================ -->
+
+<div id="deblocage-projet-container">
+
+    <div id="deblocage-projet" class="screen active">
+        <div class="slide-up-shell" id="deblocageProjetSlideShell">
+
+            <div class="deblocage-head">
+                <button type="button" class="deblocage-back" id="btnBackDeblocage" aria-label="Retour">
+                    <svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg>
+                </button>
+                <div class="deblocage-head-texts">
+                    <h1 class="deblocage-head-title" id="deblocageNomProjet">Nom du projet</h1>
+                    <p class="deblocage-head-sub">Déblocage du projet</p>
+                </div>
+            </div>
+
+            <div class="deblocage-body">
+
+                <!-- VUE FORMULAIRE -->
+                <div id="deblocageFormView">
+                    <div class="overview-heading">
+                        <div class="overview-title">Réactiver votre projet</div>
+                        <div class="overview-description">Suivez les 2 étapes ci-dessous pour débloquer l'accès à ce projet.</div>
+                    </div>
+
+                    <div class="card">
+                        <span class="eyebrow">Étape 1 — Paiement</span>
+                        <p class="step-text">
+                            Cliquez sur le bouton ci-dessous pour effectuer le paiement. Une fois le paiement effectué, <strong>revenez ici et passez à l'étape 2</strong>.
+                        </p>
+                        <a
+                            class="btn-deblocage-action"
+                            href="https://selar.com/ds29e12322"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                        >
+                            Aller sur la plateforme de paiement
+                        </a>
+                    </div>
+
+                    <div class="card">
+                        <form id="formRefDeblocage" novalidate>
+                            <label for="inputRefDeblocage" class="eyebrow">Étape 2 — Référence de transaction</label>
+                            <p class="step-text">
+                                Ouvrez le <strong>message de confirmation que vous avez reçu par e-mail</strong> après votre paiement, copiez le numéro de référence de la transaction puis collez-le dans le champ ci-dessous.
+                            </p>
+                            <div class="form-group">
+                                <input
+                                    type="text"
+                                    id="inputRefDeblocage"
+                                    class="input-ref"
+                                    placeholder="Référence reçue par e-mail"
+                                    autocomplete="off"
+                                />
+                            </div>
+
+                            <button type="submit" class="btn-deblocage-action" id="btnValiderRef">Valider la référence</button>
+
+                            <!-- Zone de confirmation -->
+                            <div id="zoneConfirmationRef" style="display: none; margin-top: 12px;">
+                                <p class="confirmation-texte">
+                                    Vérifiez bien la référence saisie. Une fois confirmée, elle sera <strong>enregistrée définitivement</strong> et ne pourra plus être modifiée.
+                                </p>
+                                <button type="button" class="btn-deblocage-action" id="btnConfirmerRef">Confirmer et vérifier</button>
+                            </div>
+
+                            <p id="feedbackDeblocage" class="feedback-deblocage" role="status" aria-live="polite"></p>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- VUE ATTENTE -->
+                <div id="deblocageAttenteView" style="display: none;">
+                    <div class="card">
+                        <span class="attente-badge">Activation en cours</span>
+                        <div class="attente-titre">Demande d'activation enregistrée</div>
+                        <p class="attente-texte">
+                            Votre demande d'activation pour ce projet a bien été prise en compte. L'activation prendra un <strong>délai maximal de 24 heures</strong>.
+                        </p>
+                        <div class="attente-ref">
+                            Référence enregistrée : <span id="refEnregistreeValeur">—</span>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+<style>
+/* ============================================================ */
+/* Styles scopés sous #deblocage-projet-container                */
+/* ============================================================ */
+
+#deblocage-projet-container,
+#deblocage-projet-container *,
+#deblocage-projet-container *::before,
+#deblocage-projet-container *::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
+}
+
+#deblocage-projet-container {
+    --green: #10b981;
+    --green-deep: #047857;
+    --green-soft: #ecfdf5;
+    --red: #ef4444;
+    --red-dark: #dc2626;
+    --red-deep: #b91c1c;
+    --red-soft: #fef2f2;
+    --ink: #0b1220;
+    --muted: #64748b;
+    --line: #e2e8f0;
+    --bg: #ffffff;
+    --radius: 22px;
+
+    position: fixed;
+    inset: 0;
+    z-index: 70;
+    width: 100%;
+    max-width: 640px;
+    margin: 0 auto;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Helvetica, Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    overflow: hidden;
+}
+
+#deblocage-projet-container button { font-family: inherit; }
+
+#deblocage-projet-container .screen { display: none; min-width: 0; max-width: 100%; overflow-x: clip; }
+#deblocage-projet-container .screen.active { display: flex; flex-direction: column; }
+
+#deblocage-projet-container #deblocage-projet {
+    height: 100vh;
+    height: 100dvh;
+    overflow: hidden;
+}
+
+#deblocage-projet-container .slide-up-shell {
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    transform: translate3d(0, 100%, 0);
+    opacity: 0;
+    transition:
+        transform 0.36s cubic-bezier(0.22, 1, 0.36, 1),
+        opacity 0.22s ease-out;
+    will-change: transform, opacity;
+}
+#deblocage-projet-container .slide-up-shell.is-entered {
+    transform: translate3d(0, 0, 0);
+    opacity: 1;
+}
+
+#deblocage-projet-container .deblocage-head {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 16px 12px;
+    border-bottom: 1px solid var(--line);
+    background: #ffffff;
+    flex-shrink: 0;
+}
+#deblocage-projet-container .deblocage-back {
+    width: 40px;
+    height: 40px;
+    border: none;
+    background: transparent;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--ink);
+    flex-shrink: 0;
+    padding: 0;
+}
+#deblocage-projet-container .deblocage-back:active { transform: scale(.95); }
+#deblocage-projet-container .deblocage-back svg {
+    width: 24px;
+    height: 24px;
+    stroke: currentColor;
+    fill: none;
+    stroke-width: 2.2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+#deblocage-projet-container .deblocage-head-texts {
+    flex: 1;
+    min-width: 0;
+    border-left: 2px solid var(--red);
+    padding-left: 14px;
+}
+#deblocage-projet-container .deblocage-head-title {
+    font-size: 1.15rem;
+    font-weight: 800;
+    color: var(--ink);
+    line-height: 1.15;
+    letter-spacing: -0.025em;
+    margin: 0 0 2px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+#deblocage-projet-container .deblocage-head-sub {
+    font-size: 0.78rem;
+    color: var(--muted);
+    line-height: 1.35;
+    margin: 0;
+}
+
+#deblocage-projet-container .deblocage-body {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    padding: 17px 16px 40px;
+}
+
+#deblocage-projet-container .overview-heading {
+    margin: 3px 2px 14px;
+}
+#deblocage-projet-container .overview-title {
+    font-size: 1.35rem;
+    line-height: 1.2;
+    font-weight: 850;
+    letter-spacing: -.045em;
+}
+#deblocage-projet-container .overview-description {
+    font-size: .79rem;
+    color: var(--muted);
+    margin-top: 5px;
+    line-height: 1.45;
+}
+
+#deblocage-projet-container .card {
+    background: #fff;
+    border: 1px solid #e9eef5;
+    border-radius: var(--radius);
+    box-shadow: 0 1px 3px rgba(15,23,42,.05), 0 6px 18px rgba(15,23,42,.05);
+    padding: 20px;
+}
+#deblocage-projet-container .card + .card { margin-top: 13px; }
+
+#deblocage-projet-container .eyebrow {
+    font-size: .65rem;
+    font-weight: 850;
+    color: var(--muted);
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    display: block;
+}
+
+#deblocage-projet-container .step-text {
+    font-size: 0.86rem;
+    font-weight: 500;
+    color: var(--muted);
+    line-height: 1.55;
+    margin: 10px 0 16px;
+}
+#deblocage-projet-container .step-text strong {
+    color: var(--ink);
+    font-weight: 700;
+}
+
+#deblocage-projet-container .btn-deblocage-action {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    width: 100%;
+    padding: 15px 18px;
+    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+    color: #ffffff;
+    border: none;
+    border-radius: 14px;
+    font-size: 0.95rem;
+    font-weight: 700;
+    text-decoration: none;
+    cursor: pointer;
+    box-shadow: 0 12px 24px -10px rgba(239, 68, 68, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.18);
+    transition: transform .15s ease, opacity .15s ease;
+}
+#deblocage-projet-container .btn-deblocage-action:active { transform: scale(.98); }
+#deblocage-projet-container .btn-deblocage-action:disabled { opacity: .7; cursor: not-allowed; }
+
+#deblocage-projet-container .form-group {
+    margin-top: 12px;
+    margin-bottom: 14px;
+}
+#deblocage-projet-container .input-ref {
+    width: 100%;
+    height: 46px;
+    padding: 0 14px;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    background: #f8fafc;
+    font-family: inherit;
+    font-size: 0.92rem;
+    color: var(--ink);
+    outline: none;
+}
+#deblocage-projet-container .input-ref:focus {
+    border-color: var(--red);
+    background: #ffffff;
+}
+
+#deblocage-projet-container .confirmation-texte {
+    font-size: 0.84rem;
+    font-weight: 500;
+    line-height: 1.5;
+    color: #78350f;
+    background: #fffbeb;
+    border-left: 3px solid #f59e0b;
+    padding: 10px 12px;
+    border-radius: 0 8px 8px 0;
+    margin-bottom: 10px;
+}
+#deblocage-projet-container .confirmation-texte strong { color: #b45309; }
+
+#deblocage-projet-container .feedback-deblocage {
+    margin-top: 12px;
+    font-size: 0.82rem;
+    font-weight: 600;
+    min-height: 18px;
+    color: var(--muted);
+}
+#deblocage-projet-container .feedback-deblocage.error { color: var(--red-deep); }
+#deblocage-projet-container .feedback-deblocage.success { color: var(--green-deep); }
+
+#deblocage-projet-container .attente-badge {
+    display: inline-block;
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: var(--red-deep);
+    background: var(--red-soft);
+    padding: 6px 12px;
+    border-radius: 999px;
+    margin-bottom: 12px;
+}
+#deblocage-projet-container .attente-titre {
+    font-size: 1.15rem;
+    font-weight: 800;
+    color: var(--ink);
+    line-height: 1.3;
+    margin-bottom: 8px;
+}
+#deblocage-projet-container .attente-texte {
+    font-size: 0.88rem;
+    color: var(--muted);
+    line-height: 1.6;
+}
+#deblocage-projet-container .attente-texte strong { color: var(--ink); }
+#deblocage-projet-container .attente-ref {
+    margin-top: 14px;
+    padding-top: 14px;
+    border-top: 1px solid var(--line);
+    font-size: 0.8rem;
+    color: var(--muted);
+}
+#deblocage-projet-container .attente-ref span {
+    color: var(--ink);
+    font-weight: 700;
+}
+</style>
+
+<script>
+(function() {
+    'use strict';
+
+    let projetActif = null;
+    let projetIdCourant = null;
+    let _initialise = false;
+    let _envoiEnCours = false;
+    let _historiquePousse = false;
+
+    const $ = id => document.getElementById(id);
+
+    function jouerEntreeRapideDepuisBas() {
+        const shell = $('deblocageProjetSlideShell');
+        if (!shell) return;
+        shell.classList.remove('is-entered');
+        void shell.offsetWidth;
+        requestAnimationFrame(() => {
+            requestAnimationFrame(() => shell.classList.add('is-entered'));
+        });
+    }
+
+    async function chargerProjet(projetId) {
+        projetIdCourant = projetId;
+        projetActif = null;
+
+        if (window._cacheProjetsModule && window._cacheProjetsModule.projets) {
+            projetActif = window._cacheProjetsModule.projets.find(
+                p => String(p.id || p.nom) === String(projetId)
+            ) || null;
+        }
+
+        if (!projetActif) {
+            try {
+                const jeton = await window._authUser.getIdToken();
+                const response = await fetch('/.netlify/functions/lister-projets', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ jeton: jeton })
+                });
+                const resultat = await response.json();
+                if (resultat && resultat.success && Array.isArray(resultat.projets)) {
+                    projetActif = resultat.projets.find(
+                        p => String(p.id || p.nom) === String(projetId)
+                    ) || null;
+                }
+            } catch (e) {
+                console.error('[Déblocage] Erreur chargement projet :', e);
+            }
+        }
+
+        if (projetActif) {
+            const nomEl = $('deblocageNomProjet');
+            if (nomEl) nomEl.textContent = projetActif.nom || 'Nom du projet';
+        }
+
+        resetVue();
+    }
+
+    function resetVue() {
+        $('deblocageFormView').style.display = 'block';
+        $('deblocageAttenteView').style.display = 'none';
+        $('zoneConfirmationRef').style.display = 'none';
+        const btnValider = $('btnValiderRef');
+        if (btnValider) { btnValider.style.display = ''; btnValider.disabled = false; }
+        const btnConfirmer = $('btnConfirmerRef');
+        if (btnConfirmer) btnConfirmer.disabled = false;
+        const fb = $('feedbackDeblocage');
+        fb.textContent = '';
+        fb.className = 'feedback-deblocage';
+        $('inputRefDeblocage').value = '';
+    }
+
+    function basculerVersAttente(reference) {
+        $('refEnregistreeValeur').textContent = reference || '—';
+        $('deblocageFormView').style.display = 'none';
+        $('deblocageAttenteView').style.display = 'block';
+    }
+
+    /* ---- 1er clic : Valider la référence (affiche la confirmation) ---- */
+    function onValiderRef(e) {
+        if (e) e.preventDefault();
+
+        const ref = $('inputRefDeblocage').value.trim();
+        const fb = $('feedbackDeblocage');
+        fb.classList.remove('error', 'success');
+        fb.textContent = '';
+
+        if (!ref) {
+            fb.textContent = "Veuillez saisir la référence reçue dans votre e-mail de confirmation.";
+            fb.classList.add('error');
+            $('inputRefDeblocage').focus();
+            return;
+        }
+
+        // On masque le bouton "Valider" et on révèle la confirmation.
+        const btnValider = $('btnValiderRef');
+        if (btnValider) btnValider.style.display = 'none';
+
+        const zone = $('zoneConfirmationRef');
+        if (zone) zone.style.display = 'block';
+    }
+
+    /* ---- 2e clic : Confirmer et vérifier (lance le fetch) ---- */
+    async function onConfirmerRef() {
+        if (_envoiEnCours) return;
+
+        const ref = $('inputRefDeblocage').value.trim();
+        const fb = $('feedbackDeblocage');
+        fb.classList.remove('error', 'success');
+        fb.textContent = '';
+
+        if (!ref) {
+            fb.textContent = "Veuillez saisir la référence reçue dans votre e-mail de confirmation.";
+            fb.classList.add('error');
+            return;
+        }
+
+        const projetId = (projetActif && (projetActif.id || projetActif.nom)) || projetIdCourant;
+        if (!projetId) {
+            fb.textContent = "Projet introuvable. Revenez en arrière et réessayez.";
+            fb.classList.add('error');
+            return;
+        }
+
+        _envoiEnCours = true;
+        const btnConfirmer = $('btnConfirmerRef');
+        if (btnConfirmer) btnConfirmer.disabled = true;
+
+        try {
+            const jeton = await window._authUser.getIdToken();
+            const response = await fetch('/.netlify/functions/verifier-reference', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ jeton: jeton, projetId: projetId, reference: ref })
+            });
+            const data = await response.json().catch(() => ({}));
+
+            if (response.status === 409 || data.dejaUtilisee) {
+                fb.textContent = data.message || "Ce numéro de référence a été utilisé pour un autre projet.";
+                fb.classList.add('error');
+                return;
+            }
+            if (!response.ok || !data.success) {
+                fb.textContent = data.message || "Impossible de valider cette référence pour le moment.";
+                fb.classList.add('error');
+                return;
+            }
+
+            basculerVersAttente(ref);
+        } catch (err) {
+            fb.textContent = "Erreur réseau lors de la vérification de la référence.";
+            fb.classList.add('error');
+        } finally {
+            _envoiEnCours = false;
+            if (btnConfirmer) btnConfirmer.disabled = false;
+        }
+    }
+
+    /* ---- Retour (flèche + natif) ---- */
+    function retourListe() {
+        if (typeof window.openScreen === 'function') {
+            window.openScreen('principal-projets');
+        } else if (typeof window.fermerEcran === 'function') {
+            window.fermerEcran('deblocage-projet');
+        }
+    }
+
+    function gererRetourNatif() {
+        if (_historiquePousse) {
+            _historiquePousse = false;
+            try { history.back(); } catch (e) {}
+        } else {
+            retourListe();
+        }
+    }
+
+    function brancherEvenements() {
+        if (_initialise) return;
+        _initialise = true;
+
+        const btnBack = $('btnBackDeblocage');
+        if (btnBack) btnBack.addEventListener('click', gererRetourNatif);
+
+        const form = $('formRefDeblocage');
+        if (form) form.addEventListener('submit', onValiderRef);
+
+        const btnConfirmer = $('btnConfirmerRef');
+        if (btnConfirmer) btnConfirmer.addEventListener('click', onConfirmerRef);
+
+        // Retour natif (bouton Android / geste système)
+        window.addEventListener('popstate', function() {
+            if (!_historiquePousse) return;
+            _historiquePousse = false;
+            retourListe();
+        });
+    }
+
+    window.init_deblocageProjet = async function(opts) {
+        const projetId = opts && opts.projetId;
+        if (!projetId) {
+            console.warn('[Déblocage] Aucun projetId fourni.');
+            return;
+        }
+
+        brancherEvenements();
+        jouerEntreeRapideDepuisBas();
+
+        // Enregistre une entrée d'historique pour capter le retour natif
+        try {
+            history.pushState({ screen: 'deblocage-projet', projetId: projetId }, '');
+            _historiquePousse = true;
+        } catch (e) {}
+
+        await chargerProjet(projetId);
+    };
+
+})();
+</script>
