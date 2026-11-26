@@ -1,7 +1,8 @@
 // ==========================================
 // Fichier : creer-projet.js
 // Crée un projet « en_attente » (limite : 1 en attente max)
-// Applique les valeurs par défaut du manifeste (#ffffff, portrait, etc.)
+// Applique les valeurs par défaut du manifeste
+// N'inclut PAS start_url ni scope dans le manifeste stocké
 // Écrit sous <cleEmail>/<id> et sous <id>
 // ==========================================
 
@@ -66,12 +67,6 @@ function normaliserManifeste(manifesteBrut) {
         short_name: typeof manifesteBrut.short_name === "string" && manifesteBrut.short_name.trim()
             ? manifesteBrut.short_name.trim().slice(0, 12)
             : nomPropre.slice(0, 12),
-        start_url: typeof manifesteBrut.start_url === "string" && manifesteBrut.start_url.trim()
-            ? manifesteBrut.start_url.trim()
-            : "./",
-        scope: typeof manifesteBrut.scope === "string" && manifesteBrut.scope.trim()
-            ? manifesteBrut.scope.trim()
-            : "/",
         display: typeof manifesteBrut.display === "string" && manifesteBrut.display.trim()
             ? manifesteBrut.display.trim()
             : "standalone",
