@@ -1,10 +1,6 @@
 <!-- ============================================================ -->
 <!-- STATS-PROJET.HTML                                             -->
 <!-- Vue d'un projet : installations / appareils / pays            -->
-<!-- - Chargé à l'entrée dans un projet (via projetId)             -->
-<!-- - Modale démo automatique si projet en attente                -->
-<!-- - Intercepte la sortie → modale de finalisation               -->
-<!-- - Délègue la finalisation à finaliser-projet.html             -->
 <!-- ============================================================ -->
 
 <div id="stats-projet-container">
@@ -12,7 +8,6 @@
     <div id="stats-projet" class="screen active">
         <div class="slide-up-shell" id="statsProjetSlideShell">
 
-            <!-- TOP BAR -->
             <div class="top-bar">
                 <div class="top-row">
                     <button type="button" class="top-back" id="btnBackStats" aria-label="Retour">
@@ -26,7 +21,6 @@
                 </div>
             </div>
 
-            <!-- ONGLETS -->
             <div class="tabs-wrap">
                 <nav class="tabs">
                     <button type="button" class="tab active" data-view="installations">Installations</button>
@@ -36,7 +30,6 @@
             </div>
 
             <div class="container">
-                <!-- INSTALLATIONS -->
                 <section class="view active" id="view-installations">
                     <div class="overview-heading">
                         <div>
@@ -54,9 +47,6 @@
                             <span class="pill" id="heroToday">+0</span>
                             <span id="heroTodayLabel">par rapport à hier</span>
                         </div>
-                        <svg class="hero-spark" viewBox="0 0 200 60" preserveAspectRatio="none" aria-hidden="true">
-                            <path d="M0 55 C30 50 40 40 60 42 S100 25 120 28 S160 10 200 4" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round"/>
-                        </svg>
                     </div>
                     <div class="card">
                         <div class="card-heading">
@@ -68,7 +58,6 @@
                     </div>
                 </section>
 
-                <!-- APPAREILS -->
                 <section class="view" id="view-appareils">
                     <div class="card">
                         <div class="eyebrow">Répartition par système</div>
@@ -92,7 +81,6 @@
                 </section>
             </div>
 
-            <!-- PAYS -->
             <section class="view" id="view-pays">
                 <div class="pays-heading">
                     <div class="pays-title">Répartition géographique</div>
@@ -108,7 +96,6 @@
         </div>
     </div>
 
-    <!-- MODALE DÉMO (projet en attente) -->
     <div class="modal-overlay" id="modalEntreeStats" aria-hidden="true">
         <div class="modal-card" role="dialog" aria-labelledby="modalEntreeStatsTitle">
             <button type="button" class="modal-close" id="modalEntreeStatsClose" aria-label="Fermer">
@@ -125,7 +112,6 @@
         </div>
     </div>
 
-    <!-- MODALE SORTIE (projet en attente) -->
     <div class="modal-overlay" id="modalSortieStats" aria-hidden="true">
         <div class="modal-card" role="dialog" aria-labelledby="modalSortieStatsTitle">
             <button type="button" class="modal-close" id="modalSortieStatsClose" aria-label="Fermer">
@@ -146,10 +132,6 @@
 </div>
 
 <style>
-/* ============================================================ */
-/* Styles scopés sous #stats-projet-container                    */
-/* ============================================================ */
-
 #stats-projet-container,
 #stats-projet-container *,
 #stats-projet-container *::before,
@@ -172,9 +154,6 @@
     --bg: #ffffff;
     --radius: 22px;
 
-    position: fixed;
-    inset: 0;
-    z-index: 60;
     width: 100%;
     max-width: 640px;
     margin: 0 auto;
@@ -182,27 +161,15 @@
     color: var(--ink);
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Helvetica, Arial, sans-serif;
     -webkit-font-smoothing: antialiased;
-    overflow: hidden;
 }
 
 #stats-projet-container button { font-family: inherit; }
-
 #stats-projet-container .screen { display: none; min-width: 0; max-width: 100%; overflow-x: clip; }
-#stats-projet-container .screen.active { display: flex; flex-direction: column; }
-
-#stats-projet-container #stats-projet {
-    height: 100vh;
-    height: 100dvh;
-    overflow: hidden;
-}
+#stats-projet-container .screen.active { display: block; }
 
 #stats-projet-container .slide-up-shell {
-    flex: 1;
-    min-height: 0;
     display: flex;
     flex-direction: column;
-    overflow-y: auto;
-    -webkit-overflow-scrolling: touch;
     padding-bottom: 40px;
     transform: translate3d(0, 100%, 0);
     opacity: 0;
@@ -216,7 +183,6 @@
     opacity: 1;
 }
 
-/* ---------- TOP BAR ---------- */
 #stats-projet-container .top-bar {
     position: sticky;
     top: 0;
@@ -245,7 +211,6 @@
     flex-shrink: 0;
     padding: 0;
 }
-#stats-projet-container .top-back:active { transform: scale(.95); }
 #stats-projet-container .top-back svg {
     width: 24px;
     height: 24px;
@@ -265,41 +230,28 @@
     font-size: 1.15rem;
     font-weight: 800;
     color: var(--ink);
-    line-height: 1.15;
-    letter-spacing: -0.025em;
-    margin: 0 0 2px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    margin: 0 0 2px;
 }
 #stats-projet-container .top-sub {
     font-size: 0.78rem;
     color: var(--muted);
-    line-height: 1.35;
     margin: 0;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
 }
 #stats-projet-container .top-formule-badge {
     flex-shrink: 0;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
     padding: 3px 8px;
     font-size: 0.58rem;
     font-weight: 900;
-    letter-spacing: 0.06em;
     border-radius: 5px;
-    line-height: 1.4;
-    white-space: nowrap;
     margin-left: 4px;
 }
 #stats-projet-container .top-formule-badge.decouverte { background: #f1f5f9; color: #64748b; border: 1px solid #e2e8f0; }
-#stats-projet-container .top-formule-badge.pro { background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); color: #92400e; border: 1px solid #fcd34d; }
+#stats-projet-container .top-formule-badge.pro { background: #fef3c7; color: #92400e; border: 1px solid #fcd34d; }
 #stats-projet-container .top-formule-badge.proplus { background: var(--green-soft); color: var(--green-deep); border: 1px solid #a7f3d0; }
 
-/* ---------- ONGLETS ---------- */
 #stats-projet-container .tabs-wrap {
     max-width: 620px;
     margin: 12px auto 0;
@@ -322,7 +274,6 @@
     font-weight: 750;
     color: var(--muted);
     cursor: pointer;
-    transition: background .22s, color .22s, box-shadow .22s;
 }
 #stats-projet-container .tab.active {
     background: #fff;
@@ -330,7 +281,6 @@
     box-shadow: 0 2px 7px rgba(15,23,42,.075);
 }
 
-/* ---------- CONTAINER / VUES ---------- */
 #stats-projet-container .container {
     max-width: 620px;
     margin: 0 auto;
@@ -339,7 +289,6 @@
 #stats-projet-container .view { display: none; }
 #stats-projet-container .view.active { display: block; }
 
-/* ---------- CARTES ---------- */
 #stats-projet-container .card {
     background: #fff;
     border: 1px solid #e9eef5;
@@ -357,7 +306,6 @@
     display: block;
 }
 
-/* ---------- HEADINGS ---------- */
 #stats-projet-container .overview-heading {
     display: flex;
     align-items: flex-end;
@@ -367,7 +315,6 @@
 }
 #stats-projet-container .overview-title {
     font-size: 1.35rem;
-    line-height: 1.2;
     font-weight: 850;
     letter-spacing: -.045em;
 }
@@ -375,13 +322,11 @@
     font-size: .79rem;
     color: var(--muted);
     margin-top: 5px;
-    line-height: 1.45;
 }
 #stats-projet-container .live-indicator {
     display: flex;
     align-items: center;
     gap: 6px;
-    flex-shrink: 0;
     font-size: .65rem;
     font-weight: 800;
     color: var(--green-deep);
@@ -396,16 +341,13 @@
     border-radius: 50%;
 }
 
-/* ---------- HERO ---------- */
 #stats-projet-container .hero {
     position: relative;
     overflow: hidden;
-    isolation: isolate;
     background: linear-gradient(140deg,#064e3b 0%,#047857 55%,#10b981 100%);
     color: #fff;
     padding: 24px 22px 21px;
     border: none;
-    box-shadow: 0 10px 26px rgba(4,120,87,.13);
 }
 #stats-projet-container .hero .eyebrow { color: rgba(255,255,255,.76); }
 #stats-projet-container .hero-number {
@@ -414,16 +356,11 @@
     letter-spacing: -.075em;
     line-height: 1;
     margin-top: 12px;
-    font-variant-numeric: tabular-nums;
-    position: relative;
-    z-index: 1;
 }
 #stats-projet-container .hero-number .u {
-    display: inline-block;
     font-size: .85rem;
     font-weight: 650;
     opacity: .8;
-    letter-spacing: 0;
     margin-left: 8px;
 }
 #stats-projet-container .hero-sub {
@@ -435,8 +372,6 @@
     font-size: .8rem;
     font-weight: 650;
     color: rgba(255,255,255,.88);
-    position: relative;
-    z-index: 1;
 }
 #stats-projet-container .hero-sub .pill {
     background: rgba(255,255,255,.16);
@@ -446,18 +381,7 @@
     font-weight: 850;
     font-size: .75rem;
 }
-#stats-projet-container .hero-spark {
-    position: absolute;
-    z-index: -1;
-    right: -5px;
-    bottom: 0;
-    width: 59%;
-    height: 105px;
-    opacity: .32;
-    overflow: visible;
-}
 
-/* ---------- GRAPHE ÉVOLUTION ---------- */
 #stats-projet-container .card-heading {
     display: flex;
     justify-content: space-between;
@@ -472,7 +396,6 @@
     background: #f1f5f9;
     border-radius: 8px;
     padding: 5px 8px;
-    white-space: nowrap;
 }
 #stats-projet-container .evo-chart {
     display: flex;
@@ -483,7 +406,6 @@
 }
 #stats-projet-container .evo-col {
     flex: 1;
-    min-width: 0;
     display: flex;
     flex-direction: column;
     height: 100%;
@@ -493,12 +415,10 @@
     font-weight: 850;
     margin-bottom: 7px;
     color: #475569;
-    font-variant-numeric: tabular-nums;
     text-align: center;
 }
 #stats-projet-container .evo-bar-wrap {
     flex: 1;
-    min-height: 0;
     display: flex;
     align-items: flex-end;
     justify-content: center;
@@ -514,7 +434,6 @@
 }
 #stats-projet-container .evo-col.today .evo-bar {
     background: linear-gradient(180deg,#10b981,#047857);
-    box-shadow: 0 3px 10px rgba(16,185,129,.17);
 }
 #stats-projet-container .evo-label {
     font-size: .63rem;
@@ -532,7 +451,6 @@
     border-top: 1px solid var(--line);
     font-size: .83rem;
     font-weight: 600;
-    line-height: 1.55;
     color: var(--muted);
 }
 #stats-projet-container .diagram-caption strong { color: var(--ink); font-weight: 800; }
@@ -542,7 +460,6 @@
     font-weight: 500;
 }
 
-/* ---------- DONUT ---------- */
 #stats-projet-container .donut-big {
     position: relative;
     width: 220px;
@@ -557,7 +474,6 @@
 #stats-projet-container .donut-segment {
     fill: none;
     stroke-width: 16;
-    stroke-linecap: butt;
     transition: stroke-dasharray 1.1s cubic-bezier(.22,1,.36,1);
 }
 #stats-projet-container .donut-center {
@@ -573,10 +489,8 @@
     font-weight: 850;
     letter-spacing: -.055em;
     line-height: 1;
-    font-variant-numeric: tabular-nums;
 }
 
-/* ---------- ROWS APPAREILS ---------- */
 #stats-projet-container .rows {
     display: flex;
     flex-direction: column;
@@ -592,7 +506,6 @@
     width: 10px;
     height: 10px;
     border-radius: 4px;
-    flex-shrink: 0;
 }
 #stats-projet-container .row-label {
     flex: 1;
@@ -609,7 +522,6 @@
     font-weight: 800;
     min-width: 34px;
     text-align: right;
-    font-variant-numeric: tabular-nums;
 }
 #stats-projet-container .track {
     height: 8px;
@@ -624,7 +536,6 @@
     transition: width 1.1s cubic-bezier(.22,1,.36,1);
 }
 
-/* ---------- PAYS ---------- */
 #stats-projet-container #view-pays { display: none; }
 #stats-projet-container #stats-projet.pays-active .container { display: none; }
 #stats-projet-container #stats-projet.pays-active #view-pays {
@@ -648,7 +559,6 @@
 }
 #stats-projet-container .pays-title {
     font-size: 1.15rem;
-    line-height: 1.2;
     font-weight: 850;
     letter-spacing: -.045em;
 }
@@ -656,7 +566,6 @@
     position: absolute;
     inset: 0;
     overflow: hidden;
-    background: transparent;
 }
 #stats-projet-container .map-rotator {
     position: absolute;
@@ -683,18 +592,15 @@
     border-top-color: #10b981;
     border-radius: 50%;
     animation: spinMapStats .85s linear infinite;
-    z-index: 2;
 }
 #stats-projet-container .map-spinner.hidden { display: none; }
 @keyframes spinMapStats { to { transform: rotate(360deg); } }
 
-/* ---------- MODALES ---------- */
 #stats-projet-container .modal-overlay {
     position: fixed;
     inset: 0;
     background: rgba(15,23,42,.55);
     backdrop-filter: blur(6px);
-    -webkit-backdrop-filter: blur(6px);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -742,19 +648,13 @@
 #stats-projet-container .modal-title {
     font-size: 1.15rem;
     font-weight: 800;
-    color: var(--ink);
-    letter-spacing: -0.025em;
-    line-height: 1.3;
     margin: 0 36px 10px 0;
-    text-align: left;
 }
 #stats-projet-container .modal-text {
     font-size: 0.88rem;
-    font-weight: 500;
     color: var(--muted);
     line-height: 1.55;
     margin: 0 0 22px;
-    text-align: left;
 }
 #stats-projet-container .modal-actions {
     display: flex;
@@ -773,7 +673,6 @@
 #stats-projet-container .modal-btn-primary {
     background: linear-gradient(135deg, #10b981 0%, #059669 100%);
     color: #ffffff;
-    box-shadow: 0 12px 24px -10px rgba(16,185,129,.7), inset 0 1px 0 rgba(255,255,255,.18);
 }
 #stats-projet-container .modal-btn-secondary {
     background: #ffffff;
@@ -786,9 +685,6 @@
 (function() {
     'use strict';
 
-    /* ============================================================ */
-    /* ÉTAT INTERNE                                                  */
-    /* ============================================================ */
     let projetActif = null;
     let projetIdCourant = null;
     let estDemo = false;
@@ -811,9 +707,7 @@
 
     const STATS_DEMO = {
         installs_total: 38450,
-        installs_android: 16200,
-        installs_ios: 12800,
-        installs_pc: 9450,
+        installs_android: 16200, installs_ios: 12800, installs_pc: 9450,
         installs_7j: [720, 950, 1180, 1040, 1420, 890, 1250]
     };
     const PAYS_DEMO = [
@@ -832,9 +726,6 @@
         { nom: 'Congo', lat: -4.0383, lng: 21.7587, count: 680 }
     ];
 
-    /* ============================================================ */
-    /* HELPERS                                                       */
-    /* ============================================================ */
     const $ = id => document.getElementById(id);
 
     function normaliserStatut(s) {
@@ -900,44 +791,30 @@
         });
     }
 
-    /* ============================================================ */
-    /* CHARGEMENT DES DONNÉES DU PROJET                              */
-    /* ============================================================ */
     async function chargerProjet(projetId) {
         projetIdCourant = projetId;
         estDemo = false;
         estEnAttente = false;
         currentPays = [];
 
-        // On recherche d'abord dans le cache (posé par principal-projets)
-        if (window._cacheProjetsModule && window._cacheProjetsModule.projets) {
-            projetActif = window._cacheProjetsModule.projets.find(
-                p => String(p.id || p.nom) === String(projetId)
-            ) || null;
-        }
-
-        // Si le cache n'est pas frais ou absent, on (re)charge via Netlify
-        if (!projetActif) {
-            try {
-                const jeton = await window._authUser.getIdToken();
-                const response = await fetch('/.netlify/functions/lister-projets', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ jeton: jeton })
-                });
-                const resultat = await response.json();
-                if (resultat && resultat.success && Array.isArray(resultat.projets)) {
-                    projetActif = resultat.projets.find(
-                        p => String(p.id || p.nom) === String(projetId)
-                    ) || null;
-                }
-            } catch (e) {
-                console.error('[Stats] Erreur chargement projet :', e);
+        try {
+            const jeton = await window._authUser.getIdToken();
+            const response = await fetch('/.netlify/functions/lister-projets', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ jeton: jeton })
+            });
+            const resultat = await response.json();
+            if (resultat && resultat.success && Array.isArray(resultat.projets)) {
+                projetActif = resultat.projets.find(
+                    p => String(p.id || p.nom) === String(projetId)
+                ) || null;
             }
+        } catch (e) {
+            console.error('[Stats] Erreur chargement projet :', e);
         }
 
         if (!projetActif) {
-            // Projet introuvable : on revient en arrière proprement
             sortirDesStats();
             return;
         }
@@ -948,9 +825,6 @@
         appliquerDonnees();
     }
 
-    /* ============================================================ */
-    /* APPLICATION DES DONNÉES                                       */
-    /* ============================================================ */
     function appliquerDonnees() {
         if (!projetActif) return;
 
@@ -965,7 +839,6 @@
         $('topNom').textContent = projetActif.nom || 'Sans nom';
         majBadgeFormule(projetActif.formule);
 
-        // INSTALLATIONS
         $('numInstalls').textContent = formatNombre(s.installs_total || 0);
         const evo = (s.installs_7j && s.installs_7j.length) ? s.installs_7j : [0, 0, 0, 0, 0, 0, 0];
         const jours = ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim'];
@@ -1013,7 +886,6 @@
             $('installInsight').innerHTML = '<strong>' + formatNombre(aujourdhui) + " installations aujourd'hui</strong>, soit <strong>autant qu'hier</strong>.";
         }
 
-        // APPAREILS
         const android = isBloquee.appareils ? 0 : (s.installs_android || 0);
         const ios = isBloquee.appareils ? 0 : (s.installs_ios || 0);
         const pc = isBloquee.appareils ? 0 : (s.installs_pc || 0);
@@ -1056,7 +928,6 @@
             }
         }
 
-        // PAYS
         if (isBloquee.pays) currentPays = [];
         else if (estDemo) currentPays = PAYS_DEMO;
         else currentPays = projetActif.pays || [];
@@ -1073,9 +944,6 @@
         el.textContent = fi.label;
     }
 
-    /* ============================================================ */
-    /* ANIMATIONS                                                    */
-    /* ============================================================ */
     function dessinerDonut() {
         let offset = 0;
         devicesCourants.forEach(d => {
@@ -1130,9 +998,6 @@
         }
     }
 
-    /* ============================================================ */
-    /* CARTE DU MONDE                                                */
-    /* ============================================================ */
     function drawMarkers(pays) {
         if (!mapReady || !mapSvg || !mapProjection) return;
         currentMarkers.forEach(m => m.remove());
@@ -1239,9 +1104,6 @@
         }
     }
 
-    /* ============================================================ */
-    /* MODALES                                                       */
-    /* ============================================================ */
     function afficherModalEntree() {
         if (_modalEntreeVisible) return;
         _modalEntreeVisible = true;
@@ -1270,9 +1132,6 @@
         if (el) { el.classList.remove('show'); el.setAttribute('aria-hidden', 'true'); }
     }
 
-    /* ============================================================ */
-    /* NAVIGATION / SORTIE                                           */
-    /* ============================================================ */
     function demanderSortie() {
         if (estEnAttente) afficherModalSortie();
         else sortirDesStats();
@@ -1282,6 +1141,10 @@
         _sortieAutorisee = true;
         cacherModalSortie();
         cacherModalEntree();
+
+        // On rend la main au shell : les barres réapparaissent
+        try { if (typeof window.sortirDuProjet === 'function') window.sortirDuProjet(); } catch (e) {}
+
         if (typeof window.fermerEcran === 'function') {
             window.fermerEcran('stats-projet');
         } else if (typeof window.openScreen === 'function') {
@@ -1304,9 +1167,6 @@
         }
     }
 
-    /* ============================================================ */
-    /* ÉVÉNEMENTS                                                    */
-    /* ============================================================ */
     function brancherEvenements() {
         if (_initialise) return;
         _initialise = true;
@@ -1342,9 +1202,6 @@
         });
     }
 
-    /* ============================================================ */
-    /* POINT D'ENTRÉE EXPOSÉ                                         */
-    /* ============================================================ */
     window.init_statsProjet = async function(opts) {
         const projetId = opts && opts.projetId;
         if (!projetId) {
@@ -1352,10 +1209,12 @@
             return;
         }
 
+        // On demande au shell de masquer header + navbar
+        try { if (typeof window.entrerDansProjet === 'function') window.entrerDansProjet(); } catch (e) {}
+
         brancherEvenements();
         jouerEntreeRapideDepuisBas();
 
-        // Reset UI
         document.querySelectorAll('#stats-projet-container .tab').forEach(t =>
             t.classList.toggle('active', t.dataset.view === 'installations'));
         document.querySelectorAll('#stats-projet-container .view').forEach(v =>
