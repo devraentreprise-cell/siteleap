@@ -1,0 +1,305 @@
+<!-- ===== SITELEAP PWA KIT : BANNIÈRE & GUIDE iOS ===== -->
+<style>
+  #sl-install-banner {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    width: min(880px, calc(100% - 32px));
+    background: #ffffff;
+    border: 1px solid #e6e4de;
+    border-radius: 14px;
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+    padding: 14px 18px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    z-index: 9999;
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    transform: translateX(calc(-50% + 100vw));
+    opacity: 0;
+    pointer-events: none;
+    transition:
+      transform 0.9s cubic-bezier(.22, 1, .36, 1),
+      opacity 0.6s ease;
+  }
+  #sl-install-banner.show {
+    transform: translateX(-50%);
+    opacity: 1;
+    pointer-events: auto;
+  }
+  #sl-install-banner .sl-logo {
+    width: 54px;
+    height: 54px;
+    border-radius: 12px;
+    object-fit: cover;
+    flex-shrink: 0;
+    border: 1px solid #eeece6;
+  }
+  #sl-install-banner .sl-text {
+    flex: 1;
+    min-width: 0;
+  }
+  #sl-install-banner .sl-text strong {
+    display: block;
+    font-size: 1rem;
+    color: #1a1a1a;
+    font-weight: 700;
+  }
+  #sl-install-banner .sl-text span {
+    display: block;
+    font-size: 0.88rem;
+    color: #6b6b62;
+    margin-top: 2px;
+  }
+  #sl-install-banner .sl-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    flex-shrink: 0;
+  }
+  #sl-install-banner button {
+    border: none;
+    cursor: pointer;
+    font-size: 0.86rem;
+    font-weight: 600;
+    padding: 9px 22px;
+    border-radius: 8px;
+    transition: background 0.2s ease;
+    min-width: 120px;
+  }
+  #sl-btn-install {
+    background: #b07d4a;
+    color: #ffffff;
+  }
+  #sl-btn-install:hover {
+    background: #996a3d;
+  }
+  #sl-btn-cancel {
+    background: #ffffff;
+    color: #6b6b62;
+    border: 1px solid #d8d5cc !important;
+  }
+  #sl-btn-cancel:hover {
+    background: #f4f2ec;
+    color: #1a1a1a;
+  }
+
+  /* ===== GUIDE iOS (DU BAS VERS LE HAUT) ===== */
+  #sl-ios-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.45);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.35s ease;
+    z-index: 10000;
+  }
+  #sl-ios-backdrop.show {
+    opacity: 1;
+    pointer-events: auto;
+  }
+  #sl-ios-sheet {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    max-height: 85vh;
+    background: #ffffff;
+    border-radius: 22px 22px 0 0;
+    box-shadow: 0 -12px 50px rgba(0, 0, 0, 0.18);
+    padding: 14px 22px 24px;
+    overflow-y: auto;
+    z-index: 10001;
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    transform: translateY(100%);
+    transition: transform 0.55s cubic-bezier(.22, 1, .36, 1);
+  }
+  #sl-ios-sheet.show {
+    transform: translateY(0);
+  }
+  .sl-ios-handle {
+    width: 44px;
+    height: 5px;
+    background: #d8d5cc;
+    border-radius: 3px;
+    margin: 0 auto 14px;
+  }
+  #sl-ios-close {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background: #f4f2ec;
+    border: none;
+    font-size: 0.9rem;
+    color: #6b6b62;
+    cursor: pointer;
+  }
+  .sl-ios-header {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding-right: 40px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid #eeece6;
+    margin-bottom: 16px;
+  }
+  .sl-ios-header img {
+    width: 58px;
+    height: 58px;
+    border-radius: 14px;
+    object-fit: cover;
+    flex-shrink: 0;
+    border: 1px solid #eeece6;
+  }
+  .sl-ios-header strong {
+    display: block;
+    font-size: 1.1rem;
+    color: #1a1a1a;
+  }
+  .sl-ios-header span {
+    display: block;
+    font-size: 0.85rem;
+    color: #6b6b62;
+    margin-top: 2px;
+  }
+  .sl-ios-steps {
+    padding-left: 20px;
+    color: #1a1a1a;
+    font-size: 0.95rem;
+    line-height: 1.6;
+  }
+  .sl-ios-steps li {
+    margin-bottom: 10px;
+  }
+  .sl-ios-note {
+    font-size: 0.84rem;
+    color: #6b6b62;
+    background: #fafaf8;
+    border: 1px solid #eeece6;
+    border-radius: 10px;
+    padding: 10px 12px;
+    margin-top: 8px;
+  }
+
+  @media (max-width: 780px) {
+    #sl-install-banner {
+      flex-wrap: wrap;
+    }
+    #sl-install-banner .sl-actions {
+      flex-direction: row;
+      width: 100%;
+    }
+    #sl-install-banner button {
+      flex: 1;
+    }
+  }
+</style>
+
+<div id="sl-install-banner">
+  <img class="sl-logo" src="__APP_ICON__" alt="__APP_NAME__">
+  <div class="sl-text">
+    <strong>__APP_NAME__</strong>
+    <span>Installer le site web (__APP_SIZE__)</span>
+  </div>
+  <div class="sl-actions">
+    <button type="button" id="sl-btn-install">Installer</button>
+    <button type="button" id="sl-btn-cancel">Annuler</button>
+  </div>
+</div>
+
+<div id="sl-ios-backdrop"></div>
+<div id="sl-ios-sheet" aria-hidden="true">
+  <div class="sl-ios-handle"></div>
+  <button type="button" id="sl-ios-close" aria-label="Fermer">✕</button>
+
+  <div class="sl-ios-header">
+    <img src="__APP_ICON__" alt="__APP_NAME__">
+    <div>
+      <strong>__APP_NAME__</strong>
+      <span>__APP_SIZE__ • Installer sur iOS</span>
+    </div>
+  </div>
+
+  <ol class="sl-ios-steps">
+    <li>Appuie sur le bouton <strong>Partager</strong> dans la barre de Safari.</li>
+    <li>Fais défiler et sélectionne <strong>Sur l'écran d'accueil</strong>.</li>
+    <li>Appuie sur <strong>Ajouter</strong> en haut à droite pour installer l'application.</li>
+  </ol>
+
+  <div class="sl-ios-note">
+    Sur iPhone ou iPad, l'ajout à l'écran d'accueil se fait depuis Safari.
+  </div>
+</div>
+
+<script>
+  (function () {
+    const banner = document.getElementById('sl-install-banner');
+    const btnInstall = document.getElementById('sl-btn-install');
+    const btnCancel = document.getElementById('sl-btn-cancel');
+    const iosBackdrop = document.getElementById('sl-ios-backdrop');
+    const iosSheet = document.getElementById('sl-ios-sheet');
+    const iosClose = document.getElementById('sl-ios-close');
+
+    let deferredPrompt = null;
+
+    const estDejaInstalle =
+      window.matchMedia('(display-mode: standalone)').matches ||
+      window.navigator.standalone === true;
+
+    const estIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
+
+    if (estDejaInstalle) return;
+
+    if (estIOS) {
+      banner.classList.add('show');
+    }
+
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredPrompt = e;
+      banner.classList.add('show');
+    });
+
+    function ouvrirGuideIOS() {
+      iosSheet.classList.add('show');
+      iosBackdrop.classList.add('show');
+      iosSheet.setAttribute('aria-hidden', 'false');
+    }
+
+    function fermerGuideIOS() {
+      iosSheet.classList.remove('show');
+      iosBackdrop.classList.remove('show');
+      iosSheet.setAttribute('aria-hidden', 'true');
+    }
+
+    btnInstall.addEventListener('click', async () => {
+      if (estIOS) {
+        ouvrirGuideIOS();
+        return;
+      }
+      if (!deferredPrompt) return;
+      deferredPrompt.prompt();
+      const { outcome } = await deferredPrompt.userChoice;
+      deferredPrompt = null;
+      if (outcome === 'accepted') {
+        banner.classList.remove('show');
+      }
+    });
+
+    btnCancel.addEventListener('click', () => {
+      banner.classList.remove('show');
+    });
+
+    iosClose.addEventListener('click', fermerGuideIOS);
+    iosBackdrop.addEventListener('click', fermerGuideIOS);
+
+    window.addEventListener('appinstalled', () => {
+      deferredPrompt = null;
+      banner.classList.remove('show');
+      fermerGuideIOS();
+    });
+  })();
+</script>
