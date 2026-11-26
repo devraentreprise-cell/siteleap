@@ -1,12 +1,5 @@
 <!-- ============================================================ -->
 <!-- DEBLOCAGE-PROJET.HTML                                         -->
-<!-- Réactivation d'un projet suspendu                             -->
-<!-- - Chargé à la demande via projetId                            -->
-<!-- - Étape 1 : paiement (Selar)                                  -->
-<!-- - Étape 2 : saisie référence + double confirmation            -->
-<!-- - Envoi { jeton, projetId, reference } → verifier-reference   -->
-<!-- - Succès → vue « attente 24 h »                               -->
-<!-- - Retour natif ET flèche gérés                                -->
 <!-- ============================================================ -->
 
 <div id="deblocage-projet-container">
@@ -26,7 +19,6 @@
 
             <div class="deblocage-body">
 
-                <!-- VUE FORMULAIRE -->
                 <div id="deblocageFormView">
                     <div class="overview-heading">
                         <div class="overview-title">Réactiver votre projet</div>
@@ -66,7 +58,6 @@
 
                             <button type="submit" class="btn-deblocage-action" id="btnValiderRef">Valider la référence</button>
 
-                            <!-- Zone de confirmation -->
                             <div id="zoneConfirmationRef" style="display: none; margin-top: 12px;">
                                 <p class="confirmation-texte">
                                     Vérifiez bien la référence saisie. Une fois confirmée, elle sera <strong>enregistrée définitivement</strong> et ne pourra plus être modifiée.
@@ -79,7 +70,6 @@
                     </div>
                 </div>
 
-                <!-- VUE ATTENTE -->
                 <div id="deblocageAttenteView" style="display: none;">
                     <div class="card">
                         <span class="attente-badge">Activation en cours</span>
@@ -101,10 +91,6 @@
 </div>
 
 <style>
-/* ============================================================ */
-/* Styles scopés sous #deblocage-projet-container                */
-/* ============================================================ */
-
 #deblocage-projet-container,
 #deblocage-projet-container *,
 #deblocage-projet-container *::before,
@@ -129,9 +115,6 @@
     --bg: #ffffff;
     --radius: 22px;
 
-    position: fixed;
-    inset: 0;
-    z-index: 70;
     width: 100%;
     max-width: 640px;
     margin: 0 auto;
@@ -139,26 +122,16 @@
     color: var(--ink);
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Helvetica, Arial, sans-serif;
     -webkit-font-smoothing: antialiased;
-    overflow: hidden;
 }
 
 #deblocage-projet-container button { font-family: inherit; }
-
 #deblocage-projet-container .screen { display: none; min-width: 0; max-width: 100%; overflow-x: clip; }
-#deblocage-projet-container .screen.active { display: flex; flex-direction: column; }
-
-#deblocage-projet-container #deblocage-projet {
-    height: 100vh;
-    height: 100dvh;
-    overflow: hidden;
-}
+#deblocage-projet-container .screen.active { display: block; }
 
 #deblocage-projet-container .slide-up-shell {
-    flex: 1;
-    min-height: 0;
     display: flex;
     flex-direction: column;
-    overflow: hidden;
+    min-height: 100%;
     transform: translate3d(0, 100%, 0);
     opacity: 0;
     transition:
@@ -178,7 +151,6 @@
     padding: 14px 16px 12px;
     border-bottom: 1px solid var(--line);
     background: #ffffff;
-    flex-shrink: 0;
 }
 #deblocage-projet-container .deblocage-back {
     width: 40px;
@@ -194,7 +166,6 @@
     flex-shrink: 0;
     padding: 0;
 }
-#deblocage-projet-container .deblocage-back:active { transform: scale(.95); }
 #deblocage-projet-container .deblocage-back svg {
     width: 24px;
     height: 24px;
@@ -214,25 +185,18 @@
     font-size: 1.15rem;
     font-weight: 800;
     color: var(--ink);
-    line-height: 1.15;
-    letter-spacing: -0.025em;
-    margin: 0 0 2px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    margin: 0 0 2px;
 }
 #deblocage-projet-container .deblocage-head-sub {
     font-size: 0.78rem;
     color: var(--muted);
-    line-height: 1.35;
     margin: 0;
 }
 
 #deblocage-projet-container .deblocage-body {
-    flex: 1 1 auto;
-    min-height: 0;
-    overflow-y: auto;
-    -webkit-overflow-scrolling: touch;
     padding: 17px 16px 40px;
 }
 
@@ -241,7 +205,6 @@
 }
 #deblocage-projet-container .overview-title {
     font-size: 1.35rem;
-    line-height: 1.2;
     font-weight: 850;
     letter-spacing: -.045em;
 }
@@ -277,10 +240,7 @@
     line-height: 1.55;
     margin: 10px 0 16px;
 }
-#deblocage-projet-container .step-text strong {
-    color: var(--ink);
-    font-weight: 700;
-}
+#deblocage-projet-container .step-text strong { color: var(--ink); font-weight: 700; }
 
 #deblocage-projet-container .btn-deblocage-action {
     display: flex;
@@ -298,9 +258,7 @@
     text-decoration: none;
     cursor: pointer;
     box-shadow: 0 12px 24px -10px rgba(239, 68, 68, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.18);
-    transition: transform .15s ease, opacity .15s ease;
 }
-#deblocage-projet-container .btn-deblocage-action:active { transform: scale(.98); }
 #deblocage-projet-container .btn-deblocage-action:disabled { opacity: .7; cursor: not-allowed; }
 
 #deblocage-projet-container .form-group {
@@ -319,10 +277,7 @@
     color: var(--ink);
     outline: none;
 }
-#deblocage-projet-container .input-ref:focus {
-    border-color: var(--red);
-    background: #ffffff;
-}
+#deblocage-projet-container .input-ref:focus { border-color: var(--red); background: #ffffff; }
 
 #deblocage-projet-container .confirmation-texte {
     font-size: 0.84rem;
@@ -361,7 +316,6 @@
     font-size: 1.15rem;
     font-weight: 800;
     color: var(--ink);
-    line-height: 1.3;
     margin-bottom: 8px;
 }
 #deblocage-projet-container .attente-texte {
@@ -377,10 +331,7 @@
     font-size: 0.8rem;
     color: var(--muted);
 }
-#deblocage-projet-container .attente-ref span {
-    color: var(--ink);
-    font-weight: 700;
-}
+#deblocage-projet-container .attente-ref span { color: var(--ink); font-weight: 700; }
 </style>
 
 <script>
@@ -409,29 +360,21 @@
         projetIdCourant = projetId;
         projetActif = null;
 
-        if (window._cacheProjetsModule && window._cacheProjetsModule.projets) {
-            projetActif = window._cacheProjetsModule.projets.find(
-                p => String(p.id || p.nom) === String(projetId)
-            ) || null;
-        }
-
-        if (!projetActif) {
-            try {
-                const jeton = await window._authUser.getIdToken();
-                const response = await fetch('/.netlify/functions/lister-projets', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ jeton: jeton })
-                });
-                const resultat = await response.json();
-                if (resultat && resultat.success && Array.isArray(resultat.projets)) {
-                    projetActif = resultat.projets.find(
-                        p => String(p.id || p.nom) === String(projetId)
-                    ) || null;
-                }
-            } catch (e) {
-                console.error('[Déblocage] Erreur chargement projet :', e);
+        try {
+            const jeton = await window._authUser.getIdToken();
+            const response = await fetch('/.netlify/functions/lister-projets', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ jeton: jeton })
+            });
+            const resultat = await response.json();
+            if (resultat && resultat.success && Array.isArray(resultat.projets)) {
+                projetActif = resultat.projets.find(
+                    p => String(p.id || p.nom) === String(projetId)
+                ) || null;
             }
+        } catch (e) {
+            console.error('[Déblocage] Erreur chargement projet :', e);
         }
 
         if (projetActif) {
@@ -462,7 +405,6 @@
         $('deblocageAttenteView').style.display = 'block';
     }
 
-    /* ---- 1er clic : Valider la référence (affiche la confirmation) ---- */
     function onValiderRef(e) {
         if (e) e.preventDefault();
 
@@ -478,7 +420,6 @@
             return;
         }
 
-        // On masque le bouton "Valider" et on révèle la confirmation.
         const btnValider = $('btnValiderRef');
         if (btnValider) btnValider.style.display = 'none';
 
@@ -486,7 +427,6 @@
         if (zone) zone.style.display = 'block';
     }
 
-    /* ---- 2e clic : Confirmer et vérifier (lance le fetch) ---- */
     async function onConfirmerRef() {
         if (_envoiEnCours) return;
 
@@ -542,12 +482,14 @@
         }
     }
 
-    /* ---- Retour (flèche + natif) ---- */
     function retourListe() {
+        try { if (typeof window.sortirDuProjet === 'function') window.sortirDuProjet(); } catch (e) {}
+
+        if (typeof window.fermerEcran === 'function') {
+            window.fermerEcran('deblocage-projet');
+        }
         if (typeof window.openScreen === 'function') {
             window.openScreen('principal-projets');
-        } else if (typeof window.fermerEcran === 'function') {
-            window.fermerEcran('deblocage-projet');
         }
     }
 
@@ -573,7 +515,6 @@
         const btnConfirmer = $('btnConfirmerRef');
         if (btnConfirmer) btnConfirmer.addEventListener('click', onConfirmerRef);
 
-        // Retour natif (bouton Android / geste système)
         window.addEventListener('popstate', function() {
             if (!_historiquePousse) return;
             _historiquePousse = false;
@@ -588,10 +529,12 @@
             return;
         }
 
+        // On demande au shell de masquer header + navbar
+        try { if (typeof window.entrerDansProjet === 'function') window.entrerDansProjet(); } catch (e) {}
+
         brancherEvenements();
         jouerEntreeRapideDepuisBas();
 
-        // Enregistre une entrée d'historique pour capter le retour natif
         try {
             history.pushState({ screen: 'deblocage-projet', projetId: projetId }, '');
             _historiquePousse = true;
