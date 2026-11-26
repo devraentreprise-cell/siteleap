@@ -1,6 +1,6 @@
 // ==========================================
 // Fichier : servir-manifeste.js
-// Sert le manifeste d'un site installable au navigateur du visiteur
+// Sert le manifeste d'un projet à partir de son identifiant à la racine
 // Appel : /.netlify/functions/servir-manifeste?id=IDENTIFIANT_DU_PROJET
 // ==========================================
 
@@ -17,10 +17,13 @@ const db = admin.database();
 
 const FORMAT_ID_PROJET = /^[A-Za-z0-9-]{8,64}$/;
 
-// Durée de conservation du manifeste dans le CDN (en secondes). 86400 = 24 heures
+// Durée de conservation dans le CDN (en secondes). 86400 = 24 heures
 const DUREE_CACHE_SEC = 86400;
 
-// Seuls ces champs standards du manifeste sont renvoyés
+// Limites de blocage déduit : plus de 50 installations ET plus de 30 jours après création
+const SEUIL_INSTALLS = 50;
+const DUREE_GRACE_MS = 30 * 24 * 60 * 60 * 1000;
+
 const CHAMPS_AUTORISES = [
     "name", "short_name", "description", "id", "start_url", "scope",
     "display", "display_override", "orientation", "background_color",
@@ -33,34 +36,38 @@ const ENTETES_CORS = {
     "Access-Control-Allow-Methods": "GET, HEAD, OPTIONS"
 };
 
-function erreur(statusCode, message) {
+function reponseJson(statusCode, payload, cacheSec = 0) {
+    const headers = Object.assign({}, ENTETES_CORS, {
+        "Content-Type": "application/json; charset=utf-8"
+    });
+
+    if (cacheSec > 0) {
+        headers["Cache-Control"] = "public, max-age=3600";
+        headers["Netlify-CDN-Cache-Control"] = "public, max-age=" + cacheSec;
+    } else {
+        headers["Cache-Control"] = "no-store";
+    }
+
     return {
         statusCode: statusCode,
-        headers: Object.assign({}, ENTETES_CORS, {
-            "Content-Type": "application/json; charset=utf-8",
-            "Cache-Control": "no-store"
-        }),
-        body: JSON.stringify({ success: false, message: message })
+        headers: headers,
+        body: JSON.stringify(payload)
     };
 }
 
-// Cherche le projet par son identifiant dans tous les tiroirs de « projets »
-// (on ignore les emails) et renvoie son statut, ou null s'il n'existe pas
-async function trouverStatutProjet(idProjet) {
-    const snap = await db.ref("projets").once("value");
-    let statut = null;
-    let trouve = false;
-    snap.forEach(function (tiroirEmail) {
-        if (tiroirEmail.hasChild(idProjet)) {
-            trouve = true;
-            statut = tiroirEmail.child(idProjet).child("statut").val();
-            return true; // arrête la recherche
-        }
-    });
-    return trouve ? String(statut || "") : null;
+function estProjetBloque(creeLe, installsTotal, maintenantMs) {
+    const installs = Number(installsTotal) || 0;
+    const dateCreation = Number(creeLe) || 0;
+
+    if (installs <= SEUIL_INSTALLS) {
+        return false;
+    }
+    if (!dateCreation) {
+        return false;
+    }
+    return maintenantMs > (dateCreation + DUREE_GRACE_MS);
 }
 
-// Accepte uniquement une adresse de site valide (ex. https://monsite.com) et renvoie son origine
 function lireOrigine(valeur) {
     if (typeof valeur !== "string" || valeur.length > 200) return "";
     try {
@@ -72,8 +79,6 @@ function lireOrigine(valeur) {
     }
 }
 
-// Un lien relatif d'un manifeste distant se lirait à partir du site de WebToApp.
-// On le rattache donc au site du client quand celui-ci fournit son adresse.
 function absolutiser(valeur, origine) {
     if (typeof valeur !== "string" || !origine) return valeur;
     if (/^(https?:|data:|blob:)/i.test(valeur)) return valeur;
@@ -84,7 +89,6 @@ function absolutiser(valeur, origine) {
     }
 }
 
-// Ne garde que les champs autorisés, et rattache les liens au site du client
 function preparerManifeste(brut, origine) {
     const resultat = {};
     CHAMPS_AUTORISES.forEach(function (champ) {
@@ -118,7 +122,7 @@ export async function handler(event, context) {
         return { statusCode: 204, headers: ENTETES_CORS, body: "" };
     }
     if (event.httpMethod !== "GET" && event.httpMethod !== "HEAD") {
-        return erreur(405, "Méthode non autorisée.");
+        return reponseJson(405, { success: false, message: "Méthode non autorisée." });
     }
 
     try {
@@ -126,25 +130,31 @@ export async function handler(event, context) {
         const idProjet = params.id;
 
         if (typeof idProjet !== "string" || !FORMAT_ID_PROJET.test(idProjet)) {
-            return erreur(400, "Identifiant de projet invalide.");
+            return reponseJson(400, { success: false, message: "Identifiant de projet invalide." });
         }
 
-        // Le statut se lit dans la partie « projets » : seul un projet ACTIF a un manifeste
-        const statut = await trouverStatutProjet(idProjet);
-        if (statut !== "actif") {
-            // Même réponse pour « introuvable », « en attente » et « suspendu »
-            return erreur(404, "Manifeste indisponible.");
+        // Lecture directe uniquement sur le chemin <idProjet>
+        const [snapCreeLe, snapInstalls, snapManifeste] = await Promise.all([
+            db.ref(idProjet + "/creeLe").once("value"),
+            db.ref(idProjet + "/installs_total").once("value"),
+            db.ref(idProjet + "/manifeste").once("value")
+        ]);
+
+        const brutManifeste = snapManifeste.val();
+        if (!brutManifeste || typeof brutManifeste !== "object" || Array.isArray(brutManifeste)) {
+            return reponseJson(404, { success: false, message: "Manifeste indisponible." }, DUREE_CACHE_SEC);
         }
 
-        const snap = await db.ref("manifestes/" + idProjet).once("value");
-        const brut = snap.val();
-        if (!brut || typeof brut !== "object" || Array.isArray(brut)) {
-            return erreur(404, "Manifeste indisponible.");
+        const creeLe = snapCreeLe.val();
+        const installsTotal = snapInstalls.val();
+
+        if (estProjetBloque(creeLe, installsTotal, Date.now())) {
+            // Mis en cache sur le CDN pour éviter de relire la base en boucle
+            return reponseJson(403, { success: false, message: "Manifeste indisponible." }, DUREE_CACHE_SEC);
         }
 
-        // Adresse du site du client (facultative), pour rattacher les liens relatifs
         const origine = lireOrigine(params.o);
-        const manifeste = preparerManifeste(brut, origine);
+        const manifeste = preparerManifeste(brutManifeste, origine);
 
         return {
             statusCode: 200,
@@ -158,6 +168,6 @@ export async function handler(event, context) {
 
     } catch (error) {
         console.error("Erreur technique dans servir-manifeste :", error);
-        return erreur(500, "Erreur technique.");
+        return reponseJson(500, { success: false, message: "Erreur technique." });
     }
 }
