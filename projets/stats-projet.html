@@ -1,0 +1,1377 @@
+<!-- ============================================================ -->
+<!-- STATS-PROJET.HTML                                             -->
+<!-- Vue d'un projet : installations / appareils / pays            -->
+<!-- - Chargé à l'entrée dans un projet (via projetId)             -->
+<!-- - Modale démo automatique si projet en attente                -->
+<!-- - Intercepte la sortie → modale de finalisation               -->
+<!-- - Délègue la finalisation à finaliser-projet.html             -->
+<!-- ============================================================ -->
+
+<div id="stats-projet-container">
+
+    <div id="stats-projet" class="screen active">
+        <div class="slide-up-shell" id="statsProjetSlideShell">
+
+            <!-- TOP BAR -->
+            <div class="top-bar">
+                <div class="top-row">
+                    <button type="button" class="top-back" id="btnBackStats" aria-label="Retour">
+                        <svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg>
+                    </button>
+                    <div class="top-title-wrap">
+                        <h1 class="top-title" id="topNom">Mon site web</h1>
+                        <p class="top-sub">Statistiques de votre site web</p>
+                    </div>
+                    <span class="top-formule-badge decouverte" id="topFormuleBadge">DÉCOUVERTE</span>
+                </div>
+            </div>
+
+            <!-- ONGLETS -->
+            <div class="tabs-wrap">
+                <nav class="tabs">
+                    <button type="button" class="tab active" data-view="installations">Installations</button>
+                    <button type="button" class="tab" data-view="appareils">Appareils</button>
+                    <button type="button" class="tab" data-view="pays">Pays</button>
+                </nav>
+            </div>
+
+            <div class="container">
+                <!-- INSTALLATIONS -->
+                <section class="view active" id="view-installations">
+                    <div class="overview-heading">
+                        <div>
+                            <div class="overview-title">Vue d'ensemble</div>
+                            <div class="overview-description">Suivez les installations de votre site web.</div>
+                        </div>
+                        <div class="live-indicator"><span class="live-dot"></span>Statistiques</div>
+                    </div>
+                    <div class="card hero">
+                        <div class="eyebrow">Installations totales</div>
+                        <div class="hero-number">
+                            <span id="numInstalls">0</span><span class="u">installations</span>
+                        </div>
+                        <div class="hero-sub">
+                            <span class="pill" id="heroToday">+0</span>
+                            <span id="heroTodayLabel">par rapport à hier</span>
+                        </div>
+                        <svg class="hero-spark" viewBox="0 0 200 60" preserveAspectRatio="none" aria-hidden="true">
+                            <path d="M0 55 C30 50 40 40 60 42 S100 25 120 28 S160 10 200 4" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round"/>
+                        </svg>
+                    </div>
+                    <div class="card">
+                        <div class="card-heading">
+                            <span class="eyebrow">Évolution des installations</span>
+                            <span class="heading-note">7 jours</span>
+                        </div>
+                        <div class="evo-chart" id="evoChart"></div>
+                        <div class="diagram-caption" id="installInsight">—</div>
+                    </div>
+                </section>
+
+                <!-- APPAREILS -->
+                <section class="view" id="view-appareils">
+                    <div class="card">
+                        <div class="eyebrow">Répartition par système</div>
+                        <div class="donut-big">
+                            <svg viewBox="0 0 140 140">
+                                <circle cx="70" cy="70" r="56" fill="none" stroke="#f1f5f9" stroke-width="16"/>
+                                <circle class="donut-segment big-seg" data-k="a" cx="70" cy="70" r="56" stroke="#10b981" stroke-dasharray="0 400"/>
+                                <circle class="donut-segment big-seg" data-k="i" cx="70" cy="70" r="56" stroke="#6366f1" stroke-dasharray="0 400"/>
+                                <circle class="donut-segment big-seg" data-k="p" cx="70" cy="70" r="56" stroke="#3b82f6" stroke-dasharray="0 400"/>
+                            </svg>
+                            <div class="donut-center">
+                                <div class="big" id="donutTotal">0</div>
+                                <div class="eyebrow" style="margin-top:4px">appareils</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="rows" id="deviceRows"></div>
+                        <div class="diagram-caption" id="explainDevices">—</div>
+                    </div>
+                </section>
+            </div>
+
+            <!-- PAYS -->
+            <section class="view" id="view-pays">
+                <div class="pays-heading">
+                    <div class="pays-title">Répartition géographique</div>
+                </div>
+                <div class="map-viewport">
+                    <div class="map-spinner" id="mapSpinner"></div>
+                    <div class="map-rotator" id="mapRotator">
+                        <svg id="worldMap" viewBox="0 0 600 300" preserveAspectRatio="xMidYMid meet" aria-label="Carte du monde des utilisateurs"></svg>
+                    </div>
+                </div>
+            </section>
+
+        </div>
+    </div>
+
+    <!-- MODALE DÉMO (projet en attente) -->
+    <div class="modal-overlay" id="modalEntreeStats" aria-hidden="true">
+        <div class="modal-card" role="dialog" aria-labelledby="modalEntreeStatsTitle">
+            <button type="button" class="modal-close" id="modalEntreeStatsClose" aria-label="Fermer">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="6" y1="6" x2="18" y2="18"/>
+                    <line x1="18" y1="6" x2="6" y2="18"/>
+                </svg>
+            </button>
+            <h2 class="modal-title" id="modalEntreeStatsTitle">Statistiques de démonstration</h2>
+            <p class="modal-text">Les données affichées ici sont des statistiques de démonstration.</p>
+            <div class="modal-actions">
+                <button type="button" class="modal-btn modal-btn-primary" id="modalEntreeStatsOk">OK</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODALE SORTIE (projet en attente) -->
+    <div class="modal-overlay" id="modalSortieStats" aria-hidden="true">
+        <div class="modal-card" role="dialog" aria-labelledby="modalSortieStatsTitle">
+            <button type="button" class="modal-close" id="modalSortieStatsClose" aria-label="Fermer">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="6" y1="6" x2="18" y2="18"/>
+                    <line x1="18" y1="6" x2="6" y2="18"/>
+                </svg>
+            </button>
+            <h2 class="modal-title" id="modalSortieStatsTitle">Finalisation du projet</h2>
+            <p class="modal-text">Dernière étape : finaliser votre projet pour démarrer le suivi réel de vos statistiques.</p>
+            <div class="modal-actions">
+                <button type="button" class="modal-btn modal-btn-primary" id="modalFinaliserProjet">Finaliser mon projet</button>
+                <button type="button" class="modal-btn modal-btn-secondary" id="modalPlusTardStats">Plus tard</button>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<style>
+/* ============================================================ */
+/* Styles scopés sous #stats-projet-container                    */
+/* ============================================================ */
+
+#stats-projet-container,
+#stats-projet-container *,
+#stats-projet-container *::before,
+#stats-projet-container *::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
+}
+
+#stats-projet-container {
+    --green: #10b981;
+    --green-dark: #059669;
+    --green-deep: #047857;
+    --green-soft: #ecfdf5;
+    --ink: #0b1220;
+    --muted: #64748b;
+    --muted-2: #94a3b8;
+    --line: #e2e8f0;
+    --bg: #ffffff;
+    --radius: 22px;
+
+    position: fixed;
+    inset: 0;
+    z-index: 60;
+    width: 100%;
+    max-width: 640px;
+    margin: 0 auto;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Helvetica, Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    overflow: hidden;
+}
+
+#stats-projet-container button { font-family: inherit; }
+
+#stats-projet-container .screen { display: none; min-width: 0; max-width: 100%; overflow-x: clip; }
+#stats-projet-container .screen.active { display: flex; flex-direction: column; }
+
+#stats-projet-container #stats-projet {
+    height: 100vh;
+    height: 100dvh;
+    overflow: hidden;
+}
+
+#stats-projet-container .slide-up-shell {
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 40px;
+    transform: translate3d(0, 100%, 0);
+    opacity: 0;
+    transition:
+        transform 0.36s cubic-bezier(0.22, 1, 0.36, 1),
+        opacity 0.22s ease-out;
+    will-change: transform, opacity;
+}
+#stats-projet-container .slide-up-shell.is-entered {
+    transform: translate3d(0, 0, 0);
+    opacity: 1;
+}
+
+/* ---------- TOP BAR ---------- */
+#stats-projet-container .top-bar {
+    position: sticky;
+    top: 0;
+    z-index: 30;
+    background: #ffffff;
+    padding: 12px 16px 10px;
+}
+#stats-projet-container .top-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    max-width: 620px;
+    margin: 0 auto;
+}
+#stats-projet-container .top-back {
+    width: 40px;
+    height: 40px;
+    border: none;
+    background: transparent;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--ink);
+    flex-shrink: 0;
+    padding: 0;
+}
+#stats-projet-container .top-back:active { transform: scale(.95); }
+#stats-projet-container .top-back svg {
+    width: 24px;
+    height: 24px;
+    stroke: currentColor;
+    fill: none;
+    stroke-width: 2.2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+#stats-projet-container .top-title-wrap {
+    flex: 1;
+    min-width: 0;
+    border-left: 2px solid var(--green);
+    padding-left: 14px;
+}
+#stats-projet-container .top-title {
+    font-size: 1.15rem;
+    font-weight: 800;
+    color: var(--ink);
+    line-height: 1.15;
+    letter-spacing: -0.025em;
+    margin: 0 0 2px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+#stats-projet-container .top-sub {
+    font-size: 0.78rem;
+    color: var(--muted);
+    line-height: 1.35;
+    margin: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+#stats-projet-container .top-formule-badge {
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 3px 8px;
+    font-size: 0.58rem;
+    font-weight: 900;
+    letter-spacing: 0.06em;
+    border-radius: 5px;
+    line-height: 1.4;
+    white-space: nowrap;
+    margin-left: 4px;
+}
+#stats-projet-container .top-formule-badge.decouverte { background: #f1f5f9; color: #64748b; border: 1px solid #e2e8f0; }
+#stats-projet-container .top-formule-badge.pro { background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); color: #92400e; border: 1px solid #fcd34d; }
+#stats-projet-container .top-formule-badge.proplus { background: var(--green-soft); color: var(--green-deep); border: 1px solid #a7f3d0; }
+
+/* ---------- ONGLETS ---------- */
+#stats-projet-container .tabs-wrap {
+    max-width: 620px;
+    margin: 12px auto 0;
+    padding: 0 16px;
+}
+#stats-projet-container .tabs {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    background: #e8edf3;
+    border-radius: 15px;
+    padding: 4px;
+    gap: 3px;
+}
+#stats-projet-container .tab {
+    border: none;
+    background: transparent;
+    padding: 10px 4px;
+    border-radius: 11px;
+    font-size: .78rem;
+    font-weight: 750;
+    color: var(--muted);
+    cursor: pointer;
+    transition: background .22s, color .22s, box-shadow .22s;
+}
+#stats-projet-container .tab.active {
+    background: #fff;
+    color: var(--ink);
+    box-shadow: 0 2px 7px rgba(15,23,42,.075);
+}
+
+/* ---------- CONTAINER / VUES ---------- */
+#stats-projet-container .container {
+    max-width: 620px;
+    margin: 0 auto;
+    padding: 17px 16px;
+}
+#stats-projet-container .view { display: none; }
+#stats-projet-container .view.active { display: block; }
+
+/* ---------- CARTES ---------- */
+#stats-projet-container .card {
+    background: #fff;
+    border: 1px solid #e9eef5;
+    border-radius: var(--radius);
+    box-shadow: 0 1px 3px rgba(15,23,42,.05), 0 6px 18px rgba(15,23,42,.05);
+    padding: 20px;
+}
+#stats-projet-container .card + .card { margin-top: 13px; }
+#stats-projet-container .eyebrow {
+    font-size: .65rem;
+    font-weight: 850;
+    color: var(--muted-2);
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    display: block;
+}
+
+/* ---------- HEADINGS ---------- */
+#stats-projet-container .overview-heading {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 12px;
+    margin: 3px 2px 14px;
+}
+#stats-projet-container .overview-title {
+    font-size: 1.35rem;
+    line-height: 1.2;
+    font-weight: 850;
+    letter-spacing: -.045em;
+}
+#stats-projet-container .overview-description {
+    font-size: .79rem;
+    color: var(--muted);
+    margin-top: 5px;
+    line-height: 1.45;
+}
+#stats-projet-container .live-indicator {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-shrink: 0;
+    font-size: .65rem;
+    font-weight: 800;
+    color: var(--green-deep);
+    background: var(--green-soft);
+    padding: 7px 9px;
+    border-radius: 9px;
+}
+#stats-projet-container .live-dot {
+    width: 7px;
+    height: 7px;
+    background: var(--green);
+    border-radius: 50%;
+}
+
+/* ---------- HERO ---------- */
+#stats-projet-container .hero {
+    position: relative;
+    overflow: hidden;
+    isolation: isolate;
+    background: linear-gradient(140deg,#064e3b 0%,#047857 55%,#10b981 100%);
+    color: #fff;
+    padding: 24px 22px 21px;
+    border: none;
+    box-shadow: 0 10px 26px rgba(4,120,87,.13);
+}
+#stats-projet-container .hero .eyebrow { color: rgba(255,255,255,.76); }
+#stats-projet-container .hero-number {
+    font-size: clamp(3.1rem,11vw,4rem);
+    font-weight: 850;
+    letter-spacing: -.075em;
+    line-height: 1;
+    margin-top: 12px;
+    font-variant-numeric: tabular-nums;
+    position: relative;
+    z-index: 1;
+}
+#stats-projet-container .hero-number .u {
+    display: inline-block;
+    font-size: .85rem;
+    font-weight: 650;
+    opacity: .8;
+    letter-spacing: 0;
+    margin-left: 8px;
+}
+#stats-projet-container .hero-sub {
+    margin-top: 17px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    font-size: .8rem;
+    font-weight: 650;
+    color: rgba(255,255,255,.88);
+    position: relative;
+    z-index: 1;
+}
+#stats-projet-container .hero-sub .pill {
+    background: rgba(255,255,255,.16);
+    border: 1px solid rgba(255,255,255,.13);
+    padding: 6px 10px;
+    border-radius: 9px;
+    font-weight: 850;
+    font-size: .75rem;
+}
+#stats-projet-container .hero-spark {
+    position: absolute;
+    z-index: -1;
+    right: -5px;
+    bottom: 0;
+    width: 59%;
+    height: 105px;
+    opacity: .32;
+    overflow: visible;
+}
+
+/* ---------- GRAPHE ÉVOLUTION ---------- */
+#stats-projet-container .card-heading {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 4px;
+}
+#stats-projet-container .heading-note {
+    font-size: .7rem;
+    font-weight: 750;
+    color: var(--muted);
+    background: #f1f5f9;
+    border-radius: 8px;
+    padding: 5px 8px;
+    white-space: nowrap;
+}
+#stats-projet-container .evo-chart {
+    display: flex;
+    gap: 9px;
+    height: 172px;
+    margin-top: 20px;
+    padding: 0 1px;
+}
+#stats-projet-container .evo-col {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+#stats-projet-container .evo-value {
+    font-size: .68rem;
+    font-weight: 850;
+    margin-bottom: 7px;
+    color: #475569;
+    font-variant-numeric: tabular-nums;
+    text-align: center;
+}
+#stats-projet-container .evo-bar-wrap {
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+}
+#stats-projet-container .evo-bar {
+    width: 100%;
+    max-width: 36px;
+    border-radius: 7px 7px 3px 3px;
+    height: 0;
+    min-height: 3px;
+    transition: height 1s cubic-bezier(.22,1,.36,1);
+    background: linear-gradient(180deg,#93c5fd,#3b82f6);
+}
+#stats-projet-container .evo-col.today .evo-bar {
+    background: linear-gradient(180deg,#10b981,#047857);
+    box-shadow: 0 3px 10px rgba(16,185,129,.17);
+}
+#stats-projet-container .evo-label {
+    font-size: .63rem;
+    font-weight: 750;
+    color: var(--muted-2);
+    margin-top: 9px;
+    text-align: center;
+}
+#stats-projet-container .evo-col.today .evo-label { color: var(--green-deep); }
+#stats-projet-container .evo-col.today .evo-value { color: var(--green-deep); }
+
+#stats-projet-container .diagram-caption {
+    margin-top: 16px;
+    padding-top: 14px;
+    border-top: 1px solid var(--line);
+    font-size: .83rem;
+    font-weight: 600;
+    line-height: 1.55;
+    color: var(--muted);
+}
+#stats-projet-container .diagram-caption strong { color: var(--ink); font-weight: 800; }
+#stats-projet-container .diagram-caption.indispo {
+    color: var(--muted-2);
+    font-style: italic;
+    font-weight: 500;
+}
+
+/* ---------- DONUT ---------- */
+#stats-projet-container .donut-big {
+    position: relative;
+    width: 220px;
+    height: 220px;
+    margin: 8px auto 6px;
+}
+#stats-projet-container .donut-big svg {
+    width: 100%;
+    height: 100%;
+    transform: rotate(-90deg);
+}
+#stats-projet-container .donut-segment {
+    fill: none;
+    stroke-width: 16;
+    stroke-linecap: butt;
+    transition: stroke-dasharray 1.1s cubic-bezier(.22,1,.36,1);
+}
+#stats-projet-container .donut-center {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+#stats-projet-container .donut-center .big {
+    font-size: 2.6rem;
+    font-weight: 850;
+    letter-spacing: -.055em;
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+}
+
+/* ---------- ROWS APPAREILS ---------- */
+#stats-projet-container .rows {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+#stats-projet-container .row-top {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 8px;
+}
+#stats-projet-container .row-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 4px;
+    flex-shrink: 0;
+}
+#stats-projet-container .row-label {
+    flex: 1;
+    font-size: .9rem;
+    font-weight: 700;
+}
+#stats-projet-container .row-pct {
+    font-size: .78rem;
+    font-weight: 700;
+    color: var(--muted-2);
+}
+#stats-projet-container .row-count {
+    font-size: 1rem;
+    font-weight: 800;
+    min-width: 34px;
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+}
+#stats-projet-container .track {
+    height: 8px;
+    background: #f1f5f9;
+    border-radius: 99px;
+    overflow: hidden;
+}
+#stats-projet-container .fill {
+    height: 100%;
+    width: 0;
+    border-radius: 99px;
+    transition: width 1.1s cubic-bezier(.22,1,.36,1);
+}
+
+/* ---------- PAYS ---------- */
+#stats-projet-container #view-pays { display: none; }
+#stats-projet-container #stats-projet.pays-active .container { display: none; }
+#stats-projet-container #stats-projet.pays-active #view-pays {
+    display: block;
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    top: var(--pays-top, 110px);
+    background: var(--bg);
+    z-index: 10;
+    overflow: hidden;
+}
+#stats-projet-container .pays-heading {
+    position: absolute;
+    top: 6px;
+    left: 16px;
+    right: 16px;
+    z-index: 5;
+    pointer-events: none;
+}
+#stats-projet-container .pays-title {
+    font-size: 1.15rem;
+    line-height: 1.2;
+    font-weight: 850;
+    letter-spacing: -.045em;
+}
+#stats-projet-container .map-viewport {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    background: transparent;
+}
+#stats-projet-container .map-rotator {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform-origin: center center;
+}
+#stats-projet-container .map-rotator svg {
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+#stats-projet-container .map-land { fill: #b3c2d4; stroke: none; }
+#stats-projet-container .map-marker { fill: #10b981; }
+#stats-projet-container .map-spinner {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 34px;
+    height: 34px;
+    margin-top: -17px;
+    margin-left: -17px;
+    border: 3px solid #dde5ef;
+    border-top-color: #10b981;
+    border-radius: 50%;
+    animation: spinMapStats .85s linear infinite;
+    z-index: 2;
+}
+#stats-projet-container .map-spinner.hidden { display: none; }
+@keyframes spinMapStats { to { transform: rotate(360deg); } }
+
+/* ---------- MODALES ---------- */
+#stats-projet-container .modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(15,23,42,.55);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    z-index: 10050;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .25s ease;
+}
+#stats-projet-container .modal-overlay.show {
+    opacity: 1;
+    pointer-events: auto;
+}
+#stats-projet-container .modal-card {
+    background: #ffffff;
+    border-radius: 22px;
+    padding: 28px 22px 20px;
+    max-width: 420px;
+    width: 100%;
+    position: relative;
+    box-shadow: 0 25px 50px -12px rgba(15,23,42,.35);
+    transform: translateY(20px) scale(.96);
+    transition: transform .3s cubic-bezier(.22,1,.36,1);
+}
+#stats-projet-container .modal-overlay.show .modal-card {
+    transform: translateY(0) scale(1);
+}
+#stats-projet-container .modal-close {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    border: none;
+    background: #f1f5f9;
+    color: #64748b;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+}
+#stats-projet-container .modal-close svg { width: 16px; height: 16px; display: block; }
+#stats-projet-container .modal-title {
+    font-size: 1.15rem;
+    font-weight: 800;
+    color: var(--ink);
+    letter-spacing: -0.025em;
+    line-height: 1.3;
+    margin: 0 36px 10px 0;
+    text-align: left;
+}
+#stats-projet-container .modal-text {
+    font-size: 0.88rem;
+    font-weight: 500;
+    color: var(--muted);
+    line-height: 1.55;
+    margin: 0 0 22px;
+    text-align: left;
+}
+#stats-projet-container .modal-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+#stats-projet-container .modal-btn {
+    width: 100%;
+    padding: 14px 18px;
+    border-radius: 12px;
+    font-size: 0.92rem;
+    font-weight: 700;
+    cursor: pointer;
+    border: none;
+}
+#stats-projet-container .modal-btn-primary {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    color: #ffffff;
+    box-shadow: 0 12px 24px -10px rgba(16,185,129,.7), inset 0 1px 0 rgba(255,255,255,.18);
+}
+#stats-projet-container .modal-btn-secondary {
+    background: #ffffff;
+    color: var(--muted);
+    border: 1px solid #e2e8f0;
+}
+</style>
+
+<script>
+(function() {
+    'use strict';
+
+    /* ============================================================ */
+    /* ÉTAT INTERNE                                                  */
+    /* ============================================================ */
+    let projetActif = null;
+    let projetIdCourant = null;
+    let estDemo = false;
+    let estEnAttente = false;
+    let _modalEntreeVisible = false;
+    let _modalSortieVisible = false;
+    let _sortieAutorisee = false;
+    let _initialise = false;
+
+    let devicesCourants = [];
+    let mapReady = false, mapSvg = null, mapProjection = null;
+    let currentMarkers = [];
+    let currentPays = [];
+    let mapTrying = false;
+
+    const ORDRE_FORMULES = ['decouverte', 'pro', 'pro-plus'];
+    const NIVEAU_REQUIS = { installations: 0, appareils: 2, pays: 2 };
+    const R_DONUT = 56;
+    const C_DONUT = 2 * Math.PI * R_DONUT;
+
+    const STATS_DEMO = {
+        installs_total: 38450,
+        installs_android: 16200,
+        installs_ios: 12800,
+        installs_pc: 9450,
+        installs_7j: [720, 950, 1180, 1040, 1420, 890, 1250]
+    };
+    const PAYS_DEMO = [
+        { nom: 'Cameroun', lat: 3.848, lng: 11.502, count: 9200 },
+        { nom: 'France', lat: 46.2276, lng: 2.2137, count: 6800 },
+        { nom: "Côte d'Ivoire", lat: 7.54, lng: -5.5471, count: 4500 },
+        { nom: 'Sénégal', lat: 14.4974, lng: -14.4524, count: 3100 },
+        { nom: 'Canada', lat: 56.1304, lng: -106.3468, count: 2600 },
+        { nom: 'Belgique', lat: 50.5039, lng: 4.4699, count: 2200 },
+        { nom: 'Gabon', lat: -0.8037, lng: 11.6094, count: 1900 },
+        { nom: 'Maroc', lat: 31.7917, lng: -7.0926, count: 1700 },
+        { nom: 'États-Unis', lat: 37.0902, lng: -95.7129, count: 1500 },
+        { nom: 'Allemagne', lat: 51.1657, lng: 10.4515, count: 1200 },
+        { nom: 'Royaume-Uni', lat: 55.3781, lng: -3.4360, count: 950 },
+        { nom: 'Nigeria', lat: 9.0820, lng: 8.6753, count: 820 },
+        { nom: 'Congo', lat: -4.0383, lng: 21.7587, count: 680 }
+    ];
+
+    /* ============================================================ */
+    /* HELPERS                                                       */
+    /* ============================================================ */
+    const $ = id => document.getElementById(id);
+
+    function normaliserStatut(s) {
+        const v = String(s || '').toLowerCase().replace(/-/g, '_');
+        if (v === 'actif') return 'actif';
+        if (v === 'suspendu') return 'suspendu';
+        return 'en_attente';
+    }
+
+    function normaliserFormule(f) {
+        const v = String(f || 'decouverte').toLowerCase().replace(/[_\s+]/g, '-');
+        if (v === 'pro') return 'pro';
+        if (v === 'pro-plus' || v === 'proplus') return 'pro-plus';
+        return 'decouverte';
+    }
+
+    function niveauFormule(f) {
+        const i = ORDRE_FORMULES.indexOf(normaliserFormule(f));
+        return i < 0 ? 0 : i;
+    }
+
+    function formuleInfo(f) {
+        const v = normaliserFormule(f);
+        if (v === 'pro') return { cls: 'pro', label: 'PRO' };
+        if (v === 'pro-plus') return { cls: 'proplus', label: 'PRO+' };
+        return { cls: 'decouverte', label: 'DÉCOUVERTE' };
+    }
+
+    function formatNombre(n) {
+        const num = Number(n);
+        if (!Number.isFinite(num)) return '0';
+        const abs = Math.abs(num);
+        if (abs < 1000) return String(Math.round(num));
+
+        let valeur, suffixe;
+        if (abs < 1e6)      { valeur = num / 1e3; suffixe = 'K'; }
+        else if (abs < 1e9) { valeur = num / 1e6; suffixe = 'M'; }
+        else                { valeur = num / 1e9; suffixe = 'Md'; }
+
+        const arrondi = (Math.abs(valeur) < 10)
+            ? Math.round(valeur * 10) / 10
+            : Math.round(valeur);
+        return String(arrondi).replace('.', ',') + suffixe;
+    }
+
+    function indexAujourdhuiCameroun() {
+        const dateStr = new Intl.DateTimeFormat('en-CA', {
+            timeZone: 'Africa/Douala',
+            year: 'numeric', month: '2-digit', day: '2-digit'
+        }).format(new Date());
+        const [an, m, j] = dateStr.split('-').map(Number);
+        const jourSemaine = new Date(Date.UTC(an, m - 1, j)).getUTCDay();
+        return (jourSemaine + 6) % 7;
+    }
+
+    function jouerEntreeRapideDepuisBas() {
+        const shell = $('statsProjetSlideShell');
+        if (!shell) return;
+        shell.classList.remove('is-entered');
+        void shell.offsetWidth;
+        requestAnimationFrame(() => {
+            requestAnimationFrame(() => shell.classList.add('is-entered'));
+        });
+    }
+
+    /* ============================================================ */
+    /* CHARGEMENT DES DONNÉES DU PROJET                              */
+    /* ============================================================ */
+    async function chargerProjet(projetId) {
+        projetIdCourant = projetId;
+        estDemo = false;
+        estEnAttente = false;
+        currentPays = [];
+
+        // On recherche d'abord dans le cache (posé par principal-projets)
+        if (window._cacheProjetsModule && window._cacheProjetsModule.projets) {
+            projetActif = window._cacheProjetsModule.projets.find(
+                p => String(p.id || p.nom) === String(projetId)
+            ) || null;
+        }
+
+        // Si le cache n'est pas frais ou absent, on (re)charge via Netlify
+        if (!projetActif) {
+            try {
+                const jeton = await window._authUser.getIdToken();
+                const response = await fetch('/.netlify/functions/lister-projets', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ jeton: jeton })
+                });
+                const resultat = await response.json();
+                if (resultat && resultat.success && Array.isArray(resultat.projets)) {
+                    projetActif = resultat.projets.find(
+                        p => String(p.id || p.nom) === String(projetId)
+                    ) || null;
+                }
+            } catch (e) {
+                console.error('[Stats] Erreur chargement projet :', e);
+            }
+        }
+
+        if (!projetActif) {
+            // Projet introuvable : on revient en arrière proprement
+            sortirDesStats();
+            return;
+        }
+
+        estEnAttente = (normaliserStatut(projetActif.statut) === 'en_attente');
+        estDemo = estEnAttente;
+
+        appliquerDonnees();
+    }
+
+    /* ============================================================ */
+    /* APPLICATION DES DONNÉES                                       */
+    /* ============================================================ */
+    function appliquerDonnees() {
+        if (!projetActif) return;
+
+        const niveauProjet = niveauFormule(projetActif.formule);
+        const s = estDemo ? STATS_DEMO : (projetActif.stats || {});
+
+        const isBloquee = {};
+        Object.keys(NIVEAU_REQUIS).forEach(nom => {
+            isBloquee[nom] = estDemo ? false : (niveauProjet < NIVEAU_REQUIS[nom]);
+        });
+
+        $('topNom').textContent = projetActif.nom || 'Sans nom';
+        majBadgeFormule(projetActif.formule);
+
+        // INSTALLATIONS
+        $('numInstalls').textContent = formatNombre(s.installs_total || 0);
+        const evo = (s.installs_7j && s.installs_7j.length) ? s.installs_7j : [0, 0, 0, 0, 0, 0, 0];
+        const jours = ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim'];
+        const maxEvo = Math.max(...evo, 1);
+
+        const idxAujourdhui = (typeof s.index_aujourdhui === 'number')
+            ? s.index_aujourdhui
+            : indexAujourdhuiCameroun();
+        const idxHier = (idxAujourdhui - 1 + 7) % 7;
+        const aujourdhui = evo[idxAujourdhui] || 0;
+        const hier = evo[idxHier] || 0;
+        const diffJour = aujourdhui - hier;
+
+        if (diffJour > 0) {
+            $('heroToday').textContent = '+' + formatNombre(diffJour);
+            $('heroTodayLabel').textContent = 'par rapport à hier';
+        } else if (diffJour < 0) {
+            $('heroToday').textContent = formatNombre(diffJour);
+            $('heroTodayLabel').textContent = 'par rapport à hier';
+        } else if (aujourdhui === 0) {
+            $('heroToday').textContent = '0';
+            $('heroTodayLabel').textContent = "installation aujourd'hui";
+        } else {
+            $('heroToday').textContent = '0';
+            $('heroTodayLabel').textContent = 'stable par rapport à hier';
+        }
+
+        $('evoChart').innerHTML = evo.map((v, i) =>
+            '<div class="evo-col' + (i === idxAujourdhui ? ' today' : '') + '">' +
+                '<div class="evo-value">' + formatNombre(v) + '</div>' +
+                '<div class="evo-bar-wrap">' +
+                    '<div class="evo-bar" data-h="' + (v / maxEvo * 100) + '"></div>' +
+                '</div>' +
+                '<div class="evo-label">' + (jours[i] || '') + '</div>' +
+            '</div>'
+        ).join('');
+
+        if (aujourdhui === 0) {
+            $('installInsight').innerHTML = "Aucune installation enregistrée aujourd'hui.";
+        } else if (diffJour > 0) {
+            $('installInsight').innerHTML = 'Vous avez enregistré <strong>' + formatNombre(aujourdhui) + " installations aujourd'hui</strong>, soit <strong>+" + formatNombre(diffJour) + '</strong> par rapport à hier.';
+        } else if (diffJour < 0) {
+            $('installInsight').innerHTML = 'Vous avez enregistré <strong>' + formatNombre(aujourdhui) + " installations aujourd'hui</strong>, soit <strong>" + formatNombre(diffJour) + '</strong> par rapport à hier.';
+        } else {
+            $('installInsight').innerHTML = '<strong>' + formatNombre(aujourdhui) + " installations aujourd'hui</strong>, soit <strong>autant qu'hier</strong>.";
+        }
+
+        // APPAREILS
+        const android = isBloquee.appareils ? 0 : (s.installs_android || 0);
+        const ios = isBloquee.appareils ? 0 : (s.installs_ios || 0);
+        const pc = isBloquee.appareils ? 0 : (s.installs_pc || 0);
+        const totalDev = android + ios + pc;
+
+        devicesCourants = [
+            { k: 'a', nom: 'Android', count: android, color: '#10b981' },
+            { k: 'i', nom: 'iPhone', count: ios, color: '#6366f1' },
+            { k: 'p', nom: 'Ordinateur', count: pc, color: '#3b82f6' }
+        ].map(d => ({ ...d, pct: totalDev > 0 ? d.count / totalDev : 0 }));
+
+        $('donutTotal').textContent = formatNombre(totalDev);
+        $('deviceRows').innerHTML = devicesCourants.map(d =>
+            '<div>' +
+                '<div class="row-top">' +
+                    '<span class="row-dot" style="background:' + d.color + '"></span>' +
+                    '<span class="row-label">' + d.nom + '</span>' +
+                    '<span class="row-pct">' + Math.round(d.pct * 100) + ' %</span>' +
+                    '<span class="row-count">' + formatNombre(d.count) + '</span>' +
+                '</div>' +
+                '<div class="track"><div class="fill" data-w="' + (d.pct * 100) + '" style="background:' + d.color + '"></div></div>' +
+            '</div>'
+        ).join('');
+
+        const capDevices = $('explainDevices');
+        capDevices.classList.remove('indispo');
+        if (isBloquee.appareils) {
+            capDevices.textContent = 'Données indisponibles';
+            capDevices.classList.add('indispo');
+        } else {
+            const avecDonnees = devicesCourants.filter(d => d.count > 0);
+            if (avecDonnees.length === 0) {
+                capDevices.textContent = 'Aucune installation pour le moment.';
+            } else if (avecDonnees.length === 1) {
+                capDevices.innerHTML = '<strong>100 %</strong> de vos utilisateurs sont sur <strong>' + avecDonnees[0].nom + '</strong>.';
+            } else {
+                const top2 = [...avecDonnees].sort((a, b) => b.pct - a.pct).slice(0, 2);
+                const sommePct = Math.round((top2[0].pct + top2[1].pct) * 100);
+                capDevices.innerHTML = '<strong>' + sommePct + ' %</strong> de vos utilisateurs sont sur <strong>' + top2[0].nom + ' et ' + top2[1].nom + '</strong>.';
+            }
+        }
+
+        // PAYS
+        if (isBloquee.pays) currentPays = [];
+        else if (estDemo) currentPays = PAYS_DEMO;
+        else currentPays = projetActif.pays || [];
+
+        requestAnimationFrame(() => animerToutesVues());
+    }
+
+    function majBadgeFormule(formule) {
+        const el = $('topFormuleBadge');
+        if (!el) return;
+        const fi = formuleInfo(formule);
+        el.classList.remove('decouverte', 'pro', 'proplus');
+        el.classList.add(fi.cls);
+        el.textContent = fi.label;
+    }
+
+    /* ============================================================ */
+    /* ANIMATIONS                                                    */
+    /* ============================================================ */
+    function dessinerDonut() {
+        let offset = 0;
+        devicesCourants.forEach(d => {
+            const el = document.querySelector('#stats-projet-container .big-seg[data-k="' + d.k + '"]');
+            if (!el) return;
+            el.setAttribute('stroke-dasharray', (C_DONUT * d.pct) + ' ' + C_DONUT);
+            el.setAttribute('stroke-dashoffset', -offset);
+            offset += C_DONUT * d.pct;
+        });
+    }
+
+    function animerToutesVues() {
+        const vueInst = $('view-installations');
+        if (vueInst && vueInst.classList.contains('active')) {
+            vueInst.querySelectorAll('.evo-bar').forEach(el => {
+                el.style.height = (Number(el.dataset.h) || 0) + '%';
+            });
+        }
+        const vueApp = $('view-appareils');
+        if (vueApp && vueApp.classList.contains('active')) {
+            vueApp.querySelectorAll('.fill').forEach(el => {
+                el.style.width = (Number(el.dataset.w) || 0) + '%';
+            });
+            dessinerDonut();
+        }
+    }
+
+    function ouvrirOnglet(nom) {
+        document.querySelectorAll('#stats-projet-container .tab').forEach(t => {
+            t.classList.toggle('active', t.dataset.view === nom);
+        });
+        document.querySelectorAll('#stats-projet-container .view').forEach(v => {
+            v.classList.toggle('active', v.id === 'view-' + nom);
+        });
+
+        const screen = $('stats-projet');
+
+        if (nom === 'pays') {
+            requestAnimationFrame(() => {
+                calculerPositionPays();
+                screen.classList.add('pays-active');
+                requestAnimationFrame(() => {
+                    ajusterCarte();
+                    initMap();
+                    setTimeout(ajusterCarte, 80);
+                    setTimeout(ajusterCarte, 250);
+                });
+            });
+        } else {
+            screen.classList.remove('pays-active');
+            requestAnimationFrame(() => animerToutesVues());
+        }
+    }
+
+    /* ============================================================ */
+    /* CARTE DU MONDE                                                */
+    /* ============================================================ */
+    function drawMarkers(pays) {
+        if (!mapReady || !mapSvg || !mapProjection) return;
+        currentMarkers.forEach(m => m.remove());
+        currentMarkers = [];
+        if (!pays || pays.length === 0) return;
+
+        const ns = 'http://www.w3.org/2000/svg';
+        const maxC = Math.max(...pays.map(p => p.count), 1);
+        pays.forEach(p => {
+            const xy = mapProjection([p.lng, p.lat]);
+            if (!xy) return;
+            const r = 1.6 + 2.4 * Math.sqrt(p.count / maxC);
+            const dot = document.createElementNS(ns, 'circle');
+            dot.setAttribute('cx', xy[0].toFixed(2));
+            dot.setAttribute('cy', xy[1].toFixed(2));
+            dot.setAttribute('r', r.toFixed(2));
+            dot.setAttribute('class', 'map-marker');
+            mapSvg.appendChild(dot);
+            currentMarkers.push(dot);
+        });
+    }
+
+    async function initMap() {
+        const spinner = $('mapSpinner');
+        if (mapReady) {
+            drawMarkers(currentPays);
+            if (spinner) spinner.classList.add('hidden');
+            return;
+        }
+        if (mapTrying) return;
+        mapTrying = true;
+
+        while (!mapReady) {
+            try {
+                const [d3geo, topojson] = await Promise.all([
+                    import('https://esm.sh/d3-geo@3'),
+                    import('https://esm.sh/topojson-client@3')
+                ]);
+                const world = await fetch('https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json').then(r => r.json());
+                const allCountries = topojson.feature(world, world.objects.countries);
+                const countries = {
+                    type: 'FeatureCollection',
+                    features: allCountries.features.filter(f => {
+                        const id = String(f.id || '').padStart(3, '0');
+                        const nom = (f.properties && f.properties.name) || '';
+                        return id !== '010' && nom !== 'Antarctica';
+                    })
+                };
+
+                const W = 600, H = 300;
+                const projection = d3geo.geoNaturalEarth1().fitExtent([[-30, -15], [W + 30, H + 15]], countries);
+                const path = d3geo.geoPath(projection);
+
+                mapSvg = $('worldMap');
+                const ns = 'http://www.w3.org/2000/svg';
+                mapSvg.innerHTML = '';
+
+                countries.features.forEach(f => {
+                    const d = path(f);
+                    if (!d) return;
+                    const p = document.createElementNS(ns, 'path');
+                    p.setAttribute('d', d);
+                    p.setAttribute('class', 'map-land');
+                    mapSvg.appendChild(p);
+                });
+
+                mapProjection = projection;
+                mapReady = true;
+                drawMarkers(currentPays);
+                if (spinner) spinner.classList.add('hidden');
+            } catch (err) {
+                console.warn('[Stats] Carte indisponible, nouvelle tentative…', err);
+                await new Promise(r => setTimeout(r, 2500));
+            }
+        }
+        mapTrying = false;
+    }
+
+    function calculerPositionPays() {
+        const tabsWrap = document.querySelector('#stats-projet-container .tabs-wrap');
+        if (!tabsWrap) return;
+        const rect = tabsWrap.getBoundingClientRect();
+        document.documentElement.style.setProperty('--pays-top', Math.max(0, rect.bottom) + 'px');
+    }
+
+    function ajusterCarte() {
+        const vp = document.querySelector('#stats-projet-container .map-viewport');
+        const rot = $('mapRotator');
+        if (!vp || !rot) return;
+        const W = vp.clientWidth;
+        const H = vp.clientHeight;
+        if (!W || !H) return;
+
+        if (H > W) {
+            const sourceW = Math.min(2 * W, H);
+            rot.style.width = sourceW + 'px';
+            rot.style.height = (sourceW / 2) + 'px';
+            rot.style.transform = 'translate(-50%,-50%) rotate(90deg)';
+        } else {
+            const w = Math.min(W, 2 * H);
+            rot.style.width = w + 'px';
+            rot.style.height = (w / 2) + 'px';
+            rot.style.transform = 'translate(-50%,-50%)';
+        }
+    }
+
+    /* ============================================================ */
+    /* MODALES                                                       */
+    /* ============================================================ */
+    function afficherModalEntree() {
+        if (_modalEntreeVisible) return;
+        _modalEntreeVisible = true;
+        const el = $('modalEntreeStats');
+        if (el) { el.classList.add('show'); el.setAttribute('aria-hidden', 'false'); }
+    }
+
+    function cacherModalEntree() {
+        if (!_modalEntreeVisible) return;
+        _modalEntreeVisible = false;
+        const el = $('modalEntreeStats');
+        if (el) { el.classList.remove('show'); el.setAttribute('aria-hidden', 'true'); }
+    }
+
+    function afficherModalSortie() {
+        if (_modalSortieVisible) return;
+        _modalSortieVisible = true;
+        const el = $('modalSortieStats');
+        if (el) { el.classList.add('show'); el.setAttribute('aria-hidden', 'false'); }
+    }
+
+    function cacherModalSortie() {
+        if (!_modalSortieVisible) return;
+        _modalSortieVisible = false;
+        const el = $('modalSortieStats');
+        if (el) { el.classList.remove('show'); el.setAttribute('aria-hidden', 'true'); }
+    }
+
+    /* ============================================================ */
+    /* NAVIGATION / SORTIE                                           */
+    /* ============================================================ */
+    function demanderSortie() {
+        if (estEnAttente) afficherModalSortie();
+        else sortirDesStats();
+    }
+
+    function sortirDesStats() {
+        _sortieAutorisee = true;
+        cacherModalSortie();
+        cacherModalEntree();
+        if (typeof window.fermerEcran === 'function') {
+            window.fermerEcran('stats-projet');
+        } else if (typeof window.openScreen === 'function') {
+            window.openScreen('principal-projets');
+        }
+    }
+
+    function plusTardStats() {
+        cacherModalSortie();
+        sortirDesStats();
+    }
+
+    function lancerFinalisation() {
+        cacherModalSortie();
+        const id = projetActif && (projetActif.id || projetActif.nom);
+        if (typeof window.openScreen === 'function') {
+            window.openScreen('finaliser-projet', { projetId: id });
+        } else if (typeof window.ouvrirSousEcran === 'function') {
+            window.ouvrirSousEcran('finaliser-projet', { projetId: id });
+        }
+    }
+
+    /* ============================================================ */
+    /* ÉVÉNEMENTS                                                    */
+    /* ============================================================ */
+    function brancherEvenements() {
+        if (_initialise) return;
+        _initialise = true;
+
+        document.querySelectorAll('#stats-projet-container .tab').forEach(t => {
+            t.addEventListener('click', () => ouvrirOnglet(t.dataset.view));
+        });
+
+        const btnBack = $('btnBackStats');
+        if (btnBack) btnBack.addEventListener('click', demanderSortie);
+
+        const modalEntreeClose = $('modalEntreeStatsClose');
+        if (modalEntreeClose) modalEntreeClose.addEventListener('click', cacherModalEntree);
+
+        const modalEntreeOk = $('modalEntreeStatsOk');
+        if (modalEntreeOk) modalEntreeOk.addEventListener('click', cacherModalEntree);
+
+        const modalSortieClose = $('modalSortieStatsClose');
+        if (modalSortieClose) modalSortieClose.addEventListener('click', () => { cacherModalSortie(); sortirDesStats(); });
+
+        const modalPlusTard = $('modalPlusTardStats');
+        if (modalPlusTard) modalPlusTard.addEventListener('click', plusTardStats);
+
+        const modalFinaliser = $('modalFinaliserProjet');
+        if (modalFinaliser) modalFinaliser.addEventListener('click', lancerFinalisation);
+
+        window.addEventListener('resize', () => {
+            const s = $('stats-projet');
+            if (s && s.classList.contains('pays-active')) {
+                calculerPositionPays();
+                ajusterCarte();
+            }
+        });
+    }
+
+    /* ============================================================ */
+    /* POINT D'ENTRÉE EXPOSÉ                                         */
+    /* ============================================================ */
+    window.init_statsProjet = async function(opts) {
+        const projetId = opts && opts.projetId;
+        if (!projetId) {
+            console.warn('[Stats] Aucun projetId fourni.');
+            return;
+        }
+
+        brancherEvenements();
+        jouerEntreeRapideDepuisBas();
+
+        // Reset UI
+        document.querySelectorAll('#stats-projet-container .tab').forEach(t =>
+            t.classList.toggle('active', t.dataset.view === 'installations'));
+        document.querySelectorAll('#stats-projet-container .view').forEach(v =>
+            v.classList.toggle('active', v.id === 'view-installations'));
+        $('stats-projet').classList.remove('pays-active');
+        $('evoChart').innerHTML = '';
+        $('deviceRows').innerHTML = '';
+        $('donutTotal').textContent = '0';
+        $('numInstalls').textContent = '0';
+
+        await chargerProjet(projetId);
+
+        if (estEnAttente) {
+            setTimeout(() => afficherModalEntree(), 450);
+        }
+    };
+
+})();
+</script>
