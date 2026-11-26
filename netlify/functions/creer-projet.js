@@ -1,6 +1,8 @@
 // ==========================================
 // Fichier : creer-projet.js
-// Crée un projet « en_attente » (sans paiement)
+// Crée un projet « en_attente » (limite : 1 en attente max)
+// Applique les valeurs par défaut du manifeste (#ffffff, portrait, etc.)
+// Écrit sous <cleEmail>/<id> et sous <id>
 // ==========================================
 
 import admin from "firebase-admin";
@@ -16,13 +18,76 @@ if (!admin.apps.length) {
 const db = admin.database();
 
 const FORMULES_VALIDES = ["decouverte", "pro", "pro-plus"];
-const LIMITE_EN_ATTENTE = 4;
+const LIMITE_EN_ATTENTE = 1;
 const TAILLE_MAX_MANIFESTE = 100000;
 const TAILLE_MAX_IMAGE_OCTETS = 2 * 1024 * 1024;
 const FORMAT_IMAGE = /^data:image\/(png|jpeg|webp);base64,[A-Za-z0-9+\/=]+$/;
 
+const ICONES_PAR_DEFAUT = [
+    {
+        src: "icons/android/icon-192.png",
+        sizes: "192x192",
+        type: "image/png",
+        purpose: "any"
+    },
+    {
+        src: "icons/android/icon-512.png",
+        sizes: "512x512",
+        type: "image/png",
+        purpose: "any"
+    },
+    {
+        src: "icons/android/icon-192-maskable.png",
+        sizes: "192x192",
+        type: "image/png",
+        purpose: "maskable"
+    },
+    {
+        src: "icons/android/icon-512-maskable.png",
+        sizes: "512x512",
+        type: "image/png",
+        purpose: "maskable"
+    }
+];
+
 function reponse(statusCode, objet) {
-    return { statusCode: statusCode, body: JSON.stringify(objet) };
+    return {
+        statusCode: statusCode,
+        headers: { "Content-Type": "application/json; charset=utf-8" },
+        body: JSON.stringify(objet)
+    };
+}
+
+function normaliserManifeste(manifesteBrut) {
+    const nomPropre = String(manifesteBrut.name || "").trim();
+    return {
+        ...manifesteBrut,
+        name: nomPropre,
+        short_name: typeof manifesteBrut.short_name === "string" && manifesteBrut.short_name.trim()
+            ? manifesteBrut.short_name.trim().slice(0, 12)
+            : nomPropre.slice(0, 12),
+        start_url: typeof manifesteBrut.start_url === "string" && manifesteBrut.start_url.trim()
+            ? manifesteBrut.start_url.trim()
+            : "./",
+        scope: typeof manifesteBrut.scope === "string" && manifesteBrut.scope.trim()
+            ? manifesteBrut.scope.trim()
+            : "/",
+        display: typeof manifesteBrut.display === "string" && manifesteBrut.display.trim()
+            ? manifesteBrut.display.trim()
+            : "standalone",
+        orientation: typeof manifesteBrut.orientation === "string" && manifesteBrut.orientation.trim()
+            ? manifesteBrut.orientation.trim()
+            : "portrait",
+        background_color: typeof manifesteBrut.background_color === "string" && manifesteBrut.background_color.trim()
+            ? manifesteBrut.background_color.trim()
+            : "#ffffff",
+        theme_color: typeof manifesteBrut.theme_color === "string" && manifesteBrut.theme_color.trim()
+            ? manifesteBrut.theme_color.trim()
+            : "#ffffff",
+        icons: Array.isArray(manifesteBrut.icons) && manifesteBrut.icons.length > 0
+            ? manifesteBrut.icons
+            : ICONES_PAR_DEFAUT
+    };
 }
 
 // Envoie l'image à Cloudinary (envoi signé) et renvoie son URL, ou null en cas d'échec
@@ -53,45 +118,6 @@ async function envoyerImage(image) {
     return donnees.secure_url;
 }
 
-// Calcule les dates de la semaine en cours (du lundi au dimanche) à l'heure du Cameroun (UTC+1)
-function obtenirSemaineCouranteCameroun() {
-    const formatter = new Intl.DateTimeFormat('en-CA', {
-        timeZone: 'Africa/Douala',
-        year: 'numeric',
-        month: '2-digit',
-        day: '2-digit'
-    });
-    
-    const dateStr = formatter.format(new Date());
-    const [annee, mois, jour] = dateStr.split('-').map(Number);
-    
-    const dateCameroun = new Date(Date.UTC(annee, mois - 1, jour));
-    let jourSemaine = dateCameroun.getUTCDay(); // 0 = Dimanche, 1 = Lundi, ...
-    let decalageVersLundi = (jourSemaine === 0) ? -6 : 1 - jourSemaine;
-    
-    const lundiDate = new Date(dateCameroun);
-    lundiDate.setUTCDate(dateCameroun.getUTCDate() + decalageVersLundi);
-    
-    const joursNoms = ["lundi", "mardi", "mercredi", "jeudi", "vendredi", "samedi", "dimanche"];
-    const installsParJour = {};
-    
-    for (let i = 0; i < 7; i++) {
-        const d = new Date(lundiDate);
-        d.setUTCDate(lundiDate.getUTCDate() + i);
-        const an = d.getUTCFullYear();
-        const m = String(d.getUTCMonth() + 1).padStart(2, '0');
-        const j = String(d.getUTCDate()).padStart(2, '0');
-        const formattedDate = `${an}-${m}-${j}`;
-        
-        installsParJour[joursNoms[i]] = {
-            date: formattedDate,
-            installs: 0
-        };
-    }
-    
-    return installsParJour;
-}
-
 export async function handler(event, context) {
     if (event.httpMethod !== "POST") {
         return reponse(405, { success: false, message: "Méthode non autorisée." });
@@ -107,7 +133,7 @@ export async function handler(event, context) {
         }
 
         const jeton = body.jeton;
-        const manifeste = body.manifeste;
+        const manifesteBrut = body.manifeste;
         const projet = body.projet || {};
         const formule = projet.formule;
         const image = projet.image;
@@ -115,13 +141,13 @@ export async function handler(event, context) {
         if (!jeton || typeof jeton !== "string") {
             return reponse(401, { success: false, message: "Connexion Google manquante." });
         }
-        if (!manifeste || typeof manifeste !== "object" || Array.isArray(manifeste)) {
+        if (!manifesteBrut || typeof manifesteBrut !== "object" || Array.isArray(manifesteBrut)) {
             return reponse(400, { success: false, message: "Manifeste manquant." });
         }
-        if (typeof manifeste.name !== "string" || !manifeste.name.trim()) {
+        if (typeof manifesteBrut.name !== "string" || !manifesteBrut.name.trim()) {
             return reponse(400, { success: false, message: "Le nom du projet est manquant." });
         }
-        if (JSON.stringify(manifeste).length > TAILLE_MAX_MANIFESTE) {
+        if (JSON.stringify(manifesteBrut).length > TAILLE_MAX_MANIFESTE) {
             return reponse(400, { success: false, message: "Manifeste trop volumineux." });
         }
         if (!FORMULES_VALIDES.includes(formule)) {
@@ -133,6 +159,8 @@ export async function handler(event, context) {
         if (image.length > (TAILLE_MAX_IMAGE_OCTETS * 4 / 3) + 200 || !FORMAT_IMAGE.test(image)) {
             return reponse(400, { success: false, message: "L'icône doit être une image PNG, JPEG ou WebP de moins de 2 Mo." });
         }
+
+        const manifeste = normaliserManifeste(manifesteBrut);
 
         // 2. Vérification du jeton Google : l'email vient du jeton, jamais du site
         let email;
@@ -149,8 +177,8 @@ export async function handler(event, context) {
         // Nom du tiroir : Firebase refuse . # $ [ ] / dans un nom
         const cleEmail = email.trim().toLowerCase().replace(/\./g, ",").replace(/[#$\[\]\/]/g, "_");
 
-        // 3. Limite : nombre de projets « en_attente » de cet email
-        const snapEmail = await db.ref("projets/" + cleEmail).once("value");
+        // 3. Limite : 1 seul projet « en_attente » maximum pour cet email
+        const snapEmail = await db.ref(cleEmail).once("value");
         let enAttente = 0;
         if (snapEmail.exists()) {
             snapEmail.forEach(function (enfant) {
@@ -161,7 +189,7 @@ export async function handler(event, context) {
         if (enAttente >= LIMITE_EN_ATTENTE) {
             return reponse(403, {
                 success: false,
-                message: "Vous avez atteint la limite de " + LIMITE_EN_ATTENTE + " projets en attente de paiement."
+                message: "Vous avez déjà un projet en attente. Activez-le avant d'en créer un autre."
             });
         }
 
@@ -171,33 +199,33 @@ export async function handler(event, context) {
             return reponse(502, { success: false, message: "L'envoi de l'icône a échoué. Réessayez." });
         }
 
-        // 5. Identifiant unique du projet
+        // 5. Identifiant unique du projet et horodatage serveur
         const id = randomUUID();
+        const horodatage = admin.database.ServerValue.TIMESTAMP;
 
-        // 6. Enregistrement en une seule opération (tout ou rien)
+        // 6. Enregistrement en une seule opération sous <cleEmail>/<id> et <id>
         const miseAJour = {};
 
-        miseAJour["projets/" + cleEmail + "/" + id] = {
-            nom: manifeste.name.trim(),
+        miseAJour[cleEmail + "/" + id] = {
+            nom: manifeste.name,
             formule: formule,
             statut: "en_attente",
-            creeLe: admin.database.ServerValue.TIMESTAMP,
-            dateFin: 0,
-            imageUrl: imageUrl
+            creeLe: horodatage,
+            installs_total: 0,
+            imageUrl: imageUrl,
+            demande_reactivation: false
         };
 
-        miseAJour["manifestes/" + id] = manifeste;
-
-        miseAJour["stats/" + id] = {
+        miseAJour[id] = {
+            creeLe: horodatage,
             installs_total: 0,
-            installs_pc: 0,
-            installs_ios: 0,
-            installs_android: 0,
-            lancements_navigateur: 0,
-            lancements_accueil: 0,
-            duree_navigateur_total_sec: 0,
-            duree_accueil_total_sec: 0,
-            installs_par_jour: obtenirSemaineCouranteCameroun()
+            manifeste: manifeste,
+            stats: {
+                installs_total: 0,
+                installs_par_jour: {},
+                os: {},
+                pays: {}
+            }
         };
 
         await db.ref().update(miseAJour);
