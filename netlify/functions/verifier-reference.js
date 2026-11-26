@@ -1,8 +1,12 @@
 // ==========================================
 // Fichier : verifier-reference.js
-// Vérifie qu'une référence de paiement n'a pas
-// déjà été utilisée, puis l'enregistre dans
-// « numeros_de_reference » (Firebase RTDB)
+// Vérifie qu'une référence de paiement n'a pas déjà été utilisée,
+// l'enregistre dans « numeros_de_reference », et passe à true
+// le champ « demande_reactivation » du projet concerné.
+//
+// Structure de la base :
+//   numeros_de_reference/<cleReference> = "REF-XXX"
+//   <cleEmail>/<projetId>/demande_reactivation = true
 // ==========================================
 
 import admin from "firebase-admin";
@@ -17,11 +21,21 @@ if (!admin.apps.length) {
 const db = admin.database();
 
 function reponse(statusCode, objet) {
-    return { statusCode: statusCode, body: JSON.stringify(objet) };
+    return {
+        statusCode: statusCode,
+        headers: { "Content-Type": "application/json; charset=utf-8" },
+        body: JSON.stringify(objet)
+    };
 }
 
 function nettoyerCleFirebase(valeur) {
     return String(valeur).trim().replace(/[.#$\[\]\/]/g, "_");
+}
+
+function cleEmailDe(email) {
+    return String(email || "").trim().toLowerCase()
+        .replace(/\./g, ",")
+        .replace(/[#$\[\]\/]/g, "_");
 }
 
 export async function handler(event, context) {
@@ -52,6 +66,10 @@ export async function handler(event, context) {
             });
         }
 
+        if (!projetId) {
+            return reponse(400, { success: false, message: "Projet introuvable." });
+        }
+
         let email;
         try {
             const decode = await admin.auth().verifyIdToken(jeton);
@@ -71,56 +89,42 @@ export async function handler(event, context) {
             return reponse(400, { success: false, message: "Numéro de référence invalide." });
         }
 
+        // 1) Vérification globale de la référence
         const refRacine = db.ref("numeros_de_reference");
         const snapRacine = await refRacine.once("value");
 
-        // Si le nœud « numeros_de_reference » n'existe pas encore, on le crée puis on ajoute la référence
-        if (!snapRacine.exists()) {
-            await refRacine.set({
-                [cleReference]: {
-                    reference: referenceNettoyee,
-                    email: email.trim().toLowerCase(),
-                    projetId: projetId ? String(projetId) : null,
-                    enregistreeLe: admin.database.ServerValue.TIMESTAMP
+        if (snapRacine.exists()) {
+            let dejaPresente = false;
+            snapRacine.forEach(function (enfant) {
+                const cleEnfant = String(enfant.key || "").toLowerCase();
+                const valEnfant = enfant.val();
+                const refEnfant = (typeof valEnfant === "string" ? valEnfant : "").trim().toLowerCase();
+
+                if (cleEnfant === cleReference || refEnfant === referenceNettoyee.toLowerCase()) {
+                    dejaPresente = true;
+                    return true;
                 }
             });
-            return reponse(200, {
-                success: true,
-                dejaUtilisee: false,
-                reference: referenceNettoyee
-            });
-        }
 
-        // Vérification : la référence figure-t-elle déjà dans « numeros_de_reference » ?
-        let dejaPresente = false;
-        snapRacine.forEach(function (enfant) {
-            const val = enfant.val();
-            const cleEnfant = String(enfant.key || "").toLowerCase();
-            const refEnfant = val && typeof val.reference === "string"
-                ? val.reference.trim().toLowerCase()
-                : "";
-
-            if (cleEnfant === cleReference || refEnfant === referenceNettoyee.toLowerCase()) {
-                dejaPresente = true;
-                return true;
+            if (dejaPresente) {
+                return reponse(409, {
+                    success: false,
+                    dejaUtilisee: true,
+                    message: "Ce numéro de référence a déjà été utilisé pour un autre projet."
+                });
             }
-        });
-
-        if (dejaPresente) {
-            return reponse(409, {
-                success: false,
-                dejaUtilisee: true,
-                message: "Ce numéro de référence a été utilisé pour un autre projet."
-            });
         }
 
-        // La référence n'existe pas encore : on l'ajoute dans « numeros_de_reference »
-        await refRacine.child(cleReference).set({
-            reference: referenceNettoyee,
-            email: email.trim().toLowerCase(),
-            projetId: projetId ? String(projetId) : null,
-            enregistreeLe: admin.database.ServerValue.TIMESTAMP
-        });
+        // 2) Enregistrement de la référence (uniquement la référence)
+        await refRacine.child(cleReference).set(referenceNettoyee);
+
+        // 3) Marquage du projet : demande_reactivation = true
+        const cleEmail = cleEmailDe(email);
+        try {
+            await db.ref(cleEmail + "/" + String(projetId) + "/demande_reactivation").set(true);
+        } catch (e) {
+            console.warn("Référence enregistrée mais marquage du projet échoué :", e);
+        }
 
         return reponse(200, {
             success: true,
