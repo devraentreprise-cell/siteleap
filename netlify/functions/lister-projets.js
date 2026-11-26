@@ -1,7 +1,8 @@
 // ==========================================
 // Fichier : lister-projets.js
-// Renvoie les projets du client connecté, avec uniquement
-// les statistiques autorisées par la formule de chaque projet
+// Lit les projets sous <cleEmail>, déduit "suspendu" à partir de
+// creeLe et installs_total, et ne lit ni ne renvoie les stats
+// si le projet est suspendu ou en attente
 // ==========================================
 
 import admin from "firebase-admin";
@@ -15,17 +16,32 @@ if (!admin.apps.length) {
 
 const db = admin.database();
 
-// Niveau de chaque formule : plus le niveau est haut, plus on voit de statistiques
 const NIVEAU_FORMULE = { "decouverte": 0, "pro": 1, "pro-plus": 2 };
 const JOURS = ["lundi", "mardi", "mercredi", "jeudi", "vendredi", "samedi", "dimanche"];
 
+const SEUIL_INSTALLS = 50;
+const DUREE_GRACE_MS = 30 * 24 * 60 * 60 * 1000;
+
 function reponse(statusCode, objet) {
-    return { statusCode: statusCode, body: JSON.stringify(objet) };
+    return {
+        statusCode: statusCode,
+        headers: { "Content-Type": "application/json; charset=utf-8" },
+        body: JSON.stringify(objet)
+    };
 }
 
 function niveauDe(formule) {
     const n = NIVEAU_FORMULE[formule];
     return typeof n === "number" ? n : 0;
+}
+
+function estSuspendu(creeLe, installsTotal, maintenantMs) {
+    const installs = Number(installsTotal) || 0;
+    const dateCreation = Number(creeLe) || 0;
+    if (installs <= SEUIL_INSTALLS || !dateCreation) {
+        return false;
+    }
+    return maintenantMs > (dateCreation + DUREE_GRACE_MS);
 }
 
 // Position d'aujourd'hui dans la semaine (0 = lundi ... 6 = dimanche), à l'heure du Cameroun
@@ -67,12 +83,13 @@ function listerPays(brut) {
 }
 
 // Ne garde que ce que la formule autorise
-function statsAutorisees(brut, niveau) {
+function statsAutorisees(brut, niveau, installsProjet) {
     const s = brut || {};
+    const totalInstalls = Number(installsProjet ?? s.installs_total) || 0;
 
     // Niveau 0 (Découverte) : installations
     const resultat = {
-        installs_total: Number(s.installs_total) || 0,
+        installs_total: totalInstalls,
         installs_7j: installs7j(s),
         index_aujourdhui: indexAujourdhui()
     };
@@ -127,41 +144,56 @@ export async function handler(event, context) {
             return reponse(401, { success: false, message: "Adresse email introuvable." });
         }
 
-        // Même règle de nom de tiroir que creer-projet.js
         const cleEmail = email.trim().toLowerCase().replace(/\./g, ",").replace(/[#$\[\]\/]/g, "_");
 
-        // 3. Lecture des projets de cet email
-        const snapProjets = await db.ref("projets/" + cleEmail).once("value");
+        // 3. Lecture directe sous <cleEmail> et déduction immédiate de "suspendu"
+        const snapProjets = await db.ref(cleEmail).once("value");
 
         if (!snapProjets.exists()) {
             return reponse(200, { success: true, projets: [] });
         }
 
+        const maintenantMs = Date.now();
         const projets = [];
+
         snapProjets.forEach(function (enfant) {
             const p = enfant.val() || {};
-            projets.push({
+            const creeLe = Number(p.creeLe) || 0;
+            const installsTotal = Number(p.installs_total) || 0;
+            const suspendu = estSuspendu(creeLe, installsTotal, maintenantMs);
+
+            const element = {
                 id: enfant.key,
                 nom: p.nom || "",
                 formule: p.formule || "",
                 statut: p.statut || "",
-                creeLe: p.creeLe || 0,
-                imageUrl: p.imageUrl || ""
-            });
+                creeLe: creeLe,
+                imageUrl: p.imageUrl || "",
+                demande_reactivation: Boolean(p.demande_reactivation),
+                suspendu: suspendu
+            };
+
+            // On n'expose pas installs_total ni stats si le projet est suspendu
+            if (!suspendu) {
+                element.installs_total = installsTotal;
+            }
+
+            projets.push(element);
         });
 
-        // 4. Lecture des statistiques UNIQUEMENT pour les projets actifs
-        //    (en attente ou suspendu : aucune statistique n'est lue ni envoyée)
+        // 4. Lecture de <idProjet>/stats uniquement si le projet n'est ni "en_attente" ni "suspendu"
         const lectures = projets.map(function (p) {
-            if (p.statut !== "actif") return Promise.resolve(null);
-            return db.ref("stats/" + p.id).once("value");
+            if (p.statut === "en_attente" || p.suspendu) {
+                return Promise.resolve(null);
+            }
+            return db.ref(p.id + "/stats").once("value");
         });
         const snapsStats = await Promise.all(lectures);
 
-        // 5. On ne garde que ce que la formule autorise
+        // 5. Filtrage des stats selon la formule (jamais attachées si suspendu)
         projets.forEach(function (p, i) {
-            if (p.statut === "actif" && snapsStats[i]) {
-                p.stats = statsAutorisees(snapsStats[i].val(), niveauDe(p.formule));
+            if (p.statut !== "en_attente" && !p.suspendu && snapsStats[i]) {
+                p.stats = statsAutorisees(snapsStats[i].val(), niveauDe(p.formule), p.installs_total);
             }
         });
 
