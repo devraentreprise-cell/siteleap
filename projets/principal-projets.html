@@ -1,5 +1,5 @@
 <!-- ========================================== -->
-<!-- MODULE PROJETS : LISTE & STATISTIQUES        -->
+<!-- MODULE PROJETS : LISTE, STATS, DÉBLOCAGE & ZIP -->
 <!-- ========================================== -->
 
 <div id="projets-module-root" class="projets-module-root">
@@ -63,10 +63,9 @@
 
         <div class="tabs-wrap">
             <nav class="tabs">
-                <button class="tab active" data-view="installations">Installations</button>
-                <button class="tab" data-view="usage">Usage</button>
-                <button class="tab" data-view="appareils">Appareils</button>
-                <button class="tab" data-view="pays">Pays</button>
+                <button type="button" class="tab active" data-view="installations">Installations</button>
+                <button type="button" class="tab" data-view="appareils">Appareils</button>
+                <button type="button" class="tab" data-view="pays">Pays</button>
             </nav>
         </div>
 
@@ -103,66 +102,8 @@
                 </div>
             </section>
 
-            <!-- USAGE -->
-            <section class="view" id="view-usage">
-                <div class="formule-mention">
-                    Disponible uniquement avec la formule <span class="mention-badge badge-pro">PRO</span>
-                </div>
-                <div class="card">
-                    <div class="eyebrow">Nombre d'ouvertures</div>
-                    <div class="usage-compare">
-                        <div class="compare-figures">
-                            <div class="cf-figure cf-app">
-                                <div class="cf-label"><i></i>écran d'accueil</div>
-                                <div class="cf-value" id="valOpenApp">0</div>
-                            </div>
-                            <div class="cf-figure cf-web">
-                                <div class="cf-label">Navigateur<i></i></div>
-                                <div class="cf-value" id="valOpenWeb">0</div>
-                            </div>
-                        </div>
-                        <div class="compare-split">
-                            <div class="cs-seg cs-app" id="segOpenApp"></div>
-                            <div class="cs-seg cs-web" id="segOpenWeb"></div>
-                        </div>
-                    </div>
-                    <div class="diagram-caption" id="explainOpen">—</div>
-                </div>
-                <div class="card">
-                    <div class="eyebrow">Durée moyenne d'une session</div>
-                    <div class="usage-compare">
-                        <div class="compare-figures">
-                            <div class="cf-figure cf-app">
-                                <div class="cf-label"><i></i>écran d'accueil</div>
-                                <div class="cf-value" id="valTimeApp">0</div>
-                            </div>
-                            <div class="cf-figure cf-web">
-                                <div class="cf-label">Navigateur<i></i></div>
-                                <div class="cf-value" id="valTimeWeb">0</div>
-                            </div>
-                        </div>
-                        <div class="compare-split">
-                            <div class="cs-seg cs-app" id="segTimeApp"></div>
-                            <div class="cs-seg cs-web" id="segTimeWeb"></div>
-                        </div>
-                    </div>
-                    <div class="diagram-caption" id="explainTime">—</div>
-                </div>
-                <div class="card">
-                    <div class="eyebrow">Fréquence d'utilisation</div>
-                    <div class="freq-display">
-                        <span class="freq-num" id="freqNumber">0</span>
-                        <span class="freq-unit">fois / jour</span>
-                    </div>
-                    <div class="diagram-caption" id="explainFreq">—</div>
-                </div>
-            </section>
-
             <!-- APPAREILS -->
             <section class="view" id="view-appareils">
-                <div class="formule-mention">
-                    Disponible uniquement avec la formule <span class="mention-badge badge-proplus">PRO+</span>
-                </div>
                 <div class="card">
                     <div class="eyebrow">Répartition par système</div>
                     <div class="donut-big">
@@ -189,9 +130,6 @@
         <section class="view" id="view-pays">
             <div class="pays-heading">
                 <div class="pays-title">Répartition géographique</div>
-                <div class="pays-description">
-                    Disponible uniquement avec la formule <span class="mention-badge badge-proplus">PRO+</span>
-                </div>
             </div>
             <div class="map-viewport">
                 <div class="map-spinner" id="mapSpinner"></div>
@@ -200,132 +138,79 @@
                 </div>
             </div>
         </section>
-
-        <!-- ÉCRAN 3 : FORMULAIRE DE FINALISATION -->
-        <div id="finalisation-container" style="display: none;">
-            <main class="final-content">
-                <!-- 1. TRANSPARENCE -->
-                <section class="final-intro-section">
-                    <p class="final-intro-text">SiteLeap est actuellement en phase de développement technique pour être pleinement opérationnel.</p>
-                    
-                    <p class="final-intro-text"><span class="final-highlight">Néanmoins</span>, vous pouvez dès maintenant adhérer à la liste d'attente pour être informé dès que la plateforme sera opérationnelle.</p>
-                    
-                    <p class="final-intro-text">Il ne s'agit pas d'une simple liste passive où vous attendriez la sortie de l'outil, mais d'une communauté active au sein de laquelle vous serez informé en direct de l'avancement du projet et pourrez échanger avec nous.</p>
-                </section>
-
-                <!-- 2. AVANTAGES (ACCORDÉON) -->
-                <section class="final-perks-toggle-wrap">
-                    <button type="button" class="final-btn-toggle-perks" id="btnTogglePerks">
-                        Voir les avantages
-                        <svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
-                    </button>
-                    
-                    <div class="final-perks-content hidden" id="perksContent">
-                        <div class="final-perk-item">
-                            <div class="final-perk-icon"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
-                            <div><strong>Accès anticipé</strong> - Profitez de l'outil avant tout le monde et bénéficiez d'un accès <strong>gratuit</strong> pendant cette période.</div>
-                        </div>
-                        
-                        <div class="final-perk-item">
-                            <div class="final-perk-icon"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
-                            <div><span class="final-badge-green">10 %</span> de réduction garantis dès votre inscription.</div>
-                        </div>
-
-                        <div class="final-perk-item">
-                            <div class="final-perk-icon"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
-                            <div>Profiter de jusqu'à <span class="final-badge-green">40 %</span> de réduction supplémentaires selon votre participation dans la communauté.</div>
-                        </div>
-                    </div>
-                </section>
-
-                <!-- 3. FORMULAIRE -->
-                <section class="final-form-section">
-                    <!-- Pseudo -->
-                    <div class="final-form-group">
-                        <label class="final-form-label" for="final-pseudo">
-                            Prénom / Pseudo <span class="final-required">*</span>
-                        </label>
-                        <div class="final-input-wrap">
-                            <span class="final-input-icon">
-                                <svg viewBox="0 0 24 24">
-                                    <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/>
-                                    <circle cx="12" cy="7" r="4"/>
-                                </svg>
-                            </span>
-                            <input type="text" id="final-pseudo" class="final-form-input" placeholder="Ex. David" autocomplete="nickname">
-                        </div>
-                        <span class="final-error-msg" id="final-errorPseudo">Veuillez entrer un prénom ou un pseudo.</span>
-                    </div>
-
-                    <!-- Email -->
-                    <div class="final-form-group">
-                        <label class="final-form-label" for="final-email">
-                            Adresse email <span class="final-required">*</span>
-                        </label>
-                        <div class="final-input-wrap">
-                            <span class="final-input-icon">
-                                <svg viewBox="0 0 24 24">
-                                    <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
-                                    <polyline points="22,6 12,13 2,6"/>
-                                </svg>
-                            </span>
-                            <input type="email" id="final-email" class="final-form-input final-email-locked" value="" readonly title="Email utilisé pour votre connexion">
-                        </div>
-                    </div>
-
-                    <!-- WhatsApp -->
-                    <div class="final-form-group">
-                        <label class="final-form-label" for="final-whatsapp">
-                            Numéro WhatsApp <span class="final-required">*</span>
-                        </label>
-                        <div class="final-input-wrap">
-                            <span class="final-input-icon">
-                                <svg viewBox="0 0 24 24">
-                                    <path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 16.92z"/>
-                                </svg>
-                            </span>
-                            <input type="tel" id="final-whatsapp" class="final-form-input" placeholder="+237 6 XX XX XX XX" autocomplete="tel">
-                        </div>
-                        <span class="final-error-msg" id="final-errorWhatsapp">Veuillez entrer votre numéro WhatsApp.</span>
-                    </div>
-
-                    <!-- Bouton de soumission -->
-                    <button type="button" class="final-btn-submit" id="final-btnSubmit">
-                        Rejoindre la liste d'attente
-                    </button>
-                </section>
-
-                <p class="final-footer-note">
-                    En cliquant sur ce bouton, vos informations seront enregistrées et vous serez redirigé vers notre communauté WhatsApp.
-                </p>
-            </main>
-        </div>
-
-        <!-- ÉCRAN 4 : MESSAGE DE SUCCÈS -->
-        <div id="success-container" style="display: none;">
-            <div class="success-wrapper">
-                <div class="success-icon">
-                    <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>
-                </div>
-                <h2 class="success-title">Inscription réussie !</h2>
-                <p class="success-text">Vos informations ont bien été enregistrées. Redirection vers la communauté...</p>
-            </div>
-        </div>
-
-        <!-- ÉCRAN 5 : MESSAGE DÉJÀ INSCRIT -->
-        <div id="deja-inscrit-container" style="display: none;">
-            <div class="success-wrapper">
-                <div class="success-icon">
-                    <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"></polyline></svg>
-                </div>
-                <h2 class="success-title">Vous êtes déjà inscrit !</h2>
-                <p class="success-text">Votre place est déjà réservée. Vous faites bien partie de la liste d'attente.</p>
-            </div>
-        </div>
-
     </div>
 
-    <!-- MODAL ENTRÉE (projets EN ATTENTE — première ouverture) -->
+    <!-- ÉCRAN 3 : DÉBLOCAGE D'UN PROJET SUSPENDU -->
+    <div id="screen-deblocage-projet" class="sub-screen">
+        <div class="top-bar">
+            <div class="top-row">
+                <button type="button" class="top-back" id="btnBackDeblocageProjet" aria-label="Retour">
+                    <svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg>
+                </button>
+                <div class="top-title-wrap">
+                    <h1 class="top-title" id="deblocageNomProjet">Nom du projet</h1>
+                    <p class="top-sub">Déblocage du projet</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="container" id="deblocageFormView">
+            <div class="overview-heading">
+                <div class="overview-title">Réactiver votre projet</div>
+                <div class="overview-description">Suivez les 2 étapes ci-dessous pour débloquer l'accès à ce projet.</div>
+            </div>
+
+            <div class="card">
+                <span class="eyebrow">Étape 1 — Paiement</span>
+                <p class="step-text">
+                    Cliquez sur le bouton ci-dessous pour effectuer le paiement. Une fois le paiement effectué, <strong>défilez vers le bas et appuyez sur le bouton « Continuer »</strong>.
+                </p>
+                <a
+                    class="btn-deblocage-action"
+                    href="https://selar.com/ds29e12322"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                >
+                    Aller sur la plateforme de paiement
+                </a>
+            </div>
+
+            <div class="card">
+                <form id="formRefDeblocage" novalidate>
+                    <label for="inputRefDeblocage" class="eyebrow">Étape 2 — Référence de transaction</label>
+                    <p class="step-text">
+                        Ouvrez le <strong>message de confirmation que vous avez reçu par e-mail</strong> après votre paiement, copiez le numéro de référence de la transaction puis collez-le dans le champ ci-dessous.
+                    </p>
+                    <div class="form-group">
+                        <input
+                            type="text"
+                            id="inputRefDeblocage"
+                            class="input-ref"
+                            placeholder="Référence reçue par e-mail"
+                            autocomplete="off"
+                        />
+                    </div>
+                    <button type="submit" class="btn-deblocage-action">Valider la référence</button>
+                    <p id="feedbackDeblocage" class="feedback-deblocage" role="status" aria-live="polite"></p>
+                </form>
+            </div>
+        </div>
+
+        <div class="container" id="deblocageAttenteView" style="display: none;">
+            <div class="card">
+                <span class="attente-badge">Activation en cours</span>
+                <div class="attente-titre">Demande d'activation enregistrée</div>
+                <p class="attente-texte">
+                    Votre demande d'activation pour ce projet a bien été prise en compte. L'activation prendra un <strong>délai maximal de 24 heures</strong>.
+                </p>
+                <div class="attente-ref">
+                    Référence enregistrée : <span id="refEnregistreeValeur">—</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL ENTRÉE (projets EN ATTENTE) -->
     <div class="modal-overlay" id="modalEntree" aria-hidden="true">
         <div class="modal-card" role="dialog" aria-labelledby="modalEntreeTitle">
             <button type="button" class="modal-close" id="modalEntreeClose" aria-label="Fermer">
@@ -370,7 +255,7 @@
                 </svg>
             </button>
             <h2 class="modal-title" id="modalSuspenduTitle">Projet suspendu</h2>
-            <p class="modal-text">L'accès à ce projet est momentanément bloqué. Effectuez le paiement pour le réactiver immédiatement.</p>
+            <p class="modal-text" id="modalSuspenduText">L'accès à ce projet est momentanément bloqué.<br>Car vous avez atteint la limite de 50 installations gratuites ou le paiement n'a pas encore été effectué.<br>Veuillez effectuer le paiement pour le réactiver immédiatement.</p>
             <div class="modal-actions">
                 <button type="button" class="modal-btn modal-btn-primary" id="modalDebloquer" style="background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); box-shadow: 0 12px 24px -10px rgba(239,68,68,.7), inset 0 1px 0 rgba(255,255,255,.18);">Débloquer maintenant</button>
                 <button type="button" class="modal-btn modal-btn-secondary" id="modalSuspenduPlusTard">Plus tard</button>
@@ -378,10 +263,55 @@
         </div>
     </div>
 
+    <!-- TIROIR D'INSTRUCTIONS DE FINALISATION -->
+    <div class="final-sheet-overlay" id="finalSheetOverlay"></div>
+    <div class="final-sheet" id="finalSheet" role="dialog" aria-modal="true" aria-hidden="true">
+        <div class="final-sheet-handle-wrap" id="finalSheetHandleWrap">
+            <div class="final-sheet-handle"></div>
+        </div>
+
+        <div class="final-sheet-body">
+            <p class="final-sheet-text">
+                En cliquant sur <span class="final-em">OK</span>, vous allez lancer le téléchargement
+                d'un dossier zip contenant tous vos fichiers sources, ainsi que les fichiers
+                nécessaires à l'installation du site web et au suivi des statistiques.
+            </p>
+
+            <div class="final-sheet-subtitle">Prochaines étapes :</div>
+            <ul class="final-sheet-list">
+                <li>Décompressez ce dossier.</li>
+                <li>Hébergez-le sur votre hébergeur web.</li>
+            </ul>
+
+            <div class="final-sheet-nb">
+                <strong>NB :</strong> Par mesure de prudence, veillez à ne pas remplacer
+                vos anciens fichiers sources par ceux-ci.
+            </div>
+
+            <div class="final-sheet-subtitle">Tarification :</div>
+            <p class="final-sheet-text" style="margin-bottom: 0;">
+                Profitez de notre offre spéciale <span class="final-discount">-44 %</span>
+            </p>
+            <div class="final-price-line">
+                <span class="final-price-old">9 €</span>
+                <span class="final-price-new">5 €</span>
+                <span class="final-price-period">/ mois</span>
+            </div>
+
+            <div class="final-sheet-highlight">
+                Ces frais ne s'appliqueront qu'à partir du moment où vous aurez atteint
+                <strong>50 installations</strong>.
+            </div>
+        </div>
+
+        <div class="final-sheet-footer">
+            <button type="button" class="final-sheet-action" id="finalSheetOkBtn">OK</button>
+        </div>
+    </div>
+
 </div>
 
 <style>
-/* ═══════ STYLES MODULE PROJETS ═══════ */
 .projets-module-root, .projets-module-root *, .projets-module-root *::before, .projets-module-root *::after {
     margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent;
 }
@@ -389,13 +319,12 @@
 .projets-module-root {
     --green: #10b981; --green-dark: #059669; --green-deep: #047857;
     --green-soft: #ecfdf5; --green-glow: rgba(16,185,129,.28);
+    --red: #ef4444; --red-dark: #dc2626; --red-deep: #b91c1c; --red-soft: #fef2f2;
     --ink: #0b1220; --ink-soft: #1e293b;
     --muted: #64748b; --muted-2: #94a3b8;
     --line: #e2e8f0; --line-soft: #f1f5f9;
     --bg: #ffffff;
     --card: #fff;
-    --purple: #8b5cf6; --purple-soft: #f5f3ff; --purple-deep: #5b21b6;
-    --blue: #3b82f6; --blue-deep: #1d4ed8;
     --radius: 22px;
     width: 100%; position: relative;
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Helvetica, Arial, sans-serif;
@@ -420,7 +349,6 @@
     box-shadow: 0 4px 12px -4px rgba(16,185,129,.55);
     overflow: hidden; text-transform: uppercase; user-select: none;
 }
-.accueil-avatar img { width: 100%; height: 100%; object-fit: cover; display: block; }
 .accueil-texts { flex: 1; min-width: 0; }
 .accueil-salut { font-size: 0.82rem; color: var(--muted); font-weight: 500; margin-bottom: 3px; }
 .accueil-nom {
@@ -494,8 +422,6 @@
 .projet-item:hover { background-color: #f8fafc; }
 .projet-item:active { background-color: #f1f5f9; }
 .projet-item.selected { background-color: #e2e8f0; }
-.projet-item.selected:hover { background-color: #dbe2ea; }
-.projet-item.selected:active { background-color: #cbd5e1; }
 
 .projet-avatar {
     flex-shrink: 0; width: 52px; height: 52px;
@@ -538,7 +464,6 @@
 .projet-sep { width: 3px; height: 3px; border-radius: 50%; background: #cbd5e1; flex-shrink: 0; }
 .projet-date { font-size: 0.78rem; font-weight: 500; color: var(--muted-2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
-/* États de chargement et vide */
 .loading-bloc { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 60px 20px; gap: 16px; }
 .loading-spinner { width: 40px; height: 40px; border: 3px solid #e5e5ea; border-top-color: #10b981; border-radius: 50%; animation: pjSpin .8s linear infinite; }
 @keyframes pjSpin { to { transform: rotate(360deg); } }
@@ -555,7 +480,6 @@
     background: var(--bg);
     min-height: 100%;
     padding-bottom: 40px;
-    position: relative; /* Ajouté pour que les écrans absolus fonctionnent */
 }
 
 .top-bar {
@@ -579,6 +503,7 @@
     stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round;
 }
 .top-title-wrap { flex: 1; min-width: 0; border-left: 2px solid var(--green); padding-left: 14px; }
+#screen-deblocage-projet .top-title-wrap { border-left-color: var(--red); }
 .top-title {
     font-size: 1.15rem; font-weight: 800; color: var(--ink);
     line-height: 1.15; letter-spacing: -0.025em; margin: 0 0 2px;
@@ -601,13 +526,13 @@
 
 .tabs-wrap { max-width: 620px; margin: 12px auto 0; padding: 0 16px; }
 .tabs {
-    display: grid; grid-template-columns: repeat(4, minmax(0,1fr));
+    display: grid; grid-template-columns: repeat(3, minmax(0,1fr));
     background: #e8edf3; border-radius: 15px; padding: 4px; gap: 3px;
 }
 .tab {
     border: none; background: transparent;
-    padding: 10px 3px; border-radius: 11px;
-    font-size: .77rem; font-weight: 750;
+    padding: 10px 4px; border-radius: 11px;
+    font-size: .78rem; font-weight: 750;
     color: var(--muted); cursor: pointer;
     transition: background .22s, color .22s, box-shadow .22s;
 }
@@ -616,28 +541,6 @@
 .container { max-width: 620px; margin: 0 auto; padding: 17px 16px; }
 .view { display: none; }
 .view.active { display: block; }
-
-.formule-mention {
-    padding: 6px 2px 14px;
-    font-size: 0.83rem; font-weight: 600;
-    color: var(--muted); line-height: 1.6;
-    text-align: center;
-}
-.formule-mention .mention-badge {
-    display: inline-flex; align-items: center; justify-content: center;
-    padding: 2px 8px; font-size: 0.62rem; font-weight: 900;
-    letter-spacing: 0.06em; border-radius: 5px;
-    line-height: 1.5; white-space: nowrap; vertical-align: middle;
-    margin: 0 2px; transform: translateY(-1px);
-}
-.mention-badge.badge-pro {
-    background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
-    color: #92400e; border: 1px solid #fcd34d;
-}
-.mention-badge.badge-proplus {
-    background: var(--green-soft);
-    color: var(--green-deep); border: 1px solid #a7f3d0;
-}
 
 .card {
     background: var(--card);
@@ -649,7 +552,7 @@
 .card + .card { margin-top: 13px; }
 .eyebrow {
     font-size: .65rem; font-weight: 850; color: var(--muted-2);
-    letter-spacing: .12em; text-transform: uppercase;
+    letter-spacing: .12em; text-transform: uppercase; display: block;
 }
 .big { font-size: 2.2rem; font-weight: 850; letter-spacing: -.055em; line-height: 1; font-variant-numeric: tabular-nums; }
 .big .u { font-size: .8rem; font-weight: 700; color: var(--muted-2); letter-spacing: 0; margin-left: 4px; }
@@ -715,9 +618,7 @@
     font-size: .83rem; font-weight: 600; line-height: 1.55; color: var(--muted);
 }
 .diagram-caption strong { color: var(--ink); font-weight: 800; }
-.diagram-caption.indispo {
-    color: var(--muted-2); font-style: italic; font-weight: 500;
-}
+.diagram-caption.indispo { color: var(--muted-2); font-style: italic; font-weight: 500; }
 
 .donut-big { position: relative; width: 220px; height: 220px; margin: 8px auto 6px; }
 .donut-big svg { width: 100%; height: 100%; transform: rotate(-90deg); }
@@ -736,37 +637,6 @@
 .track { height: 8px; background: #f1f5f9; border-radius: 99px; overflow: hidden; }
 .fill { height: 100%; width: 0; border-radius: 99px; transition: width 1.1s cubic-bezier(.22,1,.36,1); }
 
-.usage-compare { margin-top: 14px; }
-.compare-figures { display: flex; justify-content: space-between; align-items: flex-end; gap: 16px; margin-bottom: 14px; }
-.cf-figure { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
-.cf-web { align-items: flex-end; text-align: right; }
-.cf-label {
-    display: inline-flex; align-items: center; gap: 7px;
-    font-size: .68rem; font-weight: 800; letter-spacing: .05em;
-    text-transform: uppercase; color: var(--muted);
-}
-.cf-web .cf-label { flex-direction: row-reverse; }
-.cf-label i { width: 8px; height: 8px; border-radius: 50%; display: inline-block; flex-shrink: 0; }
-.cf-app .cf-label i { background: var(--green); }
-.cf-web .cf-label i { background: var(--purple); }
-.cf-value { font-size: 1.75rem; font-weight: 850; letter-spacing: -.055em; line-height: 1; font-variant-numeric: tabular-nums; }
-.cf-value small { font-size: .72rem; font-weight: 750; letter-spacing: 0; color: var(--muted-2); margin-left: 4px; }
-.cf-app .cf-value { color: var(--green-deep); }
-.cf-web .cf-value { color: var(--purple-deep); }
-.compare-split {
-    display: flex; height: 16px; border-radius: 9px; overflow: hidden;
-    background: #f1f5f9; box-shadow: inset 0 0 0 1px rgba(15,23,42,.03);
-}
-.cs-seg { height: 100%; width: 0; transition: width 1.1s cubic-bezier(.22,1,.36,1); }
-.cs-app { background: linear-gradient(90deg,#34d399,#059669); border-right: 2px solid #fff; }
-.cs-web { background: linear-gradient(90deg,#c4b5fd,#7c3aed); }
-.freq-display { display: flex; align-items: baseline; gap: 10px; margin: 16px 0 4px; }
-.freq-num {
-    font-size: 3.2rem; font-weight: 850; letter-spacing: -.065em; line-height: 1;
-    color: var(--green-deep); font-variant-numeric: tabular-nums;
-}
-.freq-unit { font-size: .95rem; font-weight: 700; color: var(--muted); }
-
 #view-pays { display: none; }
 #screen-stats-projets.pays-active { overflow: hidden; padding-bottom: 0; }
 #screen-stats-projets.pays-active #view-pays {
@@ -777,21 +647,6 @@
 }
 .pays-heading { position: absolute; top: 6px; left: 16px; right: 16px; z-index: 5; pointer-events: none; }
 .pays-title { font-size: 1.15rem; line-height: 1.2; font-weight: 850; letter-spacing: -.045em; }
-.pays-description {
-    font-size: .82rem; color: var(--muted);
-    margin-top: 4px; line-height: 1.55; font-weight: 600;
-}
-.pays-description .mention-badge {
-    display: inline-flex; align-items: center; justify-content: center;
-    padding: 2px 8px; font-size: 0.62rem; font-weight: 900;
-    letter-spacing: 0.06em; border-radius: 5px;
-    line-height: 1.5; white-space: nowrap; vertical-align: middle;
-    margin: 0 2px; transform: translateY(-1px);
-}
-.pays-description .mention-badge.badge-proplus {
-    background: var(--green-soft);
-    color: var(--green-deep); border: 1px solid #a7f3d0;
-}
 
 .map-viewport { position: absolute; inset: 0; overflow: hidden; background: transparent; }
 .map-rotator { position: absolute; top: 50%; left: 50%; transform-origin: center center; }
@@ -811,261 +666,154 @@
 .map-spinner.hidden { display: none; }
 @keyframes spinMap { to { transform: rotate(360deg); } }
 
+/* ═══════ ÉCRAN 3 — DÉBLOCAGE ═══════ */
+#screen-deblocage-projet { background: var(--bg); min-height: 100%; padding-bottom: 40px; }
+.step-text { font-size: 0.86rem; font-weight: 500; color: var(--muted); line-height: 1.55; margin: 10px 0 16px; }
+.step-text strong { color: var(--ink); font-weight: 700; }
+.btn-deblocage-action {
+    display: flex; align-items: center; justify-content: center; gap: 10px;
+    width: 100%; padding: 15px 18px;
+    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+    color: #ffffff; border: none; border-radius: 14px;
+    font-size: 0.95rem; font-weight: 700; text-decoration: none; cursor: pointer;
+    box-shadow: 0 12px 24px -10px rgba(239, 68, 68, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.18);
+}
+.form-group { margin-top: 12px; margin-bottom: 14px; }
+.input-ref {
+    width: 100%; height: 46px; padding: 0 14px;
+    border: 1px solid #e2e8f0; border-radius: 12px;
+    background: #f8fafc; font-family: inherit; font-size: 0.92rem; color: var(--ink); outline: none;
+}
+.input-ref:focus { border-color: var(--red); background: #ffffff; }
+.feedback-deblocage { margin-top: 12px; font-size: 0.82rem; font-weight: 600; min-height: 18px; color: var(--muted); }
+.feedback-deblocage.error { color: var(--red-deep); }
+.feedback-deblocage.success { color: var(--green-deep); }
+.attente-badge {
+    display: inline-block; font-size: 0.72rem; font-weight: 700;
+    color: var(--red-deep); background: var(--red-soft);
+    padding: 6px 12px; border-radius: 999px; margin-bottom: 12px;
+}
+.attente-titre { font-size: 1.15rem; font-weight: 800; color: var(--ink); line-height: 1.3; margin-bottom: 8px; }
+.attente-texte { font-size: 0.88rem; color: var(--muted); line-height: 1.6; }
+.attente-texte strong { color: var(--ink); }
+.attente-ref { margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--line); font-size: 0.8rem; color: var(--muted); }
+.attente-ref span { color: var(--ink); font-weight: 700; }
+
 /* ═══════ MODALS ═══════ */
 .modal-overlay {
-    position: fixed;
-    inset: 0;
+    position: fixed; inset: 0;
     background: rgba(15,23,42,.55);
-    backdrop-filter: blur(6px);
-    -webkit-backdrop-filter: blur(6px);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 20px;
-    z-index: 10050;
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity .25s ease;
+    backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+    display: flex; align-items: center; justify-content: center;
+    padding: 20px; z-index: 10050;
+    opacity: 0; pointer-events: none; transition: opacity .25s ease;
 }
-.modal-overlay.show {
-    opacity: 1;
-    pointer-events: auto;
-}
+.modal-overlay.show { opacity: 1; pointer-events: auto; }
 .modal-card {
-    background: #ffffff;
-    border-radius: 22px;
-    padding: 28px 22px 20px;
-    max-width: 420px;
-    width: 100%;
-    position: relative;
+    background: #ffffff; border-radius: 22px; padding: 28px 22px 20px;
+    max-width: 420px; width: 100%; position: relative;
     box-shadow: 0 25px 50px -12px rgba(15,23,42,.35);
     transform: translateY(20px) scale(.96);
     transition: transform .3s cubic-bezier(.22,1,.36,1);
 }
-.modal-overlay.show .modal-card {
-    transform: translateY(0) scale(1);
-}
+.modal-overlay.show .modal-card { transform: translateY(0) scale(1); }
 .modal-close {
-    position: absolute;
-    top: 14px;
-    right: 14px;
-    width: 34px;
-    height: 34px;
-    border-radius: 50%;
-    border: none;
-    background: #f1f5f9;
-    color: #64748b;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 0;
-    transition: background-color .15s ease, color .15s ease;
+    position: absolute; top: 14px; right: 14px; width: 34px; height: 34px;
+    border-radius: 50%; border: none; background: #f1f5f9; color: #64748b;
+    cursor: pointer; display: flex; align-items: center; justify-content: center; padding: 0;
 }
-.modal-close:hover { background: #e2e8f0; color: #0b1220; }
-.modal-close:active { transform: scale(.94); }
 .modal-close svg { width: 16px; height: 16px; display: block; }
-.modal-title {
-    font-size: 1.15rem;
-    font-weight: 800;
-    color: var(--ink);
-    letter-spacing: -0.025em;
-    line-height: 1.3;
-    margin: 0 36px 10px 0;
-    text-align: left;
-}
-.modal-text {
-    font-size: 0.88rem;
-    font-weight: 500;
-    color: var(--muted);
-    line-height: 1.55;
-    margin: 0 0 22px;
-    text-align: left;
-}
-.modal-actions {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
+.modal-title { font-size: 1.15rem; font-weight: 800; color: var(--ink); letter-spacing: -0.025em; line-height: 1.3; margin: 0 36px 10px 0; text-align: left; }
+.modal-text { font-size: 0.88rem; font-weight: 500; color: var(--muted); line-height: 1.55; margin: 0 0 22px; text-align: left; }
+.modal-actions { display: flex; flex-direction: column; gap: 10px; }
 .modal-btn {
-    width: 100%;
-    padding: 14px 18px;
-    border-radius: 12px;
-    font-family: inherit;
-    font-size: 0.92rem;
-    font-weight: 700;
-    cursor: pointer;
-    border: none;
-    transition: transform .15s ease, filter .15s ease, background-color .15s ease;
-    letter-spacing: 0.005em;
+    width: 100%; padding: 14px 18px; border-radius: 12px;
+    font-family: inherit; font-size: 0.92rem; font-weight: 700; cursor: pointer; border: none;
 }
-.modal-btn:active { transform: scale(.98); }
-/* ✅ MODIF : style du bouton pendant le chargement */
-.modal-btn:disabled { opacity: .65; cursor: not-allowed; }
 .modal-btn-primary {
     background: linear-gradient(135deg, #10b981 0%, #059669 100%);
     color: #ffffff;
     box-shadow: 0 12px 24px -10px rgba(16,185,129,.7), inset 0 1px 0 rgba(255,255,255,.18);
 }
-.modal-btn-primary:hover { filter: brightness(1.03); }
-.modal-btn-secondary {
-    background: #ffffff;
-    color: var(--muted);
-    border: 1px solid #e2e8f0;
-}
-.modal-btn-secondary:hover { background: #f8fafc; color: var(--ink); }
+.modal-btn-secondary { background: #ffffff; color: var(--muted); border: 1px solid #e2e8f0; }
 
-/* ═══════ FORMULAIRE & MESSAGES ═══════ */
-/* ✅ MODIF : les 3 écrans démarrent maintenant SOUS l'en-tête des statistiques
-   (flèche retour visible). La valeur --final-top est calculée par le script. */
-#finalisation-container, #success-container, #deja-inscrit-container {
-    position: fixed;
-    top: var(--final-top, 70px);
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: #ffffff;
-    z-index: 20;
-    overflow-y: auto;
-    -webkit-overflow-scrolling: touch;
+/* ═══════ TIROIR DE FINALISATION ═══════ */
+.final-sheet-overlay {
+    position: fixed; inset: 0;
+    background: rgba(15,23,42,.55);
+    -webkit-backdrop-filter: blur(4px); backdrop-filter: blur(4px);
+    z-index: 10060; opacity: 0; visibility: hidden;
+    transition: opacity .28s ease, visibility 0s linear .28s;
 }
+.final-sheet-overlay.active { opacity: 1; visibility: visible; transition: opacity .28s ease, visibility 0s; }
+.final-sheet {
+    position: fixed; left: 0; right: 0; bottom: 0; z-index: 10061;
+    background: #ffffff; border-radius: 24px 24px 0 0; max-height: 92dvh;
+    display: flex; flex-direction: column; overflow: hidden;
+    box-shadow: 0 -20px 45px -15px rgba(15,23,42,.35);
+    transform: translateY(105%); transition: transform .38s cubic-bezier(.22,1,.36,1);
+}
+.final-sheet.active { transform: translateY(0); }
+.final-sheet.dragging { transition: none; }
+.final-sheet-handle-wrap { flex-shrink: 0; padding: 10px 22px 0; cursor: grab; touch-action: none; user-select: none; }
+.final-sheet-handle { width: 40px; height: 4px; background: #cbd5e1; border-radius: 2px; margin: 0 auto; }
+.final-sheet-body { flex: 1 1 auto; min-height: 0; overflow-y: auto; -webkit-overflow-scrolling: touch; padding: 12px 20px 10px; }
+.final-sheet-text { font-size: 0.95rem; line-height: 1.45; color: #0b1220; margin-bottom: 8px; }
+.final-em { color: #10b981; font-weight: 700; }
+.final-sheet-subtitle { font-size: 0.95rem; font-weight: 700; color: #0b1220; margin-bottom: 3px; }
+.final-sheet-list { list-style: none; display: flex; flex-direction: column; gap: 2px; margin-bottom: 8px; padding-left: 2px; }
+.final-sheet-list li { position: relative; padding-left: 18px; font-size: 0.92rem; line-height: 1.4; color: #1e293b; }
+.final-sheet-list li::before { content: "–"; position: absolute; left: 0; top: 0; color: #10b981; font-weight: 700; }
+.final-sheet-nb {
+    margin-bottom: 8px; padding: 8px 12px;
+    border-left: 3px solid #f59e0b; background: #fffbeb; border-radius: 0 8px 8px 0;
+    font-size: 0.86rem; line-height: 1.4; color: #78350f;
+}
+.final-sheet-nb strong { color: #b45309; font-weight: 800; }
+.final-price-line { display: flex; align-items: baseline; flex-wrap: wrap; gap: 8px; margin: 2px 0 0; }
+.final-price-old { font-size: 1.05rem; font-weight: 600; color: #94a3b8; text-decoration: line-through; text-decoration-thickness: 2px; }
+.final-price-new { font-size: 1.9rem; font-weight: 800; color: #047857; letter-spacing: -0.03em; line-height: 1; }
+.final-price-period { font-size: 0.9rem; color: #64748b; font-weight: 500; }
+.final-discount { display: inline-block; background: #ecfdf5; color: #047857; font-size: 0.78rem; font-weight: 800; padding: 3px 8px; border-radius: 6px; margin-left: 4px; }
+.final-sheet-highlight {
+    margin-top: 8px; padding: 10px 13px;
+    background: #ecfdf5; border: 1px solid #a7f3d0; border-radius: 12px;
+    font-size: 0.9rem; line-height: 1.4; color: #065f46;
+}
+.final-sheet-highlight strong { color: #047857; font-weight: 800; }
+.final-sheet-footer { flex-shrink: 0; padding: 8px 20px calc(12px + env(safe-area-inset-bottom, 0px)); background: #ffffff; border-top: 1px solid #f1f5f9; }
+.final-sheet-action {
+    width: 100%; padding: 14px 18px;
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    color: #ffffff; border: none; border-radius: 12px; font-size: 1rem; font-weight: 700;
+    text-align: center; cursor: pointer;
+    box-shadow: 0 12px 24px -10px rgba(16,185,129,.7);
+}
+.final-sheet-action:disabled { opacity: 0.75; cursor: not-allowed; }
 
-.final-content {
-    padding: 24px 20px 40px;
-    display: flex;
-    flex-direction: column;
-    gap: 28px;
-    max-width: 620px;
-    margin: 0 auto;
-}
-.final-intro-section { display: flex; flex-direction: column; gap: 14px; }
-.final-intro-text { font-size: 0.95rem; line-height: 1.6; color: var(--ink-soft); font-weight: 400; }
-.final-intro-text strong { color: var(--ink); font-weight: 600; }
-.final-highlight {
-    font-weight: 600; color: var(--green-deep);
-    background: linear-gradient(120deg, #d1fae5 0%, #d1fae5 100%);
-    background-repeat: no-repeat; background-size: 100% 30%; background-position: 0 85%;
-    padding: 0 4px;
-}
-.final-perks-toggle-wrap { margin-top: -8px; }
-.final-btn-toggle-perks {
-    display: inline-flex; align-items: center; gap: 8px;
-    background: transparent; border: none; color: var(--green-dark);
-    font-family: inherit; font-size: 0.95rem; font-weight: 600;
-    cursor: pointer; padding: 4px 0; text-decoration: underline; text-underline-offset: 4px;
-}
-.final-btn-toggle-perks svg { width: 16px; height: 16px; stroke: currentColor; fill: none; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; transition: transform 0.3s ease; }
-.final-btn-toggle-perks.active svg { transform: rotate(180deg); }
-.final-perks-content { display: flex; flex-direction: column; gap: 16px; margin-top: 16px; }
-.final-perks-content.hidden { display: none; }
-.final-perk-item { display: flex; align-items: flex-start; gap: 12px; font-size: 0.92rem; color: var(--ink-soft); line-height: 1.5; }
-.final-perk-icon { flex-shrink: 0; width: 22px; height: 22px; border-radius: 8px 12px 8px 12px; background: var(--green-soft); display: flex; align-items: center; justify-content: center; margin-top: 1px; }
-.final-perk-icon svg { width: 12px; height: 12px; stroke: var(--green); fill: none; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
-.final-perk-item strong { color: var(--ink); font-weight: 600; }
-.final-badge-green { display: inline-block; background: var(--green); color: #ffffff; font-weight: 700; font-size: 0.8rem; padding: 1px 7px; border-radius: 6px; margin: 0 2px; transform: translateY(-1px); }
-.final-form-section { display: flex; flex-direction: column; gap: 16px; padding-top: 24px; border-top: 1px solid var(--line); }
-.final-form-group { display: flex; flex-direction: column; gap: 6px; }
-.final-form-label { font-size: 0.85rem; font-weight: 600; color: var(--ink-soft); display: flex; align-items: center; gap: 4px; margin-left: 4px; }
-.final-form-label .final-required { color: #ef4444; font-weight: 700; }
-.final-input-wrap { position: relative; }
-.final-input-icon { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); width: 18px; height: 18px; color: #94a3b8; pointer-events: none; }
-.final-input-icon svg { width: 100%; height: 100%; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
-.final-form-input { width: 100%; height: 48px; padding: 0 14px 0 42px; border: 1.5px solid var(--line); border-radius: 14px; background: #f8fafc; font-family: inherit; font-size: 0.95rem; font-weight: 400; color: var(--ink); outline: none; transition: all .2s ease; }
-.final-form-input::placeholder { color: #94a3b8; font-weight: 400; }
-.final-form-input:focus { border-color: var(--green); background: #ffffff; box-shadow: 0 0 0 4px rgba(16,185,129,.1); }
-.final-form-input:focus ~ .final-input-icon { color: var(--green); }
-.final-error-msg { display: none; font-size: 0.75rem; color: #ef4444; margin-top: 2px; margin-left: 4px; font-weight: 500; line-height: 1.4; }
-.final-form-input.has-error { border-color: #ef4444; background: #fef2f2; }
-.final-form-input.has-error:focus { box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.1); }
-.final-form-input.has-error ~ .final-input-icon { color: #ef4444; }
-.final-email-locked { background: #f1f5f9; color: #64748b; cursor: not-allowed; border-style: dashed; }
-.final-email-locked:focus { border-color: var(--line); box-shadow: none; background: #f1f5f9; }
-.final-btn-submit { display: flex; align-items: center; justify-content: center; width: 100%; padding: 15px 18px; margin-top: 8px; background: linear-gradient(135deg, var(--green) 0%, var(--green-dark) 100%); color: #ffffff; border: none; border-radius: 14px; font-family: inherit; font-size: 0.95rem; font-weight: 600; cursor: pointer; box-shadow: 0 8px 20px -6px rgba(16,185,129,.35); transition: transform .15s ease, filter .15s ease, box-shadow .15s ease; text-align: center; }
-.final-btn-submit:hover { filter: brightness(1.05); box-shadow: 0 10px 24px -6px rgba(16,185,129,.45); }
-.final-btn-submit:active { transform: scale(.98); }
-.final-footer-note { text-align: center; font-size: 0.75rem; color: var(--muted); line-height: 1.4; margin-top: 4px; padding: 0 10px; }
-
-/* ÉCRANS DE SUCCÈS / DÉJÀ INSCRIT */
-/* ✅ MODIF : plus de min-height: 100vh (l'écran est maintenant plus court à cause de l'en-tête) */
-.success-wrapper {
-    display: flex; flex-direction: column; align-items: center; justify-content: center;
-    height: 100%;
-    min-height: 100%;
-    text-align: center; padding: 24px;
-}
-.success-icon {
-    width: 80px; height: 80px; border-radius: 50%; background: #ecfdf5;
-    display: flex; align-items: center; justify-content: center; margin-bottom: 24px;
-    box-shadow: 0 10px 25px -5px rgba(16, 185, 129, 0.2);
-    animation: popIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-}
-.success-icon svg { width: 40px; height: 40px; stroke: #10b981; fill: none; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
-.success-title {
-    font-size: 1.5rem; font-weight: 800; letter-spacing: -0.025em; color: #0f172a; margin-bottom: 10px;
-    animation: fadeUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) 0.1s forwards; opacity: 0; transform: translateY(10px);
-}
-.success-text {
-    font-size: 0.95rem; color: #64748b; line-height: 1.5; font-weight: 500; max-width: 280px;
-    animation: fadeUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) 0.2s forwards; opacity: 0; transform: translateY(10px);
-}
-@keyframes popIn { 0% { transform: scale(0.8); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
-@keyframes fadeUp { 0% { transform: translateY(10px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
-
-@media (max-width:380px) {
-    .container { padding: 14px 12px; }
-    .hero { padding: 22px 18px; }
-    .hero-number { font-size: 3.1rem; }
-    .big { font-size: 1.8rem; }
-    .donut-big { width: 190px; height: 190px; }
-    .evo-chart { gap: 5px; height: 156px; }
-    .evo-value { font-size: .62rem; }
-    .overview-title { font-size: 1.2rem; }
-    .live-indicator { font-size: .6rem; padding: 7px; }
-    .cf-value { font-size: 1.5rem; }
-    .freq-num { font-size: 2.6rem; }
-    .pays-title { font-size: 1.05rem; }
-    .pays-description { font-size: .76rem; }
-    .formule-mention { font-size: 0.78rem; }
-    .modal-card { padding: 24px 18px 16px; }
-    .modal-title { font-size: 1.05rem; }
-    .modal-text { font-size: 0.83rem; }
-    .final-content { padding: 20px 12px 30px; }
-}
-@media (prefers-reduced-motion: reduce) {
-    .projets-module-root *, .projets-module-root *::before, .projets-module-root *::after {
-        animation-duration: .01ms !important;
-        animation-iteration-count: 1 !important;
-        scroll-behavior: auto !important;
-        transition-duration: .01ms !important;
-    }
+@media (min-width: 520px) {
+    .final-sheet { max-width: 460px; left: 50%; right: auto; transform: translate(-50%, 105%); }
+    .final-sheet.active { transform: translate(-50%, 0); }
 }
 </style>
 
 <script>
 (function() {
-
-    /* ═══════════════════════════════════════════════════════════
-       ÉTAT DU MODULE
-    ═══════════════════════════════════════════════════════════ */
     let tousLesProjets = [];
     let projetActif = null;
+    let projetSuspenduActif = null;
     let rechercheActive = '';
-    let modeFinalisation = false;
-    let finalisationEnCours = false; // ✅ MODIF : évite le double clic sur « Finaliser mon projet »
 
     if (!window._cacheProjetsModule) {
         window._cacheProjetsModule = { loaded: false, projets: [] };
     }
 
     const ORDRE_FORMULES = ['decouverte', 'pro', 'pro-plus'];
-    const NIVEAU_REQUIS = { installations: 0, usage: 1, appareils: 2, pays: 2 };
-    const DELAI_AVANT_STATS = 0;
+    const NIVEAU_REQUIS = { installations: 0, appareils: 2, pays: 2 };
     const R_DONUT = 56;
     const C_DONUT = 2 * Math.PI * R_DONUT;
 
     let devicesCourants = [];
-    let freqParJourCourant = 0;
-
     let mapReady = false, mapSvg = null, mapProjection = null;
     let currentMarkers = [], currentPays = [], mapTrying = false;
 
@@ -1074,13 +822,13 @@
     let _modalEntreeVisible = false;
     let _modalSuspenduVisible = false;
     let _timerOuvertureStats = null;
+    let _finalSheetOpen = false;
+    let _zipEnCours = false;
 
     const STATS_DEMO = {
         installs_total: 38450,
         installs_android: 16200, installs_ios: 12800, installs_pc: 9450,
-        installs_7j: [720, 950, 1180, 1040, 1420, 890, 1250],
-        lancements_accueil: 185000, lancements_navigateur: 24000,
-        duree_accueil_total_sec: 55500000, duree_navigateur_total_sec: 3600000
+        installs_7j: [720, 950, 1180, 1040, 1420, 890, 1250]
     };
     const PAYS_DEMO = [
         { nom: 'Cameroun', lat: 3.848, lng: 11.502, count: 9200 },
@@ -1105,47 +853,54 @@
             .replace(/&/g, '&amp;').replace(/</g, '&lt;')
             .replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
     }
+
     function normaliserStatut(s) {
         const v = String(s || '').toLowerCase().replace(/-/g, '_');
         if (v === 'actif') return 'actif';
         if (v === 'suspendu') return 'suspendu';
         return 'en_attente';
     }
+
     function normaliserFormule(f) {
         const v = String(f || 'decouverte').toLowerCase().replace(/[_\s+]/g, '-');
         if (v === 'pro') return 'pro';
         if (v === 'pro-plus' || v === 'proplus' || v === 'pro-') return 'pro-plus';
         return 'decouverte';
     }
+
     function niveauFormule(f) {
         const i = ORDRE_FORMULES.indexOf(normaliserFormule(f));
         return i < 0 ? 0 : i;
     }
+
     function statutInfo(s) {
         const st = normaliserStatut(s);
         if (st === 'actif') return { cls: 'actif', label: 'Actif' };
         if (st === 'suspendu') return { cls: 'suspendu', label: 'Suspendu' };
         return { cls: 'en-attente', label: 'En attente' };
     }
+
     function formuleInfo(f) {
         const v = normaliserFormule(f);
         if (v === 'pro') return { cls: 'pro', label: 'PRO' };
         if (v === 'pro-plus') return { cls: 'proplus', label: 'PRO+' };
         return { cls: 'decouverte', label: 'DÉCOUVERTE' };
     }
+
     function getGreeting() {
         const h = new Date().getHours();
         if (h >= 5 && h < 12) return 'Bonjour 👋';
         if (h >= 12 && h < 18) return 'Bon après-midi ☀️';
-        if (h >= 18 && h < 23) return 'Bonsoir 🌆';
-        return 'Bonne nuit 🌙';
+        return 'Bonsoir 🌆';
     }
+
     function initiales(str) {
         if (!str) return '?';
         const p = str.trim().split(/\s+/).filter(Boolean);
         if (p.length === 0) return '?';
         return p[0].charAt(0).toUpperCase() + (p.length >= 2 ? p[1].charAt(0).toUpperCase() : '');
     }
+
     function formatDate(ts) {
         if (!ts) return '';
         const d = new Date(ts);
@@ -1153,6 +908,7 @@
         const mois = ['janv.', 'févr.', 'mars', 'avr.', 'mai', 'juin', 'juil.', 'août', 'sept.', 'oct.', 'nov.', 'déc.'];
         return String(d.getDate()).padStart(2, '0') + ' ' + mois[d.getMonth()] + ' ' + d.getFullYear();
     }
+
     function formatNombre(n) {
         const num = Number(n);
         if (!Number.isFinite(num)) return '0';
@@ -1170,23 +926,21 @@
 
         return String(arrondi).replace('.', ',') + suffixe;
     }
-    function formatDuree(sec) {
-        if (!sec || sec <= 0) return { v: '0', u: 's' };
-        if (sec < 60) return { v: String(Math.round(sec)), u: 's' };
-        const totalMin = Math.floor(sec / 60);
-        if (totalMin < 60) return { v: String(totalMin), u: 'min' };
-        const h = Math.floor(totalMin / 60);
-        const m = totalMin % 60;
-        if (m > 0) return { v: String(h), u: 'h ' + m + ' min' };
-        return { v: String(h), u: 'h' };
+
+    function formatPoidsOctets(octets) {
+        const n = Number(octets) || 0;
+        if (n >= 1024 * 1024) {
+            return (n / (1024 * 1024)).toFixed(1).replace('.', ',') + ' Mo';
+        }
+        return Math.max(1, Math.round(n / 1024)) + ' Ko';
     }
-    function arrondir(n) { return Math.round(n * 10) / 10; }
-    function virgule(n) { return String(n).replace('.', ','); }
+
     function remonterEnHaut() {
         const s = $('screen-stats-projets');
         if (s && s.scrollTo) s.scrollTo({ top: 0, behavior: 'auto' });
         try { window.scrollTo({ top: 0, behavior: 'auto' }); } catch (e) {}
     }
+
     function indexAujourdhuiCameroun() {
         const dateStr = new Intl.DateTimeFormat('en-CA', {
             timeZone: 'Africa/Douala',
@@ -1199,240 +953,6 @@
         return (jourSemaine + 6) % 7;
     }
 
-    /* ✅ MODIF : remet l'état « sous-écran » du Shell (cache le menu hamburger
-       et la barre de navigation du bas). Le Shell le retire quand on utilise
-       le bouton retour du téléphone, donc on le remet ici. */
-    function forcerSousEcran() {
-        document.body.classList.add('in-sub-screen');
-    }
-
-    /* ✅ MODIF : mesure la hauteur de l'en-tête des statistiques pour que
-       le formulaire / « déjà inscrit » / « inscription réussie » démarrent juste en dessous */
-    function calculerPositionFinal() {
-        const tb = document.querySelector('.projets-module-root .top-bar');
-        if (!tb) return;
-        const rect = tb.getBoundingClientRect();
-        document.documentElement.style.setProperty('--final-top', Math.max(0, rect.bottom) + 'px');
-    }
-
-    /* ═══════════════════════════════════════════════════════════
-       LOGIQUE DE FINALISATION
-    ═══════════════════════════════════════════════════════════ */
-    
-    async function verifierSiInscrit(email) {
-        if (!email) return false;
-        try {
-            const jeton = await window._authUser.getIdToken();
-            const response = await fetch('/.netlify/functions/inscrire-liste-attente', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ email, jeton, check_only: true })
-            });
-            const resultat = await response.json();
-            return resultat.already_exists === true;
-        } catch(e) {
-            return false;
-        }
-    }
-
-    async function finaliserProjet() {
-        if (!window._authUser || !window._authUser.email) return;
-        if (finalisationEnCours) return; // ✅ MODIF : ignore le double clic
-
-        const email = window._authUser.email;
-
-        // ✅ MODIF : le bouton montre « Chargement... » pendant la vérification
-        finalisationEnCours = true;
-        const btnFinaliser = $('modalFinaliser');
-        const texteBtnFinaliser = btnFinaliser ? btnFinaliser.textContent : '';
-        if (btnFinaliser) {
-            btnFinaliser.disabled = true;
-            btnFinaliser.textContent = 'Chargement...';
-        }
-
-        let dejaInscrit = false;
-        try {
-            dejaInscrit = await verifierSiInscrit(email);
-        } finally {
-            finalisationEnCours = false;
-            if (btnFinaliser) {
-                btnFinaliser.disabled = false;
-                btnFinaliser.textContent = texteBtnFinaliser;
-            }
-        }
-        
-        modeFinalisation = true;
-        cacherModalSortie();
-
-        // ✅ MODIF : on garde le menu et la barre du bas cachés
-        forcerSousEcran();
-        
-        // Masquer les stats
-        document.querySelector('.projets-module-root .tabs-wrap').style.display = 'none';
-        document.querySelector('.projets-module-root .container').style.display = 'none';
-        document.querySelector('.projets-module-root #view-pays').style.display = 'none';
-        
-        $('finalisation-container').style.display = 'none';
-        $('success-container').style.display = 'none';
-        $('deja-inscrit-container').style.display = 'none';
-
-        // ✅ MODIF : positionner les écrans sous l'en-tête des statistiques
-        remonterEnHaut();
-        calculerPositionFinal();
-        
-        if (dejaInscrit) {
-            $('deja-inscrit-container').style.display = 'block';
-        } else {
-            $('finalisation-container').style.display = 'block';
-            
-            // Remplir l'email
-            $('final-email').value = email;
-
-            // Détecter l'indicatif si le champ est vide
-            const whatsappInput = $('final-whatsapp');
-            if (!whatsappInput.value) {
-                const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-                const timeZoneMap = { 
-                    'Africa/Douala': '+237 ', 'Africa/Lagos': '+234 ', 'Africa/Abidjan': '+225 ', 
-                    'Africa/Dakar': '+221 ', 'Africa/Libreville': '+241 ', 'Africa/Kinshasa': '+243 ', 
-                    'Africa/Brazzaville': '+242 ', 'Africa/Casablanca': '+212 ', 'Africa/Algiers': '+213 ', 
-                    'Africa/Tunis': '+216 ', 'Europe/Paris': '+33 ', 'Europe/Brussels': '+32 ', 
-                    'Europe/London': '+44 ', 'America/New_York': '+1 ', 'America/Toronto': '+1 ', 
-                    'Europe/Berlin': '+49 ', 'Europe/Madrid': '+34 ', 'Europe/Rome': '+39 ' 
-                };
-                if (timeZoneMap[timeZone]) whatsappInput.value = timeZoneMap[timeZone];
-            }
-        }
-
-        // ✅ MODIF : recalcul après affichage (au cas où la mise en page a bougé)
-        requestAnimationFrame(calculerPositionFinal);
-
-        try { history.pushState({ screen: 'finalisation' }, ''); } catch(e) {}
-    }
-
-    function fermerFormulaireFinalisation(retourModale = true) {
-        modeFinalisation = false;
-        
-        // Réafficher les stats
-        document.querySelector('.projets-module-root .tabs-wrap').style.display = '';
-        document.querySelector('.projets-module-root .container').style.display = '';
-        document.querySelector('.projets-module-root #view-pays').style.display = '';
-        
-        $('finalisation-container').style.display = 'none';
-        $('success-container').style.display = 'none';
-        $('deja-inscrit-container').style.display = 'none';
-
-        if (retourModale) {
-            afficherModalSortie();
-        }
-    }
-
-    // Gestion de l'accordéon des avantages
-    const btnTogglePerks = $('btnTogglePerks');
-    const perksContent = $('perksContent');
-    if (btnTogglePerks && perksContent) {
-        btnTogglePerks.addEventListener('click', function() {
-            perksContent.classList.toggle('hidden');
-            btnTogglePerks.classList.toggle('active');
-        });
-    }
-
-    // Gestion du formulaire
-    const finalBtnSubmit = $('final-btnSubmit');
-    const finalPseudo = $('final-pseudo');
-    const finalWhatsapp = $('final-whatsapp');
-    const finalErrorPseudo = $('final-errorPseudo');
-    const finalErrorWhatsapp = $('final-errorWhatsapp');
-
-    if (finalPseudo && finalWhatsapp) {
-        finalPseudo.addEventListener('input', () => { finalPseudo.classList.remove('has-error'); finalErrorPseudo.style.display = 'none'; });
-        finalWhatsapp.addEventListener('input', () => { finalWhatsapp.classList.remove('has-error'); finalErrorWhatsapp.style.display = 'none'; });
-    }
-
-    if (finalBtnSubmit) {
-        finalBtnSubmit.addEventListener('click', async function() {
-            let isValid = true;
-
-            if (finalPseudo.value.trim() === '') {
-                finalPseudo.classList.add('has-error');
-                finalErrorPseudo.style.display = 'block';
-                isValid = false;
-            }
-
-            const telValue = finalWhatsapp.value.trim();
-            if (telValue === '') {
-                finalWhatsapp.classList.add('has-error');
-                finalErrorWhatsapp.textContent = 'Veuillez entrer votre numéro WhatsApp.';
-                finalErrorWhatsapp.style.display = 'block';
-                isValid = false;
-            } else if (!telValue.startsWith('+')) {
-                finalWhatsapp.classList.add('has-error');
-                finalErrorWhatsapp.textContent = 'Le numéro doit commencer par un indicatif (ex: +237).';
-                finalErrorWhatsapp.style.display = 'block';
-                isValid = false;
-            } else {
-                const numSansIndicatif = telValue.replace(/^\+\d{1,3}/, '').trim();
-                const chiffresLocaux = numSansIndicatif.replace(/\D/g, '');
-                if (chiffresLocaux.length < 4) {
-                    finalWhatsapp.classList.add('has-error');
-                    finalErrorWhatsapp.textContent = 'Numéro incorrect. Veuillez saisir un numéro valide.';
-                    finalErrorWhatsapp.style.display = 'block';
-                    isValid = false;
-                }
-            }
-
-            if (isValid) {
-                const originalText = finalBtnSubmit.textContent;
-                finalBtnSubmit.textContent = 'Inscription en cours...';
-                finalBtnSubmit.disabled = true;
-
-                try {
-                    let jeton = "";
-                    if (window._authUser && window._authUser.getIdToken) {
-                        jeton = await window._authUser.getIdToken();
-                    }
-
-                    const response = await fetch('/.netlify/functions/inscrire-liste-attente', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({
-                            pseudo: finalPseudo.value.trim(),
-                            email: $('final-email').value.trim(),
-                            whatsapp: telValue,
-                            jeton: jeton
-                        })
-                    });
-
-                    const resultat = await response.json();
-                    if (resultat.success) {
-                        $('finalisation-container').style.display = 'none';
-                        
-                        if (resultat.already_exists) {
-                            $('deja-inscrit-container').style.display = 'block';
-                        } else {
-                            $('success-container').style.display = 'block';
-                            setTimeout(() => {
-                                window.location.href = "https://chat.whatsapp.com/HIXDGqadgJIBwuFnx00zZi";
-                            }, 2500);
-                        }
-                    } else {
-                        alert("Erreur : " + resultat.message);
-                        finalBtnSubmit.textContent = originalText;
-                        finalBtnSubmit.disabled = false;
-                    }
-                } catch (err) {
-                    console.error(err);
-                    alert("Erreur de connexion.");
-                    finalBtnSubmit.textContent = originalText;
-                    finalBtnSubmit.disabled = false;
-                }
-            }
-        });
-    }
-
-    /* ═══════════════════════════════════════════════════════════
-       ACCUEIL
-    ═══════════════════════════════════════════════════════════ */
     function injecterUtilisateur() {
         const user = window._authUser;
         const greetEl = $('accueilSalut');
@@ -1450,16 +970,12 @@
             prenom = 'Utilisateur';
         }
         if (nameEl) nameEl.textContent = prenom;
-
         if (avEl) {
             const source = user.displayName || (user.email ? user.email.split('@')[0] : '');
             avEl.textContent = initiales(source);
         }
     }
 
-    /* ═══════════════════════════════════════════════════════════
-       LISTE DES PROJETS
-    ═══════════════════════════════════════════════════════════ */
     function afficherVide() {
         const c = $('projetsConteneur');
         if (!c) return;
@@ -1576,9 +1092,6 @@
         }
     }
 
-    /* ═══════════════════════════════════════════════════════════
-       CHARGEMENT DES STATISTIQUES
-    ═══════════════════════════════════════════════════════════ */
     function majBadgeFormule(formule) {
         const el = $('topFormuleBadge');
         if (!el) return;
@@ -1591,7 +1104,6 @@
     function chargerStats(projet) {
         const niveauProjet = niveauFormule(projet.formule);
         const estEnAttente = (normaliserStatut(projet.statut) === 'en_attente');
-
         const s = estEnAttente ? STATS_DEMO : (projet.stats || {});
 
         const isBloquee = {};
@@ -1692,107 +1204,11 @@
             }
         }
 
-        const openApp = isBloquee.usage ? 0 : (s.lancements_accueil || 0);
-        const openWeb = isBloquee.usage ? 0 : (s.lancements_navigateur || 0);
-        const moyApp = openApp > 0 ? Math.round((s.duree_accueil_total_sec || 0) / openApp) : 0;
-        const moyWeb = openWeb > 0 ? Math.round((s.duree_navigateur_total_sec || 0) / openWeb) : 0;
-        const tApp = formatDuree(moyApp);
-        const tWeb = formatDuree(moyWeb);
-
-        $('valOpenApp').textContent = formatNombre(openApp);
-        $('valOpenWeb').textContent = formatNombre(openWeb);
-
-        const totalOpen = openApp + openWeb;
-        if (totalOpen === 0) {
-            $('segOpenApp').dataset.w = 50;
-            $('segOpenWeb').dataset.w = 50;
-        } else {
-            $('segOpenApp').dataset.w = openApp / totalOpen * 100;
-            $('segOpenWeb').dataset.w = openWeb / totalOpen * 100;
-        }
-
-        const capOpen = $('explainOpen');
-        capOpen.classList.remove('indispo');
-        if (isBloquee.usage) {
-            capOpen.textContent = 'Données indisponibles';
-            capOpen.classList.add('indispo');
-        } else if (openApp > 0 && openWeb > 0) {
-            if (openApp > openWeb) {
-                const r = arrondir(openApp / openWeb);
-                capOpen.innerHTML = 'Vos utilisateurs ouvrent votre site web <strong>depuis l\'écran d\'accueil</strong> <strong>' + virgule(r) + '× plus souvent</strong> que <strong>depuis le navigateur</strong>.';
-            } else if (openWeb > openApp) {
-                const r = arrondir(openWeb / openApp);
-                capOpen.innerHTML = 'Vos utilisateurs ouvrent votre site web <strong>depuis le navigateur</strong> <strong>' + virgule(r) + '× plus souvent</strong> que <strong>depuis l\'écran d\'accueil</strong>.';
-            } else {
-                capOpen.innerHTML = 'Vos utilisateurs ouvrent votre site web <strong>autant de fois depuis l\'écran d\'accueil</strong> que <strong>depuis le navigateur</strong>.';
-            }
-        } else if (openApp > 0) {
-            capOpen.innerHTML = 'Toutes les ouvertures de votre site web viennent <strong>depuis l\'écran d\'accueil</strong>.';
-        } else if (openWeb > 0) {
-            capOpen.innerHTML = 'Toutes les ouvertures de votre site web viennent <strong>depuis le navigateur</strong>.';
-        } else {
-            capOpen.textContent = 'Aucune ouverture enregistrée.';
-        }
-
-        $('valTimeApp').innerHTML = tApp.v + '<small>' + tApp.u + '</small>';
-        $('valTimeWeb').innerHTML = tWeb.v + '<small>' + tWeb.u + '</small>';
-
-        const totalTime = moyApp + moyWeb;
-        if (totalTime === 0) {
-            $('segTimeApp').dataset.w = 50;
-            $('segTimeWeb').dataset.w = 50;
-        } else {
-            $('segTimeApp').dataset.w = moyApp / totalTime * 100;
-            $('segTimeWeb').dataset.w = moyWeb / totalTime * 100;
-        }
-
-        const capTime = $('explainTime');
-        capTime.classList.remove('indispo');
-        if (isBloquee.usage) {
-            capTime.textContent = 'Données indisponibles';
-            capTime.classList.add('indispo');
-        } else if (moyApp > 0 && moyWeb > 0) {
-            if (moyApp > moyWeb * 1.1) {
-                const r = arrondir(moyApp / moyWeb);
-                capTime.innerHTML = 'Vos utilisateurs restent <strong>' + virgule(r) + ' fois plus longtemps</strong> sur votre site web <strong>depuis l\'écran d\'accueil</strong> que <strong>depuis le navigateur</strong>.';
-            } else if (moyWeb > moyApp * 1.1) {
-                const r = arrondir(moyWeb / moyApp);
-                capTime.innerHTML = 'Vos utilisateurs restent <strong>' + virgule(r) + ' fois plus longtemps</strong> sur votre site web <strong>depuis le navigateur</strong> que <strong>depuis l\'écran d\'accueil</strong>.';
-            } else {
-                capTime.innerHTML = 'Vos utilisateurs passent <strong>autant de temps</strong> sur votre site web <strong>depuis l\'écran d\'accueil</strong> que <strong>depuis le navigateur</strong> — environ <strong>' + tApp.v + ' ' + tApp.u + '</strong>.';
-            }
-        } else if (moyApp > 0) {
-            capTime.innerHTML = 'Vos utilisateurs passent en moyenne <strong>' + tApp.v + ' ' + tApp.u + '</strong> sur votre site web <strong>depuis l\'écran d\'accueil</strong>.';
-        } else if (moyWeb > 0) {
-            capTime.innerHTML = 'Vos utilisateurs passent en moyenne <strong>' + tWeb.v + ' ' + tWeb.u + '</strong> sur votre site web <strong>depuis le navigateur</strong>.';
-        } else {
-            capTime.textContent = 'Pas encore assez de données.';
-        }
-
-        const joursActifs = 30;
-        const usersActifsQuotidiens = Math.max(1, Math.round((s.installs_total || 0) * 0.04));
-        freqParJourCourant = isBloquee.usage ? 0 : arrondir(openApp / joursActifs / usersActifsQuotidiens);
-        $('freqNumber').textContent = virgule(freqParJourCourant.toFixed(1));
-
-        const capFreq = $('explainFreq');
-        capFreq.classList.remove('indispo');
-        if (isBloquee.usage) {
-            capFreq.textContent = 'Données indisponibles';
-            capFreq.classList.add('indispo');
-        } else if (freqParJourCourant > 0) {
-            capFreq.innerHTML = 'En moyenne, chaque utilisateur actif ouvre votre site web <strong>' + virgule(freqParJourCourant.toFixed(1)) + ' fois par jour</strong> depuis l\'écran d\'accueil de son téléphone.';
-        } else {
-            capFreq.textContent = 'Pas encore assez de données.';
-        }
-
         if (isBloquee.pays) currentPays = [];
         else if (estEnAttente) currentPays = PAYS_DEMO;
         else currentPays = projet.pays || [];
     }
 
-    /* ═══════════════════════════════════════════════════════════
-       ANIMATIONS & ONGLETS
-    ═══════════════════════════════════════════════════════════ */
     const vuesAnimees = new Set();
 
     function dessinerDonut(selector) {
@@ -1815,27 +1231,17 @@
         vue.querySelectorAll('.fill').forEach(el => el.style.width = '0');
         vue.querySelectorAll('.donut-segment').forEach(el => el.setAttribute('stroke-dasharray', '0 ' + C_DONUT));
         vue.querySelectorAll('.evo-bar').forEach(el => el.style.height = '0');
-        vue.querySelectorAll('.cs-seg').forEach(el => el.style.width = '0');
 
         requestAnimationFrame(() => setTimeout(() => {
             vue.querySelectorAll('.fill').forEach(el => {
                 el.style.width = (Number(el.dataset.w) || 0) + '%';
             });
-
             if (nom === 'installations') {
                 vue.querySelectorAll('.evo-bar').forEach(el => {
                     el.style.height = (Number(el.dataset.h) || 0) + '%';
                 });
             }
-
             if (nom === 'appareils') dessinerDonut('.big-seg');
-
-            if (nom === 'usage') {
-                ['segOpenApp', 'segOpenWeb', 'segTimeApp', 'segTimeWeb'].forEach(id => {
-                    const el = $(id);
-                    if (el) el.style.width = (Number(el.dataset.w) || 0) + '%';
-                });
-            }
         }, 50));
     }
 
@@ -1873,56 +1279,36 @@
         t.addEventListener('click', () => ouvrirOnglet(t.dataset.view));
     });
 
-    /* ═══════════════════════════════════════════════════════════
-       MODAL ENTRÉE (projets EN ATTENTE — première ouverture)
-    ═══════════════════════════════════════════════════════════ */
-    function cleProjetVu(id) { return 'projetsModule_projetVu_' + id; }
-
+    /* ═══════ MODALS ENTRÉE & SORTIE ═══════ */
     function afficherModalEntree() {
         if (_modalEntreeVisible) return;
         _modalEntreeVisible = true;
         const el = $('modalEntree');
-        if (el) {
-            el.classList.add('show');
-            el.setAttribute('aria-hidden', 'false');
-        }
+        if (el) { el.classList.add('show'); el.setAttribute('aria-hidden', 'false'); }
     }
 
     function cacherModalEntree() {
         if (!_modalEntreeVisible) return;
         _modalEntreeVisible = false;
         const el = $('modalEntree');
-        if (el) {
-            el.classList.remove('show');
-            el.setAttribute('aria-hidden', 'true');
-        }
+        if (el) { el.classList.remove('show'); el.setAttribute('aria-hidden', 'true'); }
     }
 
     $('modalEntreeClose').addEventListener('click', cacherModalEntree);
     $('modalEntreeOk').addEventListener('click', cacherModalEntree);
 
-    /* ═══════════════════════════════════════════════════════════
-       MODAL SORTIE (projets EN ATTENTE)
-    ═══════════════════════════════════════════════════════════ */
     function afficherModalSortie() {
         if (_modalSortieVisible) return;
         _modalSortieVisible = true;
-        forcerSousEcran(); // ✅ MODIF : menu et barre du bas restent cachés derrière la modale
         const el = $('modalSortie');
-        if (el) {
-            el.classList.add('show');
-            el.setAttribute('aria-hidden', 'false');
-        }
+        if (el) { el.classList.add('show'); el.setAttribute('aria-hidden', 'false'); }
     }
 
     function cacherModalSortie() {
         if (!_modalSortieVisible) return;
         _modalSortieVisible = false;
         const el = $('modalSortie');
-        if (el) {
-            el.classList.remove('show');
-            el.setAttribute('aria-hidden', 'true');
-        }
+        if (el) { el.classList.remove('show'); el.setAttribute('aria-hidden', 'true'); }
     }
 
     function estProjetEnAttente() {
@@ -1939,13 +1325,8 @@
     }
 
     function demanderSortieStats() {
-        if (modeFinalisation) {
-            history.back(); 
-        } else if (estProjetEnAttente()) {
-            afficherModalSortie();
-        } else {
-            sortirDesStats();
-        }
+        if (estProjetEnAttente()) afficherModalSortie();
+        else sortirDesStats();
     }
 
     function plusTardStats() {
@@ -1959,46 +1340,336 @@
 
     $('btnBackStats').addEventListener('click', demanderSortieStats);
     $('modalClose').addEventListener('click', fermerModalX);
-    $('modalFinaliser').addEventListener('click', finaliserProjet);
     $('modalPlusTard').addEventListener('click', plusTardStats);
 
-    /* ═══════════════════════════════════════════════════════════
-       MODAL SUSPENDU
-    ═══════════════════════════════════════════════════════════ */
+    /* ═══════ TIROIR DE FINALISATION & GÉNÉRATION ZIP ═══════ */
+    function openFinalSheet() {
+        if (_finalSheetOpen) return;
+        _finalSheetOpen = true;
+        $('finalSheetOverlay').classList.add('active');
+        $('finalSheet').classList.add('active');
+        $('finalSheet').setAttribute('aria-hidden', 'false');
+    }
+
+    function closeFinalSheet() {
+        if (!_finalSheetOpen) return;
+        _finalSheetOpen = false;
+        $('finalSheetOverlay').classList.remove('active');
+        $('finalSheet').classList.remove('active');
+        $('finalSheet').setAttribute('aria-hidden', 'true');
+    }
+
+    $('finalSheetOverlay').addEventListener('click', closeFinalSheet);
+
+    (function setupFinalDrag() {
+        let startY = 0, dragging = false;
+        const handleWrap = $('finalSheetHandleWrap');
+        const sheet = $('finalSheet');
+        if (!handleWrap || !sheet) return;
+
+        function onStart(e) {
+            startY = e.touches ? e.touches[0].clientY : e.clientY;
+            dragging = true;
+            sheet.classList.add('dragging');
+            document.addEventListener('touchmove', onMove, { passive: false });
+            document.addEventListener('touchend', onEnd);
+            document.addEventListener('mousemove', onMove);
+            document.addEventListener('mouseup', onEnd);
+        }
+        function onMove(e) {
+            if (!dragging) return;
+            const y = e.touches ? e.touches[0].clientY : e.clientY;
+            const delta = Math.max(0, y - startY);
+            sheet.style.transform = window.innerWidth >= 520
+                ? 'translate(-50%, ' + delta + 'px)'
+                : 'translateY(' + delta + 'px)';
+            if (e.cancelable) e.preventDefault();
+        }
+        function onEnd(e) {
+            if (!dragging) return;
+            dragging = false;
+            sheet.classList.remove('dragging');
+            const y = e.changedTouches ? e.changedTouches[0].clientY : e.clientY;
+            const delta = Math.max(0, y - startY);
+            sheet.style.transform = '';
+            if (delta > 40) closeFinalSheet();
+            document.removeEventListener('touchmove', onMove);
+            document.removeEventListener('touchend', onEnd);
+            document.removeEventListener('mousemove', onMove);
+            document.removeEventListener('mouseup', onEnd);
+        }
+        handleWrap.addEventListener('touchstart', onStart, { passive: true });
+        handleWrap.addEventListener('mousedown', onStart);
+    })();
+
+    function finaliserProjet() {
+        cacherModalSortie();
+        openFinalSheet();
+    }
+
+    $('modalFinaliser').addEventListener('click', finaliserProjet);
+
+    async function lireContenuFichier(fileObj) {
+        if (!fileObj) return { data: '', size: 0, isText: true };
+        if (typeof fileObj.text === 'function') {
+            const txt = await fileObj.text();
+            return { data: txt, size: fileObj.size || txt.length, isText: true };
+        }
+        if (fileObj.data instanceof Blob || fileObj.file instanceof Blob) {
+            const blob = fileObj.data instanceof Blob ? fileObj.data : fileObj.file;
+            const isText = /\.(html?|css|js|json|txt|svg|xml|md)$/i.test(fileObj.name || '');
+            if (isText) {
+                const txt = await blob.text();
+                return { data: txt, size: blob.size || txt.length, isText: true };
+            }
+            const buf = await blob.arrayBuffer();
+            return { data: buf, size: blob.size || buf.byteLength, isText: false };
+        }
+        const raw = fileObj.content ?? fileObj.data ?? fileObj.text ?? '';
+        const str = typeof raw === 'string' ? raw : JSON.stringify(raw);
+        const size = fileObj.size || new Blob([str]).size;
+        return { data: str, size, isText: true };
+    }
+
+    async function genererZipProjetCoteFront(projet) {
+        if (typeof window.JSZip !== 'function') {
+            await new Promise((resolve, reject) => {
+                const s = document.createElement('script');
+                s.src = 'https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js';
+                s.onload = resolve;
+                s.onerror = () => reject(new Error('Impossible de charger JSZip'));
+                document.head.appendChild(s);
+            });
+        }
+
+        const zip = new window.JSZip();
+        const nomSite = (projet && projet.nom) || 'Mon site';
+        const nomCourt = (projet && projet.nomCourt) || nomSite.slice(0, 12);
+        const iconePath = (projet && (projet.iconPath || projet.imageUrl || projet.image)) || './icons/android/icon-192.png';
+
+        let storedFiles = [];
+        try {
+            if (typeof window.recupererNatif === 'function') {
+                storedFiles = (await window.recupererNatif('files_data')) || [];
+            }
+        } catch (e) {}
+
+        let totalOctets = 0;
+        const fichiersLus = [];
+
+        for (const item of storedFiles) {
+            const nomFichier = (item && (item.name || item.path)) || 'fichier.txt';
+            const lu = await lireContenuFichier(item);
+            totalOctets += lu.size;
+            fichiersLus.push({ name: nomFichier, ...lu });
+        }
+
+        const poidsFormate = formatPoidsOctets(totalOctets);
+
+        let banniereTemplate = '';
+        try {
+            const resBanner = await fetch('/pwa-kit/banniere.html');
+            if (resBanner.ok) banniereTemplate = await resBanner.text();
+        } catch (e) {}
+
+        const banniereInjectee = banniereTemplate
+            .replace(/__APP_ICON__/g, iconePath)
+            .replace(/__APP_NAME__/g, echapper(nomSite))
+            .replace(/__APP_SIZE__/g, echapper(poidsFormate));
+
+        let htmlCibleIndex = -1;
+        fichiersLus.forEach((f, idx) => {
+            if (f.isText && f.name.toLowerCase().endsWith('.html')) {
+                if (f.name.toLowerCase() === 'index.html' || htmlCibleIndex === -1) {
+                    htmlCibleIndex = idx;
+                }
+            }
+        });
+
+        fichiersLus.forEach((f, idx) => {
+            let contenuFinal = f.data;
+            if (idx === htmlCibleIndex && typeof contenuFinal === 'string' && banniereInjectee) {
+                if (/<\/body>/i.test(contenuFinal)) {
+                    contenuFinal = contenuFinal.replace(/<\/body>/i, banniereInjectee + '\n</body>');
+                } else {
+                    contenuFinal = contenuFinal + '\n' + banniereInjectee;
+                }
+            }
+            zip.file(f.name.replace(/^\/+/, ''), contenuFinal);
+        });
+
+        let swCode = '';
+        try {
+            if (window._swDefaut) {
+                swCode = window._swDefaut;
+            } else {
+                const resSw = await fetch('/pwa-kit/sw.js');
+                if (resSw.ok) swCode = await resSw.text();
+            }
+        } catch (e) {}
+
+        if (swCode) {
+            if (!swCode.includes('// @siteleap-sw')) {
+                swCode = '// @siteleap-sw\n' + swCode;
+            }
+            zip.file('sw.js', swCode);
+        }
+
+        const manifeste = {
+            name: nomSite,
+            short_name: nomCourt,
+            start_url: './',
+            scope: './',
+            display: (projet && projet.display) || 'standalone',
+            orientation: (projet && projet.orientation) || 'portrait',
+            background_color: (projet && projet.couleurFond) || '#ffffff',
+            theme_color: (projet && projet.themeColor) || '#ffffff',
+            icons: [
+                {
+                    src: iconePath,
+                    sizes: '192x192',
+                    type: 'image/png'
+                }
+            ]
+        };
+        zip.file('manifest.webmanifest', JSON.stringify(manifeste, null, 2));
+
+        const blobZip = await zip.generateAsync({ type: 'blob' });
+        const url = URL.createObjectURL(blobZip);
+        const a = document.createElement('a');
+        const nomSlug = nomSite.toLowerCase().replace(/[^a-z0-9]+/gi, '-').replace(/^-|-$/g, '') || 'projet';
+        a.href = url;
+        a.download = nomSlug + '-pwa.zip';
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        setTimeout(() => URL.revokeObjectURL(url), 1500);
+    }
+
+    $('finalSheetOkBtn').addEventListener('click', async function() {
+        if (_zipEnCours) return;
+        _zipEnCours = true;
+        const btn = this;
+        const texteOrigine = btn.textContent;
+        btn.disabled = true;
+        btn.textContent = 'Génération du ZIP...';
+        try {
+            await genererZipProjetCoteFront(projetActif);
+            closeFinalSheet();
+        } catch (err) {
+            console.error('[ZIP] Erreur :', err);
+        } finally {
+            _zipEnCours = false;
+            btn.disabled = false;
+            btn.textContent = texteOrigine;
+        }
+    });
+
+    /* ═══════ MODAL SUSPENDU & ÉCRAN DÉBLOCAGE ═══════ */
     function afficherModalSuspendu() {
         if (_modalSuspenduVisible) return;
+        const txtEl = $('modalSuspenduText');
+        if (txtEl) {
+            txtEl.innerHTML =
+                "L'accès à ce projet est momentanément bloqué.<br>" +
+                "Car vous avez atteint la limite de 50 installations gratuites ou le paiement n'a pas encore été effectué.<br>" +
+                "Veuillez effectuer le paiement pour le réactiver immédiatement.";
+        }
         _modalSuspenduVisible = true;
         const el = $('modalSuspendu');
-        if (el) {
-            el.classList.add('show');
-            el.setAttribute('aria-hidden', 'false');
-        }
+        if (el) { el.classList.add('show'); el.setAttribute('aria-hidden', 'false'); }
     }
 
     function cacherModalSuspendu() {
         if (!_modalSuspenduVisible) return;
         _modalSuspenduVisible = false;
         const el = $('modalSuspendu');
-        if (el) {
-            el.classList.remove('show');
-            el.setAttribute('aria-hidden', 'true');
-        }
+        if (el) { el.classList.remove('show'); el.setAttribute('aria-hidden', 'true'); }
     }
 
-    function debloquerProjet() {}
+    function ouvrirEcranDeblocage(projet) {
+        const cible = projet || projetSuspenduActif;
+        if (!cible) return;
+        const nom = cible.nom || 'Nom du projet';
+        $('deblocageNomProjet').textContent = nom;
+        $('feedbackDeblocage').textContent = '';
+        $('feedbackDeblocage').className = 'feedback-deblocage';
+        $('inputRefDeblocage').value = '';
+        $('deblocageFormView').style.display = 'block';
+        $('deblocageAttenteView').style.display = 'none';
+
+        $('screen-list-projets').classList.remove('active');
+        $('screen-stats-projets').classList.remove('active');
+        $('screen-deblocage-projet').classList.add('active');
+        window.scrollTo({ top: 0, behavior: 'auto' });
+    }
+
+    function fermerEcranDeblocage() {
+        $('screen-deblocage-projet').classList.remove('active');
+        $('screen-list-projets').classList.add('active');
+    }
+
+    function debloquerProjet() {
+        const cible = projetSuspenduActif;
+        cacherModalSuspendu();
+        ouvrirEcranDeblocage(cible);
+    }
 
     $('modalSuspenduClose').addEventListener('click', cacherModalSuspendu);
     $('modalDebloquer').addEventListener('click', debloquerProjet);
     $('modalSuspenduPlusTard').addEventListener('click', cacherModalSuspendu);
+    $('btnBackDeblocageProjet').addEventListener('click', fermerEcranDeblocage);
 
-    /* ═══════════════════════════════════════════════════════════
-       OUVERTURE / FERMETURE D'UN PROJET
-    ═══════════════════════════════════════════════════════════ */
+    $('formRefDeblocage').addEventListener('submit', async function(e) {
+        e.preventDefault();
+        const ref = $('inputRefDeblocage').value.trim();
+        const fb = $('feedbackDeblocage');
+        fb.classList.remove('error', 'success');
+
+        if (!ref) {
+            fb.textContent = "Veuillez saisir la référence reçue dans votre e-mail de confirmation.";
+            fb.classList.add('error');
+            $('inputRefDeblocage').focus();
+            return;
+        }
+
+        const projetId = (projetSuspenduActif && (projetSuspenduActif.id || projetSuspenduActif.nom)) || 'projet_defaut';
+
+        try {
+            const response = await fetch("/.netlify/functions/verifier-reference", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ projetId, reference: ref })
+            });
+            const data = await response.json().catch(() => ({}));
+
+            if (response.status === 409 || data.dejaUtilisee) {
+                fb.textContent = data.message || "Ce numéro de référence a été utilisé pour un autre projet.";
+                fb.classList.add('error');
+                return;
+            }
+            if (!response.ok || !data.success) {
+                fb.textContent = data.message || "Impossible de valider cette référence pour le moment.";
+                fb.classList.add('error');
+                return;
+            }
+
+            $('refEnregistreeValeur').textContent = ref;
+            $('deblocageFormView').style.display = 'none';
+            $('deblocageAttenteView').style.display = 'block';
+        } catch (err) {
+            fb.textContent = "Erreur réseau lors de la vérification de la référence.";
+            fb.classList.add('error');
+        }
+    });
+
+    /* ═══════ OUVERTURE / FERMETURE D'UN PROJET ═══════ */
     function ouvrirProjet(id) {
         const projet = tousLesProjets.find(p => String(p.id || p.nom) === String(id));
         if (!projet) return;
 
         if (normaliserStatut(projet.statut) === 'suspendu') {
+            projetSuspenduActif = projet;
             afficherModalSuspendu();
             return;
         }
@@ -2013,15 +1684,6 @@
         _sortieAutorisee = false;
         cacherModalSortie();
         cacherModalEntree();
-        modeFinalisation = false;
-
-        // Réinitialiser l'affichage des stats
-        document.querySelector('.projets-module-root .tabs-wrap').style.display = '';
-        document.querySelector('.projets-module-root .container').style.display = '';
-        document.querySelector('.projets-module-root #view-pays').style.display = '';
-        $('finalisation-container').style.display = 'none';
-        $('success-container').style.display = 'none';
-        $('deja-inscrit-container').style.display = 'none';
 
         document.querySelectorAll('.projets-module-root .projet-item').forEach(el => el.classList.remove('selected'));
         document.querySelectorAll('.projets-module-root .projet-item').forEach(el => {
@@ -2045,17 +1707,10 @@
         remonterEnHaut();
 
         requestAnimationFrame(() => animerVue('installations'));
-
         if (mapReady) drawMarkers(currentPays);
 
         if (estProjetEnAttente()) {
-            const cle = cleProjetVu(id);
-            let dejaVu = false;
-            try { dejaVu = localStorage.getItem(cle) === '1'; } catch (e) {}
-            if (!dejaVu) {
-                try { localStorage.setItem(cle, '1'); } catch (e) {}
-                setTimeout(() => afficherModalEntree(), 500);
-            }
+            setTimeout(() => afficherModalEntree(), 500);
         }
     }
 
@@ -2069,41 +1724,16 @@
         $('screen-stats-projets').classList.remove('active', 'pays-active');
         $('screen-list-projets').classList.add('active');
         document.querySelectorAll('.projets-module-root .projet-item.selected').forEach(el => el.classList.remove('selected'));
-
         document.body.classList.remove('in-sub-screen');
-
         projetActif = null;
-        modeFinalisation = false;
-
-        document.querySelector('.projets-module-root .tabs-wrap').style.display = '';
-        document.querySelector('.projets-module-root .container').style.display = '';
-        document.querySelector('.projets-module-root #view-pays').style.display = '';
-        
-        $('finalisation-container').style.display = 'none';
-        $('success-container').style.display = 'none';
-        $('deja-inscrit-container').style.display = 'none';
     }
 
-    /* ═══════════════════════════════════════════════════════════
-       BOUTON RETOUR NATIF DU TÉLÉPHONE
-    ═══════════════════════════════════════════════════════════ */
     if (window._projetsPopHandler) {
         window.removeEventListener('popstate', window._projetsPopHandler);
     }
     window._projetsPopHandler = function () {
         const statsScreen = $('screen-stats-projets');
         if (!statsScreen || !statsScreen.classList.contains('active')) return;
-
-        // ✅ MODIF : le Shell vient de retirer « in-sub-screen » (menu + barre du bas
-        // réapparaissaient). On le remet tant qu'on reste dans les statistiques.
-        // (fermerStats() le retire de nouveau quand on sort vraiment.)
-        forcerSousEcran();
-
-        if (modeFinalisation) {
-            fermerFormulaireFinalisation(true);
-            try { history.pushState({ screen: 'stats' }, ''); } catch(e) {}
-            return;
-        }
 
         if (_sortieAutorisee) {
             _sortieAutorisee = false;
@@ -2121,14 +1751,11 @@
     };
     window.addEventListener('popstate', window._projetsPopHandler);
 
-    /* ═══════════════════════════════════════════════════════════
-       CARTE DU MONDE (D3.js)
-    ═══════════════════════════════════════════════════════════ */
+    /* ═══════ CARTE DU MONDE (D3.js) ═══════ */
     function drawMarkers(pays) {
         if (!mapReady || !mapSvg || !mapProjection) return;
         currentMarkers.forEach(m => m.remove());
         currentMarkers = [];
-
         if (!pays || pays.length === 0) return;
 
         const ns = 'http://www.w3.org/2000/svg';
@@ -2149,13 +1776,11 @@
 
     async function initMap() {
         const spinner = $('mapSpinner');
-
         if (mapReady) {
             drawMarkers(currentPays);
             spinner.classList.add('hidden');
             return;
         }
-
         if (mapTrying) return;
         mapTrying = true;
 
@@ -2165,10 +1790,8 @@
                     import('https://esm.sh/d3-geo@3'),
                     import('https://esm.sh/topojson-client@3')
                 ]);
-
                 const world = await fetch('https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json').then(r => r.json());
                 const allCountries = topojson.feature(world, world.objects.countries);
-
                 const countries = {
                     type: 'FeatureCollection',
                     features: allCountries.features.filter(f => {
@@ -2198,14 +1821,12 @@
                 mapProjection = projection;
                 mapReady = true;
                 drawMarkers(currentPays);
-
                 spinner.classList.add('hidden');
             } catch (err) {
                 console.warn('Carte indisponible, nouvelle tentative dans 2,5s…', err);
                 await new Promise(r => setTimeout(r, 2500));
             }
         }
-
         mapTrying = false;
     }
 
@@ -2220,7 +1841,6 @@
         const vp = document.querySelector('.projets-module-root .map-viewport');
         const rot = $('mapRotator');
         if (!vp || !rot) return;
-
         const W = vp.clientWidth;
         const H = vp.clientHeight;
         if (!W || !H) return;
@@ -2247,16 +1867,9 @@
             calculerPositionPays();
             ajusterCarte();
         }
-        // ✅ MODIF : si le formulaire est affiché, on recalcule sa position sous l'en-tête
-        if (modeFinalisation) {
-            calculerPositionFinal();
-        }
     };
     window.addEventListener('resize', window._projetsResizeHandler);
 
-    /* ═══════════════════════════════════════════════════════════
-       INITIALISATION DU MODULE
-    ═══════════════════════════════════════════════════════════ */
     async function init_projets() {
         injecterUtilisateur();
 
