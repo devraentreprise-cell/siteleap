@@ -2,7 +2,9 @@
 // Fichier : lister-projets.js
 // Lit les projets sous <cleEmail>, déduit "suspendu" à partir de
 // creeLe et installs_total, et ne lit ni ne renvoie les stats
-// si le projet est suspendu ou en attente
+// si le projet est suspendu ou en attente.
+// Le statut renvoyé est TOUJOURS cohérent : si suspendu est déduit,
+// seul "suspendu" ressort, aucun autre statut.
 // ==========================================
 
 import admin from "firebase-admin";
@@ -87,14 +89,12 @@ function statsAutorisees(brut, niveau, installsProjet) {
     const s = brut || {};
     const totalInstalls = Number(installsProjet ?? s.installs_total) || 0;
 
-    // Niveau 0 (Découverte) : installations
     const resultat = {
         installs_total: totalInstalls,
         installs_7j: installs7j(s),
         index_aujourdhui: indexAujourdhui()
     };
 
-    // Niveau 1 (Pro) : + usage
     if (niveau >= 1) {
         resultat.lancements_accueil = Number(s.lancements_accueil) || 0;
         resultat.lancements_navigateur = Number(s.lancements_navigateur) || 0;
@@ -102,7 +102,6 @@ function statsAutorisees(brut, niveau, installsProjet) {
         resultat.duree_navigateur_total_sec = Number(s.duree_navigateur_total_sec) || 0;
     }
 
-    // Niveau 2 (Pro+) : + appareils et pays
     if (niveau >= 2) {
         resultat.installs_android = Number(s.installs_android) || 0;
         resultat.installs_ios = Number(s.installs_ios) || 0;
@@ -119,7 +118,6 @@ export async function handler(event, context) {
     }
 
     try {
-        // 1. Lecture de ce que le site envoie
         let body;
         try {
             body = JSON.parse(event.body || "{}");
@@ -132,7 +130,6 @@ export async function handler(event, context) {
             return reponse(401, { success: false, message: "Connexion Google manquante." });
         }
 
-        // 2. Vérification du jeton Google : l'email vient du jeton, jamais du site
         let email;
         try {
             const decode = await admin.auth().verifyIdToken(jeton);
@@ -146,7 +143,7 @@ export async function handler(event, context) {
 
         const cleEmail = email.trim().toLowerCase().replace(/\./g, ",").replace(/[#$\[\]\/]/g, "_");
 
-        // 3. Lecture directe sous <cleEmail> et déduction immédiate de "suspendu"
+        // 3. Lecture directe sous <cleEmail> + déduction du statut suspendu
         const snapProjets = await db.ref(cleEmail).once("value");
 
         if (!snapProjets.exists()) {
@@ -162,18 +159,22 @@ export async function handler(event, context) {
             const installsTotal = Number(p.installs_total) || 0;
             const suspendu = estSuspendu(creeLe, installsTotal, maintenantMs);
 
+            // Le statut "suspendu" est DÉDUIT, pas stocké en base.
+            // S'il est déduit suspendu, SEUL "suspendu" ressort.
+            // Sinon, on reprend le statut d'origine.
+            const statut = suspendu ? "suspendu" : (p.statut || "");
+
             const element = {
                 id: enfant.key,
                 nom: p.nom || "",
                 formule: p.formule || "",
-                statut: p.statut || "",
+                statut: statut,
                 creeLe: creeLe,
                 imageUrl: p.imageUrl || "",
-                demande_reactivation: Boolean(p.demande_reactivation),
-                suspendu: suspendu
+                demande_reactivation: Boolean(p.demande_reactivation)
             };
 
-            // On n'expose pas installs_total ni stats si le projet est suspendu
+            // On n'expose pas installs_total si le projet est suspendu
             if (!suspendu) {
                 element.installs_total = installsTotal;
             }
@@ -181,18 +182,18 @@ export async function handler(event, context) {
             projets.push(element);
         });
 
-        // 4. Lecture de <idProjet>/stats uniquement si le projet n'est ni "en_attente" ni "suspendu"
+        // 4. Lecture des stats uniquement si le projet n'est ni en attente ni suspendu
         const lectures = projets.map(function (p) {
-            if (p.statut === "en_attente" || p.suspendu) {
+            if (p.statut === "en_attente" || p.statut === "suspendu") {
                 return Promise.resolve(null);
             }
             return db.ref(p.id + "/stats").once("value");
         });
         const snapsStats = await Promise.all(lectures);
 
-        // 5. Filtrage des stats selon la formule (jamais attachées si suspendu)
+        // 5. Filtrage des stats selon la formule (jamais attachées si suspendu ou en attente)
         projets.forEach(function (p, i) {
-            if (p.statut !== "en_attente" && !p.suspendu && snapsStats[i]) {
+            if (p.statut !== "en_attente" && p.statut !== "suspendu" && snapsStats[i]) {
                 p.stats = statsAutorisees(snapsStats[i].val(), niveauDe(p.formule), p.installs_total);
             }
         });
