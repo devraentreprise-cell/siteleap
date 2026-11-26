@@ -3,6 +3,7 @@
 // Crée un projet « en_attente » (limite : 1 en attente max)
 // Applique les valeurs par défaut du manifeste
 // N'inclut PAS start_url ni scope dans le manifeste stocké
+// Initialise stats avec les 7 jours + les 3 OS + pays
 // Écrit sous <cleEmail>/<id> et sous <id>
 // ==========================================
 
@@ -61,26 +62,29 @@ function reponse(statusCode, objet) {
 
 function normaliserManifeste(manifesteBrut) {
     const nomPropre = String(manifesteBrut.name || "").trim();
+    const copie = { ...manifesteBrut };
+    delete copie.start_url;
+    delete copie.scope;
     return {
-        ...manifesteBrut,
+        ...copie,
         name: nomPropre,
-        short_name: typeof manifesteBrut.short_name === "string" && manifesteBrut.short_name.trim()
-            ? manifesteBrut.short_name.trim().slice(0, 12)
+        short_name: typeof copie.short_name === "string" && copie.short_name.trim()
+            ? copie.short_name.trim().slice(0, 12)
             : nomPropre.slice(0, 12),
-        display: typeof manifesteBrut.display === "string" && manifesteBrut.display.trim()
-            ? manifesteBrut.display.trim()
+        display: typeof copie.display === "string" && copie.display.trim()
+            ? copie.display.trim()
             : "standalone",
-        orientation: typeof manifesteBrut.orientation === "string" && manifesteBrut.orientation.trim()
-            ? manifesteBrut.orientation.trim()
+        orientation: typeof copie.orientation === "string" && copie.orientation.trim()
+            ? copie.orientation.trim()
             : "portrait",
-        background_color: typeof manifesteBrut.background_color === "string" && manifesteBrut.background_color.trim()
-            ? manifesteBrut.background_color.trim()
+        background_color: typeof copie.background_color === "string" && copie.background_color.trim()
+            ? copie.background_color.trim()
             : "#ffffff",
-        theme_color: typeof manifesteBrut.theme_color === "string" && manifesteBrut.theme_color.trim()
-            ? manifesteBrut.theme_color.trim()
+        theme_color: typeof copie.theme_color === "string" && copie.theme_color.trim()
+            ? copie.theme_color.trim()
             : "#ffffff",
-        icons: Array.isArray(manifesteBrut.icons) && manifesteBrut.icons.length > 0
-            ? manifesteBrut.icons
+        icons: Array.isArray(copie.icons) && copie.icons.length > 0
+            ? copie.icons
             : ICONES_PAR_DEFAUT
     };
 }
@@ -217,8 +221,18 @@ export async function handler(event, context) {
             manifeste: manifeste,
             stats: {
                 installs_total: 0,
-                installs_par_jour: {},
-                os: {},
+                installs_android: 0,
+                installs_ios: 0,
+                installs_pc: 0,
+                installs_par_jour: {
+                    lundi:    { installs: 0 },
+                    mardi:    { installs: 0 },
+                    mercredi: { installs: 0 },
+                    jeudi:    { installs: 0 },
+                    vendredi: { installs: 0 },
+                    samedi:   { installs: 0 },
+                    dimanche: { installs: 0 }
+                },
                 pays: {}
             }
         };
