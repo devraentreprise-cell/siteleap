@@ -1,5 +1,5 @@
 <!-- ============================================================ -->
-<!-- DEBLOCAGE-PROJET.HTML                                         -->
+<!-- DEBLOCAGE-PROJET.HTML — Version corrigée                      -->
 <!-- ============================================================ -->
 
 <div id="deblocage-projet-container">
@@ -62,7 +62,10 @@
                                 <p class="confirmation-texte">
                                     Vérifiez bien la référence saisie. Une fois confirmée, elle sera <strong>enregistrée définitivement</strong> et ne pourra plus être modifiée.
                                 </p>
-                                <button type="button" class="btn-deblocage-action" id="btnConfirmerRef">Confirmer et vérifier</button>
+                                <button type="button" class="btn-deblocage-action" id="btnConfirmerRef">
+                                    <span class="btn-loader" id="btnConfirmerLoader" aria-hidden="true"></span>
+                                    <span class="btn-label" id="btnConfirmerLabel">Confirmer et vérifier</span>
+                                </button>
                             </div>
 
                             <p id="feedbackDeblocage" class="feedback-deblocage" role="status" aria-live="polite"></p>
@@ -248,8 +251,29 @@
     text-decoration: none;
     cursor: pointer;
     box-shadow: 0 12px 24px -10px rgba(239, 68, 68, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.18);
+    position: relative;
 }
-#deblocage-projet-container .btn-deblocage-action:disabled { opacity: .7; cursor: not-allowed; }
+#deblocage-projet-container .btn-deblocage-action:disabled { opacity: .85; cursor: not-allowed; }
+
+/* ✅ Loader spinner dans le bouton */
+#deblocage-projet-container .btn-loader {
+    display: none;
+    width: 18px;
+    height: 18px;
+    border: 2.5px solid rgba(255, 255, 255, 0.35);
+    border-top-color: #ffffff;
+    border-radius: 50%;
+    animation: deblocageSpin .75s linear infinite;
+    flex-shrink: 0;
+}
+#deblocage-projet-container .btn-deblocage-action.is-loading .btn-loader {
+    display: inline-block;
+}
+#deblocage-projet-container .btn-deblocage-action.is-loading {
+    pointer-events: none;
+    opacity: 0.9;
+}
+@keyframes deblocageSpin { to { transform: rotate(360deg); } }
 
 #deblocage-projet-container .form-group {
     margin-top: 12px;
@@ -332,7 +356,8 @@
     let projetIdCourant = null;
     let _initialise = false;
     let _envoiEnCours = false;
-    let _historiquePousse = false;
+    let _ecranActifDeblocage = false;
+    let _fermetureEnCours = false;
 
     const $ = id => document.getElementById(id);
 
@@ -363,6 +388,11 @@
         }
 
         resetVue();
+
+        // ✅ POINT 2 : vérifier si une demande est déjà enregistrée
+        if (projetActif && projetActif.demande_reactivation === true) {
+            basculerVersAttente(projetActif.reference_deblocage || '—');
+        }
     }
 
     function resetVue() {
@@ -372,7 +402,12 @@
         const btnValider = $('btnValiderRef');
         if (btnValider) { btnValider.style.display = ''; btnValider.disabled = false; }
         const btnConfirmer = $('btnConfirmerRef');
-        if (btnConfirmer) btnConfirmer.disabled = false;
+        if (btnConfirmer) {
+            btnConfirmer.disabled = false;
+            btnConfirmer.classList.remove('is-loading');
+        }
+        const lbl = $('btnConfirmerLabel');
+        if (lbl) lbl.textContent = 'Confirmer et vérifier';
         const fb = $('feedbackDeblocage');
         fb.textContent = '';
         fb.className = 'feedback-deblocage';
@@ -430,7 +465,14 @@
 
         _envoiEnCours = true;
         const btnConfirmer = $('btnConfirmerRef');
-        if (btnConfirmer) btnConfirmer.disabled = true;
+        const lbl = $('btnConfirmerLabel');
+
+        // ✅ POINT 1 : loader spinner + texte
+        if (btnConfirmer) {
+            btnConfirmer.disabled = true;
+            btnConfirmer.classList.add('is-loading');
+        }
+        if (lbl) lbl.textContent = 'Vérification en cours…';
 
         try {
             const jeton = await window._authUser.getIdToken();
@@ -458,31 +500,36 @@
             fb.classList.add('error');
         } finally {
             _envoiEnCours = false;
-            if (btnConfirmer) btnConfirmer.disabled = false;
+            if (btnConfirmer) {
+                btnConfirmer.disabled = false;
+                btnConfirmer.classList.remove('is-loading');
+            }
+            if (lbl) lbl.textContent = 'Confirmer et vérifier';
         }
     }
 
-    function retourListe() {
+    // ✅ POINT 3 : retour propre, idempotent, sans double-navigation
+    function retourPropre() {
+        if (_fermetureEnCours) return;
+        _fermetureEnCours = true;
+        _ecranActifDeblocage = false;
+
+        // Laisser le shell gérer la navigation (il fait runHomeView qui replaceState)
         if (typeof window.fermerEcranProjet === 'function') {
             window.fermerEcranProjet();
         }
-    }
 
-    function gererRetourNatif() {
-        if (_historiquePousse) {
-            _historiquePousse = false;
-            try { history.back(); } catch (e) {}
-        } else {
-            retourListe();
-        }
+        // Reset après un court délai pour permettre une nouvelle entrée
+        setTimeout(() => { _fermetureEnCours = false; }, 400);
     }
 
     function brancherEvenements() {
         if (_initialise) return;
         _initialise = true;
 
+        // Bouton flèche : appel direct à fermerEcranProjet (pas de history.back)
         const btnBack = $('btnBackDeblocage');
-        if (btnBack) btnBack.addEventListener('click', gererRetourNatif);
+        if (btnBack) btnBack.addEventListener('click', retourPropre);
 
         const form = $('formRefDeblocage');
         if (form) form.addEventListener('submit', onValiderRef);
@@ -490,11 +537,13 @@
         const btnConfirmer = $('btnConfirmerRef');
         if (btnConfirmer) btnConfirmer.addEventListener('click', onConfirmerRef);
 
-        window.addEventListener('popstate', function() {
-            if (!_historiquePousse) return;
-            _historiquePousse = false;
-            retourListe();
-        });
+        // ✅ Popstate en CAPTURE pour s'exécuter AVANT le listener du shell
+        // et bloquer la propagation (évite le double-traitement → bug navbar)
+        window.addEventListener('popstate', function(e) {
+            if (!_ecranActifDeblocage) return;
+            e.stopImmediatePropagation();
+            retourPropre();
+        }, true);   // ← capture = true
     }
 
     window.init_deblocageProjet = async function(opts) {
@@ -505,10 +554,12 @@
         }
 
         brancherEvenements();
+        _fermetureEnCours = false;
+        _ecranActifDeblocage = true;
 
+        // Pousser un état pour que le bouton natif Android déclenche bien popstate
         try {
             history.pushState({ screen: 'deblocage-projet', projetId: projetId }, '');
-            _historiquePousse = true;
         } catch (e) {}
 
         await chargerProjet(projetId);
