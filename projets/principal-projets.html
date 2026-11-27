@@ -1,13 +1,6 @@
 <!-- ============================================================ -->
 <!-- PRINCIPAL-PROJETS.HTML                                        -->
 <!-- Chef d'orchestre de la partie Projets                         -->
-<!-- - Accueil (salutation + nom + avatar)                         -->
-<!-- - Bouton « Créer un nouveau projet »                          -->
-<!-- - Barre de section (titre + compteur)                         -->
-<!-- - Recherche                                                   -->
-<!-- - Liste des projets                                           -->
-<!-- - Modale « projet suspendu »                                  -->
-<!-- - Délégation vers stats-projet / deblocage-projet            -->
 <!-- ============================================================ -->
 
 <div id="principal-projets-container">
@@ -15,7 +8,6 @@
     <div id="principal-projets" class="screen active">
         <div class="slide-up-shell" id="principalProjetsSlideShell">
 
-            <!-- EN-TÊTE UTILISATEUR -->
             <header class="accueil">
                 <div class="accueil-top">
                     <div class="accueil-avatar" id="accueilAvatar">?</div>
@@ -33,7 +25,6 @@
                 </button>
             </header>
 
-            <!-- BARRE DE SECTION + RECHERCHE -->
             <div class="section-bar">
                 <span class="section-titre">Vos projets</span>
                 <span class="section-compteur" id="sectionCompteur">0</span>
@@ -51,13 +42,11 @@
                 </div>
             </div>
 
-            <!-- LISTE DES PROJETS -->
             <div id="projetsConteneur"></div>
 
         </div>
     </div>
 
-    <!-- MODALE PROJET SUSPENDU -->
     <div class="modal-overlay" id="modalSuspenduProjet" aria-hidden="true">
         <div class="modal-card" role="dialog" aria-labelledby="modalSuspenduProjetTitle">
             <button type="button" class="modal-close" id="modalSuspenduProjetClose" aria-label="Fermer">
@@ -82,10 +71,6 @@
 </div>
 
 <style>
-/* ============================================================ */
-/* Styles scopés sous #principal-projets-container              */
-/* ============================================================ */
-
 #principal-projets-container,
 #principal-projets-container *,
 #principal-projets-container *::before,
@@ -113,9 +98,7 @@
     --bg: #ffffff;
     --radius: 22px;
 
-    position: fixed;
-    inset: 0;
-    z-index: 40;
+    position: relative;
     width: 100%;
     max-width: 640px;
     margin: 0 auto;
@@ -123,7 +106,6 @@
     color: var(--ink);
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Helvetica, Arial, sans-serif;
     -webkit-font-smoothing: antialiased;
-    overflow: hidden;
 }
 
 #principal-projets-container button { font-family: inherit; }
@@ -132,32 +114,14 @@
 #principal-projets-container .screen.active { display: flex; flex-direction: column; }
 
 #principal-projets-container #principal-projets {
-    height: 100vh;
-    height: 100dvh;
     padding: 0 0 24px;
-    overflow: hidden;
 }
 
 #principal-projets-container .slide-up-shell {
-    flex: 1;
-    min-height: 0;
     display: flex;
     flex-direction: column;
-    overflow-y: auto;
-    -webkit-overflow-scrolling: touch;
-    transform: translate3d(0, 100%, 0);
-    opacity: 0;
-    transition:
-        transform 0.36s cubic-bezier(0.22, 1, 0.36, 1),
-        opacity 0.22s ease-out;
-    will-change: transform, opacity;
-}
-#principal-projets-container .slide-up-shell.is-entered {
-    transform: translate3d(0, 0, 0);
-    opacity: 1;
 }
 
-/* ---------- EN-TÊTE UTILISATEUR ---------- */
 #principal-projets-container .accueil {
     padding: 22px 16px 18px;
     display: flex;
@@ -206,7 +170,6 @@
     text-overflow: ellipsis;
 }
 
-/* ---------- BOUTON CRÉER ---------- */
 #principal-projets-container .btn-creer-projet {
     display: flex;
     align-items: center;
@@ -235,7 +198,6 @@
     stroke-linejoin: round;
 }
 
-/* ---------- BARRE DE SECTION ---------- */
 #principal-projets-container .section-bar {
     padding: 0 16px 12px;
     display: flex;
@@ -265,7 +227,6 @@
     border-radius: 6px;
 }
 
-/* ---------- RECHERCHE ---------- */
 #principal-projets-container .recherche {
     padding: 0 16px 14px;
     flex-shrink: 0;
@@ -318,7 +279,6 @@
 }
 #principal-projets-container .recherche input::placeholder { color: var(--muted-2); }
 
-/* ---------- LISTE DES PROJETS ---------- */
 #principal-projets-container .projets-list {
     display: flex;
     flex-direction: column;
@@ -447,7 +407,6 @@
     text-overflow: ellipsis;
 }
 
-/* ---------- ÉTATS ---------- */
 #principal-projets-container .loading-bloc {
     display: flex;
     flex-direction: column;
@@ -518,7 +477,6 @@
     font-size: 0.9rem;
 }
 
-/* ---------- MODALE ---------- */
 #principal-projets-container .modal-overlay {
     position: fixed;
     inset: 0;
@@ -620,9 +578,6 @@
 (function() {
     'use strict';
 
-    /* ============================================================ */
-    /* ÉTAT INTERNE                                                  */
-    /* ============================================================ */
     let tousLesProjets = [];
     let rechercheActive = '';
     let _modalSuspenduVisible = false;
@@ -633,9 +588,6 @@
         window._cacheProjetsModule = { loaded: false, projets: [] };
     }
 
-    /* ============================================================ */
-    /* HELPERS                                                       */
-    /* ============================================================ */
     const $ = id => document.getElementById(id);
 
     function echapper(str) {
@@ -699,22 +651,6 @@
         return String(d.getDate()).padStart(2, '0') + ' ' + mois[d.getMonth()] + ' ' + d.getFullYear();
     }
 
-    /* ============================================================ */
-    /* ANIMATION D'ENTRÉE                                            */
-    /* ============================================================ */
-    function jouerEntreeRapideDepuisBas() {
-        const shell = $('principalProjetsSlideShell');
-        if (!shell) return;
-        shell.classList.remove('is-entered');
-        void shell.offsetWidth;
-        requestAnimationFrame(() => {
-            requestAnimationFrame(() => shell.classList.add('is-entered'));
-        });
-    }
-
-    /* ============================================================ */
-    /* EN-TÊTE UTILISATEUR                                           */
-    /* ============================================================ */
     function injecterUtilisateur() {
         const user = window._authUser;
         const greetEl = $('accueilSalut');
@@ -738,9 +674,6 @@
         }
     }
 
-    /* ============================================================ */
-    /* ÉTATS D'AFFICHAGE                                             */
-    /* ============================================================ */
     function afficherChargement() {
         const c = $('projetsConteneur');
         if (!c) return;
@@ -775,9 +708,6 @@
         if (el) el.textContent = String(tousLesProjets.length);
     }
 
-    /* ============================================================ */
-    /* RENDU DE LA LISTE                                             */
-    /* ============================================================ */
     function afficherListe(projets) {
         const c = $('projetsConteneur');
         if (!c) return;
@@ -823,9 +753,6 @@
         });
     }
 
-    /* ============================================================ */
-    /* CHARGEMENT DE LA LISTE (via Netlify)                          */
-    /* ============================================================ */
     async function chargerListeProjets() {
         if (!window._authUser) {
             tousLesProjets = [];
@@ -867,9 +794,6 @@
         }
     }
 
-    /* ============================================================ */
-    /* MODALE PROJET SUSPENDU                                        */
-    /* ============================================================ */
     function afficherModalSuspendu() {
         if (_modalSuspenduVisible) return;
         _modalSuspenduVisible = true;
@@ -890,9 +814,6 @@
         }
     }
 
-    /* ============================================================ */
-    /* DÉLÉGATION VERS LES SOUS-ÉCRANS                              */
-    /* ============================================================ */
     function chargerEcran(nomEcran, projetId) {
         if (typeof window.openScreen === 'function') {
             window.openScreen(nomEcran, { projetId: projetId });
@@ -916,9 +837,6 @@
         chargerEcran('stats-projet', projet.id || projet.nom);
     }
 
-    /* ============================================================ */
-    /* ÉVÉNEMENTS                                                    */
-    /* ============================================================ */
     function brancherEvenements() {
         if (_initialise) return;
         _initialise = true;
@@ -955,13 +873,9 @@
         }
     }
 
-    /* ============================================================ */
-    /* POINT D'ENTRÉE EXPOSÉ                                         */
-    /* ============================================================ */
     window.init_principalProjets = async function() {
         brancherEvenements();
         injecterUtilisateur();
-        jouerEntreeRapideDepuisBas();
         await chargerListeProjets();
     };
 
