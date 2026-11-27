@@ -53,7 +53,6 @@ body.project-detail-open .main-content {
 }
 body.modal-open .main-content { overflow: hidden; }
 
-/* Page dédiée à "Créer" : glisse du bas vers le haut en plein écran */
 .create-sheet {
     position: fixed;
     inset: 0;
@@ -123,7 +122,6 @@ body.modal-open .main-content { overflow: hidden; }
 .login-google-btn svg { width: 20px; height: 20px; flex-shrink: 0; }
 .login-hint { font-size: 0.78rem; color: var(--muted-2); margin-top: 18px; line-height: 1.5; }
 
-/* Modal connexion Google déclenchée uniquement si l'erreur de création est liée à l'absence de connexion */
 .google-auth-modal-overlay {
     position: fixed; inset: 0; background: rgba(15,23,42,.62);
     backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px);
@@ -262,7 +260,6 @@ body.modal-open .main-content { overflow: hidden; }
 <main class="main-content" id="content-area"></main>
 <div class="main-content" id="other-container" style="display:none;"></div>
 
-<!-- Page dédiée à Créer : glisse du bas vers le haut en plein écran -->
 <section class="create-sheet" id="create-sheet-container" aria-hidden="true"></section>
 
 <div class="navbar-container" id="navbar-container">
@@ -274,7 +271,6 @@ body.modal-open .main-content { overflow: hidden; }
     </nav>
 </div>
 
-<!-- Modal connexion Google déclenchée uniquement si l'erreur de création est liée à l'absence de connexion -->
 <div class="google-auth-modal-overlay" id="googleAuthModalOverlay">
     <div class="google-auth-modal">
         <h3>Connexion Google requise</h3>
@@ -432,8 +428,8 @@ let _navToken = 0;
 let _infosPrecharge = null;
 let _dernierEmailAuth = null;
 
-let ongletActif = null; // 'creer' | 'infos' | null
-let ongletAvantCreer = 'home'; // 'home' | 'notifications' | 'infos'
+let ongletActif = null;
+let ongletAvantCreer = 'home';
 let pendingCreationAfterAuth = false;
 
 const cacheOnglets = {
@@ -442,9 +438,6 @@ const cacheOnglets = {
     projets: { html: null, codesScripts: [], scroll: 0 }
 };
 
-/* ═══════════════════════════════════════════════════════════════
-   BARRE DE NAVIGATION & EN-TÊTE — Masqués dans le détail d'un projet
-═══════════════════════════════════════════════════════════════ */
 function entrerDansProjet() {
     document.body.classList.add('project-detail-open');
 }
@@ -453,6 +446,61 @@ function sortirDuProjet() {
 }
 window.entrerDansProjet = entrerDansProjet;
 window.sortirDuProjet = sortirDuProjet;
+
+/* ═══════════════════════════════════════════════════════════════
+   OUVERTURE D'UN ÉCRAN PROJET (stats / deblocage / finaliser)
+═══════════════════════════════════════════════════════════════ */
+window.ouvrirEcranProjet = async function(nom, projetId) {
+    try {
+        if (typeof window.entrerDansProjet === 'function') window.entrerDansProjet();
+
+        retirerTousScripts();
+
+        contentArea.style.display = 'block';
+        otherContainer.style.display = 'none';
+        otherContainer.innerHTML = '';
+
+        contentArea.innerHTML = '<div class="chargement-bloc"><div class="chargement-spinner"></div><p class="chargement-texte">Chargement...</p><p class="chargement-hint">Veuillez patienter</p></div>';
+
+        const res = await fetch('projets/' + nom + '.html');
+        if (!res.ok) throw new Error('load');
+        const html = await res.text();
+
+        const temp = document.createElement('div');
+        temp.innerHTML = html;
+        const codesScripts = [];
+        temp.querySelectorAll('script').forEach(function(s) {
+            codesScripts.push(s.textContent);
+            s.remove();
+        });
+
+        contentArea.innerHTML = temp.innerHTML;
+        contentArea.scrollTop = 0;
+
+        codesScripts.forEach(function(code) {
+            const s = document.createElement('script');
+            s.textContent = code;
+            s.dataset.injecte = '1';
+            document.body.appendChild(s);
+            scriptsInjectes.push(s);
+        });
+
+        const fnName = 'init_' + nom.replace(/-/g, '_');
+        if (typeof window[fnName] === 'function') {
+            window[fnName]({ projetId: projetId });
+        }
+    } catch (e) {
+        console.error('[Projets] Erreur ouverture :', e);
+        contentArea.innerHTML = '<div class="chargement-bloc"><p class="chargement-texte">Erreur de chargement</p><p class="chargement-hint">Réessayez plus tard</p></div>';
+    }
+};
+
+window.fermerEcranProjet = function() {
+    retirerTousScripts();
+    if (typeof window.sortirDuProjet === 'function') window.sortirDuProjet();
+    contentArea.innerHTML = '';
+    runHomeView();
+};
 
 function definirEtatStylesCreer(actif) {
     stylesInjectesCreer.forEach(function(st) {
@@ -722,9 +770,6 @@ function loginPageHTML() {
     );
 }
 
-/* ═══════════════════════════════════════════════════════════════
-   MODAL CONNEXION GOOGLE (uniquement si erreur liée au compte Google)
-═══════════════════════════════════════════════════════════════ */
 let isGoogleAuthModalOpen = false;
 
 function openGoogleAuthModal(messageText) {
@@ -763,9 +808,6 @@ document.getElementById('modalGoogleLoginBtn').addEventListener('click', async f
     }
 });
 
-/* ═══════════════════════════════════════════════════════════════
-   ONGLET PROJETS — Charge projets/principal-projets.html
-═══════════════════════════════════════════════════════════════ */
 async function runHomeView() {
     closeAllOverlays();
     sortirDuProjet();
@@ -854,8 +896,8 @@ async function runHomeView() {
             scriptsInjectes.push(s);
         });
 
-    if (typeof window.init_principalProjets === 'function') {
-     try { window.init_principalProjets(); } catch (e) { console.error(e); }
+        if (typeof window.init_principalProjets === 'function') {
+            try { window.init_principalProjets(); } catch (e) { console.error(e); }
         }
     } catch (e) {
         console.error('[Projets] Erreur chargement :', e);
@@ -867,9 +909,6 @@ async function runHomeView() {
     try { history.replaceState({ tab: 'home', screen: 'main' }, '', window.location.pathname); } catch (e) {}
 }
 
-/* ═══════════════════════════════════════════════════════════════
-   CALLBACK AUTHENTIFICATION
-═══════════════════════════════════════════════════════════════ */
 window.onAuthStateChangedCallback = function(user) {
     const emailActuel = (user && user.email) ? user.email : null;
     const emailChange = (emailActuel !== _dernierEmailAuth);
@@ -890,9 +929,6 @@ window.onAuthStateChangedCallback = function(user) {
     }
 };
 
-/* ═══════════════════════════════════════════════════════════════
-   ONGLET CRÉER — Glisse du bas vers le haut en plein écran
-═══════════════════════════════════════════════════════════════ */
 async function chargerFichiersCreate(token) {
     if (_fichiersChargees) return true;
 
@@ -1016,9 +1052,6 @@ function runCreateView() {
     });
 }
 
-/* ═══════════════════════════════════════════════════════════════
-   ONGLET NOTIFICATIONS
-═══════════════════════════════════════════════════════════════ */
 function runNotificationsView() {
     closeAllOverlays();
     sortirDuProjet();
@@ -1048,9 +1081,6 @@ function runNotificationsView() {
     try { history.replaceState({ tab: 'notifications', screen: 'main' }, '', window.location.pathname); } catch (e) {}
 }
 
-/* ═══════════════════════════════════════════════════════════════
-   ONGLET INFOS
-═══════════════════════════════════════════════════════════════ */
 function prechargerInfos() {
     if (_infosPrecharge) return;
     _infosPrecharge = fetch('infos/principal-infos.html')
@@ -1186,9 +1216,6 @@ function closeAllOverlays() {
     if (isRefSheetOpen) closeRefSheet();
 }
 
-/* ═══════════════════════════════════════════════════════════════
-   CRÉATION DU PROJET — Appel Netlify creer-projet (formule decouverte)
-═══════════════════════════════════════════════════════════════ */
 async function lancerCreationProjet() {
     try {
         const nomApp        = await recupererNatif('nomApp');
@@ -1320,9 +1347,6 @@ async function lancerCreationProjet() {
 }
 window.lancerCreationProjet = lancerCreationProjet;
 
-/* ═══════════════════════════════════════════════════════════════
-   VÉRIFICATION DE PAIEMENT
-═══════════════════════════════════════════════════════════════ */
 let isRefSheetOpen = false;
 
 function openRefSheet() {
@@ -1505,9 +1529,6 @@ async function detecterRetourSelar() {
     setTimeout(function() { openRefSheet(); }, 350);
 }
 
-/* ═══════════════════════════════════════════════════════════════
-   INITIALISATION
-═══════════════════════════════════════════════════════════════ */
 window.addEventListener('DOMContentLoaded', async function() {
     try { history.replaceState({ tab: 'home', screen: 'main' }, '', window.location.pathname); } catch (e) {}
 
