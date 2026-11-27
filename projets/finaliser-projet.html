@@ -1,5 +1,5 @@
 <!-- ============================================================ -->
-<!-- FINALISER-PROJET.HTML                                         -->
+<!-- FINALISER-PROJET.HTML — Version corrigée                      -->
 <!-- ============================================================ -->
 
 <div id="finaliser-projet-container">
@@ -280,9 +280,11 @@
     let projetIdCourant = null;
     let _zipEnCours = false;
     let _initialise = false;
-    let _historiquePousse = false;
+    let _ecranActifFinaliser = false;
+    let _fermetureEnCours = false;
 
     const $ = id => document.getElementById(id);
+    const DOMAINE_SITELEAP = 'https://siteleap-two.netlify.app';
 
     function echapper(str) {
         return String(str == null ? '' : str)
@@ -422,7 +424,7 @@
         });
     }
 
-    async function genererIconesDansZip(zip) {
+    async function genererIconesDansZip(zip, dossierCible) {
         let logoBlob = null;
         try {
             if (typeof window.recupererNatif === 'function') {
@@ -433,7 +435,7 @@
         if (!logoBlob) return 0;
 
         const img = await blobVersImage(logoBlob);
-        const dossierIcons = zip.folder('icons');
+        const dossierIcons = dossierCible ? dossierCible.folder('icons') : zip.folder('icons');
         const dossierAndroid = dossierIcons.folder('android');
         const dossierIos = dossierIcons.folder('ios');
         const dossierFavicon = dossierIcons.folder('favicon');
@@ -471,7 +473,26 @@
             fichiersLus.push(lu);
         }
 
-        const poidsIcones = await genererIconesDansZip(zip);
+        let nomDossierRacine = null;
+        if (fichiersLus.length > 0) {
+            const premierNom = fichiersLus[0].nom;
+            const posSlash = premierNom.indexOf('/');
+            if (posSlash > 0) {
+                const candidatDossier = premierNom.substring(0, posSlash);
+                const tousDansDossier = fichiersLus.every(f => f.nom.startsWith(candidatDossier + '/'));
+                if (tousDansDossier) {
+                    nomDossierRacine = candidatDossier;
+                }
+            }
+        }
+
+        if (!nomDossierRacine) {
+            nomDossierRacine = nomSite.toLowerCase().replace(/[^a-z0-9]+/gi, '-').replace(/^-|-$/g, '') || 'projet';
+        }
+
+        const dossierProjet = zip.folder(nomDossierRacine);
+
+        const poidsIcones = await genererIconesDansZip(zip, dossierProjet);
         totalOctets += poidsIcones;
 
         let swCode = '';
@@ -483,11 +504,15 @@
                 if (resSw.ok) swCode = await resSw.text();
             }
         } catch (e) {}
+
         if (swCode) {
+            swCode = swCode.replace(/ID_DU_PROJET/g, projetIdCourant || '');
+            swCode = swCode.replace(/TON-DOMAINE-NETLIFY\.netlify\.app/g, 'siteleap-two.netlify.app');
+
             if (!swCode.includes('// @siteleap-sw')) {
                 swCode = '// @siteleap-sw\n' + swCode;
             }
-            zip.file('sw.js', swCode);
+            dossierProjet.file('sw.js', swCode);
             totalOctets += new Blob([swCode]).size;
         }
 
@@ -503,12 +528,12 @@
             .replace(/__APP_ICON__/g, 'icons/android/icon-192.png')
             .replace(/__APP_NAME__/g, echapper(nomSite))
             .replace(/__APP_SIZE__/g, echapper(poidsFormate))
-            .replace(/__PROJECT_ID__/g, echapper(projetIdCourant || ''));
+            .replace(/__PROJECT_ID__/g, echapper(projetIdCourant || ''))
+            .replace(/\/\.netlify\/functions\/enregistrer-stat/g, DOMAINE_SITELEAP + '/.netlify/functions/enregistrer-stat');
 
         const blocInjection = banniereInjectee + '\n';
 
-        const manifestUrl =
-            '/.netlify/functions/servir-manifeste?id=' + encodeURIComponent(projetIdCourant || '');
+        const manifestUrl = DOMAINE_SITELEAP + '/.netlify/functions/servir-manifeste?id=' + encodeURIComponent(projetIdCourant || '');
 
         const linkManifeste =
             '<link rel="manifest" href="' + manifestUrl + '">\n' +
@@ -517,7 +542,9 @@
         let htmlCibleIndex = -1;
         fichiersLus.forEach((f, idx) => {
             if (f.isText && f.nom.toLowerCase().endsWith('.html')) {
-                if (f.nom.toLowerCase() === 'index.html' || htmlCibleIndex === -1) {
+                if (f.nom.toLowerCase().endsWith('index.html')) {
+                    htmlCibleIndex = idx;
+                } else if (htmlCibleIndex === -1) {
                     htmlCibleIndex = idx;
                 }
             }
@@ -537,16 +564,20 @@
                 }
             }
 
-            zip.file(f.nom.replace(/^\/+/, ''), contenuFinal);
+            let nomFichierZip = f.nom.replace(/^\/+/, '');
+            if (nomFichierZip.startsWith(nomDossierRacine + '/')) {
+                nomFichierZip = nomFichierZip.substring(nomDossierRacine.length + 1);
+            }
+
+            dossierProjet.file(nomFichierZip, contenuFinal);
         });
 
         const blobZip = await zip.generateAsync({ type: 'blob' });
 
         const url = URL.createObjectURL(blobZip);
         const a = document.createElement('a');
-        const nomSlug = nomSite.toLowerCase().replace(/[^a-z0-9]+/gi, '-').replace(/^-|-$/g, '') || 'projet';
         a.href = url;
-        a.download = nomSlug + '-pwa.zip';
+        a.download = nomDossierRacine + '-pwa.zip';
         document.body.appendChild(a);
         a.click();
         a.remove();
@@ -604,36 +635,47 @@
         }
     }
 
-    function retourStats() {
-        if (typeof window.ouvrirEcranProjet === 'function') {
-            window.ouvrirEcranProjet('stats-projet', projetIdCourant);
-        }
-    }
+    // ✅ Retour propre et idempotent
+    function retourPropre() {
+        if (_fermetureEnCours) return;
+        _fermetureEnCours = true;
+        _ecranActifFinaliser = false;
 
-    function gererRetourNatif() {
-        if (_historiquePousse) {
-            _historiquePousse = false;
-            try { history.back(); } catch (e) {}
-        } else {
-            retourStats();
+        // On tente history.back() pour dépiler l'état 'finaliser-projet'
+        // Le popstate du shell verra l'état précédent (stats-projet) et rechargera la vue
+        try {
+            history.back();
+        } catch (e) {
+            // Fallback : ouvrir directement stats-projet
+            if (typeof window.ouvrirEcranProjet === 'function') {
+                window.ouvrirEcranProjet('stats-projet', projetIdCourant);
+            }
         }
+
+        setTimeout(() => { _fermetureEnCours = false; }, 400);
     }
 
     function brancherEvenements() {
         if (_initialise) return;
         _initialise = true;
 
+        // Bouton flèche → retour propre
         const btnBack = $('btnBackFinaliser');
-        if (btnBack) btnBack.addEventListener('click', gererRetourNatif);
+        if (btnBack) btnBack.addEventListener('click', retourPropre);
 
         const btnOk = $('finalSheetOkBtn');
         if (btnOk) btnOk.addEventListener('click', onOkClick);
 
-        window.addEventListener('popstate', function() {
-            if (!_historiquePousse) return;
-            _historiquePousse = false;
-            retourStats();
-        });
+        // ✅ Popstate en CAPTURE pour s'exécuter AVANT le listener du shell
+        // et bloquer la propagation (évite le double-traitement → bug navbar)
+        window.addEventListener('popstate', function(e) {
+            if (!_ecranActifFinaliser) return;
+            e.stopImmediatePropagation();
+            _ecranActifFinaliser = false;
+            _fermetureEnCours = false;
+            // Ne rien faire d'autre : le shell va recharger la vue stats-projet
+            // via son propre popstate qui voit l'état précédent
+        }, true);
     }
 
     window.init_finaliserProjet = async function(opts) {
@@ -643,14 +685,14 @@
             return;
         }
 
-        // On demande au shell de masquer header + navbar
         try { if (typeof window.entrerDansProjet === 'function') window.entrerDansProjet(); } catch (e) {}
 
         brancherEvenements();
+        _fermetureEnCours = false;
+        _ecranActifFinaliser = true;
 
         try {
             history.pushState({ screen: 'finaliser-projet', projetId: projetId }, '');
-            _historiquePousse = true;
         } catch (e) {}
 
         await chargerProjet(projetId);
