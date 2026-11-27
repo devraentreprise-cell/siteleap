@@ -1,6 +1,5 @@
 <!-- ============================================================ -->
 <!-- PRINCIPAL-PROJETS.HTML                                        -->
-<!-- Chef d'orchestre de la partie Projets                         -->
 <!-- ============================================================ -->
 
 <div id="principal-projets-container">
@@ -761,6 +760,14 @@
             return;
         }
 
+        if (window._cacheProjetsModule && window._cacheProjetsModule.loaded) {
+            tousLesProjets = window._cacheProjetsModule.projets || [];
+            majCompteur();
+            if (tousLesProjets.length === 0) afficherVide();
+            else afficherListe(tousLesProjets);
+            return;
+        }
+
         afficherChargement();
 
         try {
@@ -815,12 +822,10 @@
     }
 
     function chargerEcran(nomEcran, projetId) {
-        if (typeof window.openScreen === 'function') {
-            window.openScreen(nomEcran, { projetId: projetId });
-        } else if (typeof window.ouvrirSousEcran === 'function') {
-            window.ouvrirSousEcran(nomEcran, { projetId: projetId });
+        if (typeof window.ouvrirEcranProjet === 'function') {
+            window.ouvrirEcranProjet(nomEcran, projetId);
         } else {
-            console.warn('[Projets] Aucun gestionnaire d\'écran disponible pour :', nomEcran);
+            console.warn('[Projets] ouvrirEcranProjet indisponible.');
         }
     }
 
@@ -844,8 +849,8 @@
         const btnCreer = $('btnCreerProjet');
         if (btnCreer) {
             btnCreer.addEventListener('click', () => {
-                if (typeof window.openScreen === 'function') window.openScreen('creer');
-                else if (typeof window.ouvrirSousEcran === 'function') window.ouvrirSousEcran('creer');
+                const navCreate = document.getElementById('btn-create');
+                if (navCreate) navCreate.click();
             });
         }
 
