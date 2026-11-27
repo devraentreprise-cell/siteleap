@@ -98,16 +98,6 @@
     display: flex;
     flex-direction: column;
     min-height: 100%;
-    transform: translate3d(0, 100%, 0);
-    opacity: 0;
-    transition:
-        transform 0.36s cubic-bezier(0.22, 1, 0.36, 1),
-        opacity 0.22s ease-out;
-    will-change: transform, opacity;
-}
-#finaliser-projet-container .slide-up-shell.is-entered {
-    transform: translate3d(0, 0, 0);
-    opacity: 1;
 }
 
 #finaliser-projet-container .final-head {
@@ -577,21 +567,12 @@
     }
 
     function retourListePrincipale() {
-        try {
-            if (typeof window.fermerEcran === 'function') {
-                window.fermerEcran('finaliser-projet');
-                window.fermerEcran('stats-projet');
-            }
-        } catch (e) {}
-
-        try { if (typeof window.sortirDuProjet === 'function') window.sortirDuProjet(); } catch (e) {}
-
-        if (typeof window.openScreen === 'function') {
-            window.openScreen('principal-projets');
+        if (window._cacheProjetsModule) {
+            window._cacheProjetsModule.loaded = false;
+            window._cacheProjetsModule.projets = [];
         }
-
-        if (typeof window.init_principalProjets === 'function') {
-            window.init_principalProjets();
+        if (typeof window.fermerEcranProjet === 'function') {
+            window.fermerEcranProjet();
         }
     }
 
@@ -624,8 +605,8 @@
     }
 
     function retourStats() {
-        if (typeof window.openScreen === 'function') {
-            window.openScreen('stats-projet', { projetId: projetIdCourant });
+        if (typeof window.ouvrirEcranProjet === 'function') {
+            window.ouvrirEcranProjet('stats-projet', projetIdCourant);
         }
     }
 
@@ -666,7 +647,6 @@
         try { if (typeof window.entrerDansProjet === 'function') window.entrerDansProjet(); } catch (e) {}
 
         brancherEvenements();
-        jouerEntreeRapideDepuisBas();
 
         try {
             history.pushState({ screen: 'finaliser-projet', projetId: projetId }, '');
