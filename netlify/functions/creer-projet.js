@@ -212,7 +212,8 @@ export async function handler(event, context) {
             creeLe: horodatage,
             installs_total: 0,
             imageUrl: imageUrl,
-            demande_reactivation: false
+            demande_reactivation: false,
+            reference_deblocage: ""
         };
 
         miseAJour[id] = {
