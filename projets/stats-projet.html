@@ -1,5 +1,5 @@
 <!-- ============================================================ -->
-<!-- STATS-PROJET.HTML                                             -->
+<!-- STATS-PROJET.HTML — Version corrigée                          -->
 <!-- ============================================================ -->
 
 <div id="stats-projet-container">
@@ -154,7 +154,7 @@
     --radius: 22px;
 
     width: 100%;
-    max-width: 640px;
+    max-width: 760px;
     margin: 0 auto;
     background: var(--bg);
     color: var(--ink);
@@ -183,7 +183,7 @@
     display: flex;
     align-items: center;
     gap: 12px;
-    max-width: 620px;
+    max-width: 740px;
     margin: 0 auto;
 }
 #stats-projet-container .top-back {
@@ -242,9 +242,9 @@
 #stats-projet-container .top-formule-badge.proplus { background: var(--green-soft); color: var(--green-deep); border: 1px solid #a7f3d0; }
 
 #stats-projet-container .tabs-wrap {
-    max-width: 620px;
+    max-width: 740px;
     margin: 12px auto 0;
-    padding: 0 16px;
+    padding: 0 12px;
 }
 #stats-projet-container .tabs {
     display: grid;
@@ -271,12 +271,22 @@
 }
 
 #stats-projet-container .container {
-    max-width: 620px;
+    max-width: 740px;
     margin: 0 auto;
-    padding: 17px 16px;
+    padding: 16px 8px;
 }
 #stats-projet-container .view { display: none; }
 #stats-projet-container .view.active { display: block; }
+
+#stats-projet-container #view-appareils {
+    width: 100%;
+    max-width: 724px;
+    margin: 0 auto;
+}
+#stats-projet-container #view-appareils .card {
+    width: 100%;
+    padding: 20px 18px;
+}
 
 #stats-projet-container .card {
     background: #fff;
@@ -484,17 +494,19 @@
     display: flex;
     flex-direction: column;
     gap: 16px;
+    width: 100%;
 }
 #stats-projet-container .row-top {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 12px;
     margin-bottom: 8px;
 }
 #stats-projet-container .row-dot {
     width: 10px;
     height: 10px;
     border-radius: 4px;
+    flex-shrink: 0;
 }
 #stats-projet-container .row-label {
     flex: 1;
@@ -502,14 +514,16 @@
     font-weight: 700;
 }
 #stats-projet-container .row-pct {
-    font-size: .78rem;
+    font-size: .82rem;
     font-weight: 700;
     color: var(--muted-2);
+    min-width: 46px;
+    text-align: right;
 }
 #stats-projet-container .row-count {
     font-size: 1rem;
     font-weight: 800;
-    min-width: 34px;
+    min-width: 46px;
     text-align: right;
 }
 #stats-projet-container .track {
@@ -517,6 +531,7 @@
     background: #f1f5f9;
     border-radius: 99px;
     overflow: hidden;
+    width: 100%;
 }
 #stats-projet-container .fill {
     height: 100%;
@@ -675,6 +690,7 @@
     'use strict';
 
     let projetActif = null;
+    let statsReelles = null;
     let projetIdCourant = null;
     let estDemo = false;
     let estEnAttente = false;
@@ -682,6 +698,8 @@
     let _modalSortieVisible = false;
     let _sortieAutorisee = false;
     let _initialise = false;
+    let _ecranActifStats = false;
+    let _fermetureEnCours = false;
 
     let devicesCourants = [];
     let mapReady = false, mapSvg = null, mapProjection = null;
@@ -691,6 +709,7 @@
 
     const ORDRE_FORMULES = ['decouverte', 'pro', 'pro-plus'];
     const NIVEAU_REQUIS = { installations: 0, appareils: 2, pays: 2 };
+    const JOURS_SEMAINE = ['lundi', 'mardi', 'mercredi', 'jeudi', 'vendredi', 'samedi', 'dimanche'];
     const R_DONUT = 56;
     const C_DONUT = 2 * Math.PI * R_DONUT;
 
@@ -770,8 +789,54 @@
         return (jourSemaine + 6) % 7;
     }
 
+    function extraireInstalls7j(statsObj) {
+        if (!statsObj || typeof statsObj !== 'object') {
+            return [0, 0, 0, 0, 0, 0, 0];
+        }
+        if (Array.isArray(statsObj.installs_7j) && statsObj.installs_7j.length) {
+            return JOURS_SEMAINE.map((_, i) => Number(statsObj.installs_7j[i]) || 0);
+        }
+        const parJour = statsObj.installs_par_jour || {};
+        return JOURS_SEMAINE.map(jour => Number(parJour[jour] && parJour[jour].installs) || 0);
+    }
+
+    function normaliserPays(brut) {
+        if (!brut) return [];
+        const liste = Array.isArray(brut) ? brut : Object.values(brut);
+        return liste
+            .map(p => {
+                p = p || {};
+                return {
+                    nom: String(p.nom || ''),
+                    lat: Number(p.lat),
+                    lng: Number(p.lng),
+                    count: Number(p.count) || 0
+                };
+            })
+            .filter(p => Number.isFinite(p.lat) && Number.isFinite(p.lng) && p.count > 0);
+    }
+
+    async function chargerStatsReelles(projetId) {
+        try {
+            const response = await fetch('/.netlify/functions/lire-stats', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ projetId: projetId })
+            });
+            const resultat = await response.json();
+            if (resultat && resultat.success && resultat.stats && typeof resultat.stats === 'object') {
+                return resultat.stats;
+            }
+        } catch (e) {
+            console.error('[Stats] Erreur lecture statistiques :', e);
+        }
+        return {};
+    }
+
     async function chargerProjet(projetId) {
         projetIdCourant = projetId;
+        projetActif = null;
+        statsReelles = null;
         estDemo = false;
         estEnAttente = false;
         currentPays = [];
@@ -794,12 +859,17 @@
         }
 
         if (!projetActif) {
-            sortirDesStats();
+            retourPropre();
             return;
         }
 
+        const idCible = String(projetActif.id || projetId);
         estEnAttente = (normaliserStatut(projetActif.statut) === 'en_attente');
         estDemo = estEnAttente;
+
+        if (!estDemo) {
+            statsReelles = await chargerStatsReelles(idCible);
+        }
 
         appliquerDonnees();
     }
@@ -808,7 +878,7 @@
         if (!projetActif) return;
 
         const niveauProjet = niveauFormule(projetActif.formule);
-        const s = estDemo ? STATS_DEMO : (projetActif.stats || {});
+        const s = estDemo ? STATS_DEMO : (statsReelles || {});
 
         const isBloquee = {};
         Object.keys(NIVEAU_REQUIS).forEach(nom => {
@@ -819,7 +889,7 @@
         majBadgeFormule(projetActif.formule);
 
         $('numInstalls').textContent = formatNombre(s.installs_total || 0);
-        const evo = (s.installs_7j && s.installs_7j.length) ? s.installs_7j : [0, 0, 0, 0, 0, 0, 0];
+        const evo = extraireInstalls7j(s);
         const jours = ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim'];
         const maxEvo = Math.max(...evo, 1);
 
@@ -907,9 +977,17 @@
             }
         }
 
-        if (isBloquee.pays) currentPays = [];
-        else if (estDemo) currentPays = PAYS_DEMO;
-        else currentPays = projetActif.pays || [];
+        if (isBloquee.pays) {
+            currentPays = [];
+        } else if (estDemo) {
+            currentPays = PAYS_DEMO;
+        } else {
+            currentPays = normaliserPays(s.pays);
+        }
+
+        if (mapReady) {
+            drawMarkers(currentPays);
+        }
 
         requestAnimationFrame(() => animerToutesVues());
     }
@@ -1113,26 +1191,35 @@
 
     function demanderSortie() {
         if (estEnAttente) afficherModalSortie();
-        else sortirDesStats();
+        else retourPropre();
     }
 
-    function sortirDesStats() {
-        _sortieAutorisee = true;
+    function retourPropre() {
+        if (_fermetureEnCours) return;
+        _fermetureEnCours = true;
+        _ecranActifStats = false;
         cacherModalSortie();
         cacherModalEntree();
 
-        if (typeof window.fermerEcranProjet === 'function') {
-            window.fermerEcranProjet();
+        try {
+            history.back();
+        } catch (e) {
+            if (typeof window.fermerEcranProjet === 'function') {
+                window.fermerEcranProjet();
+            }
         }
+
+        setTimeout(() => { _fermetureEnCours = false; }, 400);
     }
 
     function plusTardStats() {
         cacherModalSortie();
-        sortirDesStats();
+        retourPropre();
     }
 
     function lancerFinalisation() {
         cacherModalSortie();
+        _ecranActifStats = false;
         const id = projetActif && (projetActif.id || projetActif.nom);
         if (typeof window.ouvrirEcranProjet === 'function') {
             window.ouvrirEcranProjet('finaliser-projet', id);
@@ -1157,13 +1244,20 @@
         if (modalEntreeOk) modalEntreeOk.addEventListener('click', cacherModalEntree);
 
         const modalSortieClose = $('modalSortieStatsClose');
-        if (modalSortieClose) modalSortieClose.addEventListener('click', () => { cacherModalSortie(); sortirDesStats(); });
+        if (modalSortieClose) modalSortieClose.addEventListener('click', () => { cacherModalSortie(); retourPropre(); });
 
         const modalPlusTard = $('modalPlusTardStats');
         if (modalPlusTard) modalPlusTard.addEventListener('click', plusTardStats);
 
         const modalFinaliser = $('modalFinaliserProjet');
         if (modalFinaliser) modalFinaliser.addEventListener('click', lancerFinalisation);
+
+        window.addEventListener('popstate', function(e) {
+            if (!_ecranActifStats) return;
+            e.stopImmediatePropagation();
+            _ecranActifStats = false;
+            _fermetureEnCours = false;
+        }, true);
 
         window.addEventListener('resize', () => {
             const s = $('stats-projet');
@@ -1181,7 +1275,14 @@
             return;
         }
 
+        _sortieAutorisee = false;
+        _fermetureEnCours = false;
+        _ecranActifStats = true;
         brancherEvenements();
+
+        try {
+            history.pushState({ screen: 'stats-projet', projetId: projetId }, '');
+        } catch (e) {}
 
         document.querySelectorAll('#stats-projet-container .tab').forEach(t =>
             t.classList.toggle('active', t.dataset.view === 'installations'));
