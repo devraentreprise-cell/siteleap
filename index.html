@@ -817,8 +817,8 @@ async function runHomeView() {
             scriptsInjectes.push(s);
         });
         contentArea.scrollTop = cacheOnglets.projets.scroll || 0;
-        if (typeof window.init_projets === 'function') {
-            try { window.init_projets(); } catch (e) { console.error(e); }
+        if (typeof window.init_principalProjets === 'function') {
+            try { window.init_principalProjets(); } catch (e) { console.error(e); }
         }
         try { history.replaceState({ tab: 'home', screen: 'main' }, '', window.location.pathname); } catch (e) {}
         return;
@@ -854,8 +854,8 @@ async function runHomeView() {
             scriptsInjectes.push(s);
         });
 
-        if (typeof window.init_projets === 'function') {
-            try { window.init_projets(); } catch (e) { console.error(e); }
+    if (typeof window.init_principalProjets === 'function') {
+     try { window.init_principalProjets(); } catch (e) { console.error(e); }
         }
     } catch (e) {
         console.error('[Projets] Erreur chargement :', e);
