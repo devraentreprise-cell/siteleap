@@ -2,11 +2,13 @@
 // Fichier : verifier-reference.js
 // Vérifie qu'une référence de paiement n'a pas déjà été utilisée,
 // l'enregistre dans « numeros_de_reference », et passe à true
-// le champ « demande_reactivation » du projet concerné.
+// le champ « demande_reactivation » du projet concerné,
+// en enregistrant également la référence dans « reference_deblocage ».
 //
 // Structure de la base :
 //   numeros_de_reference/<cleReference> = "REF-XXX"
 //   <cleEmail>/<projetId>/demande_reactivation = true
+//   <cleEmail>/<projetId>/reference_deblocage = "REF-XXX"
 // ==========================================
 
 import admin from "firebase-admin";
@@ -118,10 +120,13 @@ export async function handler(event, context) {
         // 2) Enregistrement de la référence (uniquement la référence)
         await refRacine.child(cleReference).set(referenceNettoyee);
 
-        // 3) Marquage du projet : demande_reactivation = true
+        // 3) Marquage du projet : demande_reactivation = true + reference_deblocage = référence
         const cleEmail = cleEmailDe(email);
         try {
-            await db.ref(cleEmail + "/" + String(projetId) + "/demande_reactivation").set(true);
+            await db.ref(cleEmail + "/" + String(projetId)).update({
+                demande_reactivation: true,
+                reference_deblocage: referenceNettoyee
+            });
         } catch (e) {
             console.warn("Référence enregistrée mais marquage du projet échoué :", e);
         }
