@@ -485,7 +485,7 @@ window.ouvrirEcranProjet = async function(nom, projetId) {
             scriptsInjectes.push(s);
         });
 
-        const fnName = 'init_' + nom.replace(/-/g, '_');
+        const fnName = 'init_' + nom.replace(/-([a-z])/g, function(m, l) { return l.toUpperCase(); });
         if (typeof window[fnName] === 'function') {
             window[fnName]({ projetId: projetId });
         }
