@@ -1194,6 +1194,7 @@
         else retourPropre();
     }
 
+    /* ✅ CORRIGÉ : on nettoie le DOM via fermerEcranProjet() au lieu de history.back() */
     function retourPropre() {
         if (_fermetureEnCours) return;
         _fermetureEnCours = true;
@@ -1201,12 +1202,8 @@
         cacherModalSortie();
         cacherModalEntree();
 
-        try {
-            history.back();
-        } catch (e) {
-            if (typeof window.fermerEcranProjet === 'function') {
-                window.fermerEcranProjet();
-            }
+        if (typeof window.fermerEcranProjet === 'function') {
+            window.fermerEcranProjet();
         }
 
         setTimeout(() => { _fermetureEnCours = false; }, 400);
@@ -1252,11 +1249,11 @@
         const modalFinaliser = $('modalFinaliserProjet');
         if (modalFinaliser) modalFinaliser.addEventListener('click', lancerFinalisation);
 
+        /* ✅ CORRIGÉ : on appelle retourPropre() qui nettoie le DOM */
         window.addEventListener('popstate', function(e) {
             if (!_ecranActifStats) return;
             e.stopImmediatePropagation();
-            _ecranActifStats = false;
-            _fermetureEnCours = false;
+            retourPropre();
         }, true);
 
         window.addEventListener('resize', () => {
