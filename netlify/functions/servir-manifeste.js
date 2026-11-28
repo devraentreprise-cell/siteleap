@@ -74,7 +74,22 @@ function estProjetBloque(creeLe, installsTotal, maintenantMs) {
     return maintenantMs > (dateCreation + DUREE_GRACE_MS);
 }
 
-function preparerManifeste(brut) {
+// Lit l'adresse du site de la personne envoyée par le générateur (paramètre "site")
+function lireAdresseSite(brut) {
+    if (typeof brut !== "string" || brut.length > 2000) return null;
+    try {
+        const url = new URL(brut);
+        if (url.protocol !== "https:" && url.protocol !== "http:") return null;
+        url.search = "";
+        url.hash = "";
+        if (!url.pathname.endsWith("/")) url.pathname += "/";
+        return url.href;
+    } catch (e) {
+        return null;
+    }
+}
+
+function preparerManifeste(brut, site) {
     const resultat = {};
     CHAMPS_AUTORISES.forEach(function (champ) {
         if (brut[champ] !== undefined && brut[champ] !== null) {
@@ -96,6 +111,17 @@ function preparerManifeste(brut) {
         delete resultat.icons;
     }
 
+    // Si le site est connu : icônes en adresses complètes + identité stable de l'app
+    if (site) {
+        if (Array.isArray(resultat.icons)) {
+            resultat.icons = resultat.icons.map(function (ic) {
+                try { ic.src = new URL(ic.src, site).href; } catch (e) {}
+                return ic;
+            });
+        }
+        resultat.id = site;
+    }
+
     return resultat;
 }
 
@@ -110,6 +136,7 @@ export async function handler(event, context) {
     try {
         const params = event.queryStringParameters || {};
         const idProjet = params.id;
+        const site = lireAdresseSite(params.site);
 
         if (typeof idProjet !== "string" || !FORMAT_ID_PROJET.test(idProjet)) {
             return reponseJson(400, { success: false, message: "Identifiant de projet invalide." });
@@ -134,14 +161,15 @@ export async function handler(event, context) {
             return reponseJson(403, { success: false, message: "Manifeste indisponible." }, DUREE_CACHE_SEC);
         }
 
-        const manifeste = preparerManifeste(brutManifeste);
+        const manifeste = preparerManifeste(brutManifeste, site);
 
         return {
             statusCode: 200,
             headers: Object.assign({}, ENTETES_CORS, {
                 "Content-Type": "application/manifest+json; charset=utf-8",
                 "Cache-Control": "public, max-age=3600",
-                "Netlify-CDN-Cache-Control": "public, max-age=" + DUREE_CACHE_SEC
+                "Netlify-CDN-Cache-Control": "public, max-age=" + DUREE_CACHE_SEC,
+                "Netlify-Vary": "query=id|site"
             }),
             body: JSON.stringify(manifeste)
         };
